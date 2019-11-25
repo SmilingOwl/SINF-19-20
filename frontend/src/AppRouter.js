@@ -6,34 +6,37 @@ import {
     Link
   } from "react-router-dom";
 import Home from './Home.js';
+import './css/navbar.css';
 
 
 function AppRouter()
 {
     return (
-        <Router>
+      <Router>
         {/*TODO: Add Navbar*/}
-        <hr />
+        <div>
+        <div class="container">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <Link class="navbar-brand" to="/finances">Financial Area</Link>
+            <Link class="navbar-brand" to="/sales">Sales</Link>
+            <Link class="navbar-brand" to="/purchases">Purchases</Link>
+          </nav>
+        </div>
+          <hr />
 
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
-        <Switch>
-          <Route exact path="/">
-            <Home/>
-          </Route>
-          <Route path="/about">
-            <About/>
-          </Route>
-          <Route path="/dashboard">
-            <Users/>
-          </Route>
-        </Switch>
-    </Router>
+          <Switch>
+            <Route exact path="/finances">
+              <Home/>
+            </Route>
+            <Route path="/sales">
+              <About/>
+            </Route>
+            <Route path="/purchases">
+              <Users/>
+            </Route>
+          </Switch>
+        </div>
+      </Router>
     )
 }
 
