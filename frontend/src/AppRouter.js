@@ -5,25 +5,14 @@ import {
     Route,
     Link
   } from "react-router-dom";
+import Home from './Home.js';
 
 
 function AppRouter()
 {
     return (
         <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
-
+        {/*TODO: Add Navbar*/}
         <hr />
 
         {/*
@@ -35,18 +24,26 @@ function AppRouter()
         */}
         <Switch>
           <Route exact path="/">
+            <Home/>
           </Route>
           <Route path="/about">
+            <About/>
           </Route>
           <Route path="/dashboard">
+            <Users/>
           </Route>
         </Switch>
-      </div>
     </Router>
     )
 }
 
+function About() {
+  return <h2>About</h2>;
+}
 
+function Users() {
+  return <h2>Users</h2>;
+}
 
 
 
