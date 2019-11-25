@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -16,26 +16,30 @@ function AppRouter()
       <Router>
         {/*TODO: Add Navbar*/}
         <div>
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <Link class="navbar-brand" to="/finances">Financial Area</Link>
-            <Link class="navbar-brand" to="/sales">Sales</Link>
-            <Link class="navbar-brand" to="/purchases">Purchases</Link>
-          </nav>
+          <div className="row">
+            <div className="col-sm-4 d-flex justify-content-center nav-item">
+              <Link className="navbar-brand" to="/finances"><strong class="link">Financial Area</strong></Link>
+            </div>
+            <div className="col-sm-4 d-flex justify-content-center nav-item">
+              <Link className="navbar-brand" to="/sales"><strong class="link">Sales</strong></Link>
+            </div>
+            <div className="col-sm-4 d-flex justify-content-center nav-item">
+              <Link className="navbar-brand" to="/purchases"><strong class="link">Purchases</strong></Link>
+            </div>
+          </div>
         </div>
-          <hr />
-
-          <Switch>
-            <Route exact path="/finances">
-              <Home/>
-            </Route>
-            <Route path="/sales">
-              <Sales/>
-            </Route>
-            <Route path="/purchases">
-              <Purchases/>
-            </Route>
-          </Switch>
-      </Router>
+        <Switch>
+          <Route exact path="/finances">
+            <Home/>
+          </Route>
+          <Route path="/sales">
+            <Sales/>
+          </Route>
+          <Route path="/purchases">
+            <Purchases/>
+          </Route>
+        </Switch>
+    </Router>
     )
 }
 

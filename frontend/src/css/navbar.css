@@ -1,0 +1,18 @@
+.nav-item {
+    background-color: #F7FAFC;
+    border-left: 1px solid #588DA3;
+    border-bottom: 1px solid #588DA3;
+}
+
+strong.link {
+    text-decoration: none;
+    color: #588DA3;
+}
+
+.nav-item:hover strong.link {
+    color: white !important;
+}
+
+.nav-item:hover {
+    background-color: #588DA3;
+}

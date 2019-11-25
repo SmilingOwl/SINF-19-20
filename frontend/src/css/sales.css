@@ -1,0 +1,14 @@
+.table-row {
+    background-color: #F7FAFC;
+}
+
+.table-header {
+    background-color: #588DA3;
+    color: #F7FAFC;
+}
+
+.section-title {
+    color: #588DA3;
+    font-size: 22px;
+    margin-top: 2em;
+}
