@@ -2,6 +2,8 @@
     background-color: #F7FAFC;
     border-left: 1px solid #588DA3;
     border-bottom: 1px solid #588DA3;
+    padding-top: 0.9em;
+    padding-bottom: 0.9em;
 }
 
 strong.link {
@@ -15,4 +17,6 @@ strong.link {
 
 .nav-item:hover {
     background-color: #588DA3;
+    cursor: pointer;
+    text-decoration: none;
 }

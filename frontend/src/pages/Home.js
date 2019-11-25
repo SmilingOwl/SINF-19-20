@@ -1,12 +1,28 @@
 import React, { Component } from 'react';
 
-class Home extends Component
+class Overview extends Component
 {
-    render(){
-        return(
-        <h1>dasgEtwçakº</h1> 
-      );
-    }
-    }
+  constructor(props) {
+    super(props);
+    this.state = { companyInfo: "" };
+  }
+
+  componentWillMount() {
+    this.fetchInfo();
+  }
+
+  fetchInfo() {
+    fetch("http://localhost:9000/company_info")
+      .then(res => res.json())
+      .then(res => this.setState({ companyInfo: res }))
+      .catch(err => err);
+  }
+
+  render(){
+    return(
+      <h1>Company ID: { this.state.companyInfo.CompanyID }</h1> 
+    );
+  }
+}
   
-  export default Home;
+export default Overview;

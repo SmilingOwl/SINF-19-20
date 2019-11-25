@@ -17,20 +17,23 @@ function AppRouter()
         {/*TODO: Add Navbar*/}
         <div>
           <div className="row">
-            <div className="col-sm-4 d-flex justify-content-center nav-item">
-              <Link className="navbar-brand" to="/finances"><strong class="link">Financial Area</strong></Link>
-            </div>
-            <div className="col-sm-4 d-flex justify-content-center nav-item">
-              <Link className="navbar-brand" to="/sales"><strong class="link">Sales</strong></Link>
-            </div>
-            <div className="col-sm-4 d-flex justify-content-center nav-item">
-              <Link className="navbar-brand" to="/purchases"><strong class="link">Purchases</strong></Link>
-            </div>
+              <Link className="col-sm-4 d-flex justify-content-center nav-item finances_navbar" to="/finances">
+                <strong class="link">Financial Area</strong>
+              </Link>
+              <Link className="col-sm-4 d-flex justify-content-center nav-item sales_navbar" to="/sales">
+                <strong class="link">Sales</strong>
+              </Link>
+              <Link className="col-sm-4 d-flex justify-content-center nav-item purchases_navbar" to="/purchases">
+                <strong class="link">Purchases</strong>
+              </Link>
           </div>
         </div>
         <Switch>
-          <Route exact path="/finances">
-            <Home/>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/finances">
+            <Purchases/>
           </Route>
           <Route path="/sales">
             <Sales/>
