@@ -5,7 +5,7 @@ import {
     Route,
     Link
   } from "react-router-dom";
-import Home from './Home.js';
+import Home from './pages/Home.js';
 import './css/navbar.css';
 
 
@@ -47,9 +47,6 @@ function About() {
 function Users() {
   return <h2>Users</h2>;
 }
-
-
-
 
 
 export default AppRouter;
