@@ -6,6 +6,7 @@ import {
     Link
   } from "react-router-dom";
 import Home from './pages/Home.js';
+import Sales from './pages/Sales.js';
 import './css/navbar.css';
 
 
@@ -15,7 +16,6 @@ function AppRouter()
       <Router>
         {/*TODO: Add Navbar*/}
         <div>
-        <div class="container">
           <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <Link class="navbar-brand" to="/finances">Financial Area</Link>
             <Link class="navbar-brand" to="/sales">Sales</Link>
@@ -29,23 +29,18 @@ function AppRouter()
               <Home/>
             </Route>
             <Route path="/sales">
-              <About/>
+              <Sales/>
             </Route>
             <Route path="/purchases">
-              <Users/>
+              <Purchases/>
             </Route>
           </Switch>
-        </div>
       </Router>
     )
 }
 
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
+function Purchases() {
+  return <h2>Purchases</h2>;
 }
 
 
