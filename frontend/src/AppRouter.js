@@ -5,8 +5,8 @@ import {
     Route,
     Link
   } from "react-router-dom";
-import Home from './pages/Home.js';
 import './css/navbar.css';
+import FinancialArea from './pages/FinancialArea.js';
 
 
 function AppRouter()
@@ -15,18 +15,15 @@ function AppRouter()
       <Router>
         {/*TODO: Add Navbar*/}
         <div>
-        <div class="container">
           <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <Link class="navbar-brand" to="/finances">Financial Area</Link>
             <Link class="navbar-brand" to="/sales">Sales</Link>
             <Link class="navbar-brand" to="/purchases">Purchases</Link>
           </nav>
         </div>
-          <hr />
-
           <Switch>
             <Route exact path="/finances">
-              <Home/>
+              <FinancialArea/>
             </Route>
             <Route path="/sales">
               <About/>
@@ -35,7 +32,6 @@ function AppRouter()
               <Users/>
             </Route>
           </Switch>
-        </div>
       </Router>
     )
 }
