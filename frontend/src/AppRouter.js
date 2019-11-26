@@ -34,7 +34,7 @@ function AppRouter()
             <Home />
           </Route>
           <Route path="/finances">
-            <Purchases/>
+            <FinancialArea/>
           </Route>
           <Route path="/sales">
             <Sales/>
