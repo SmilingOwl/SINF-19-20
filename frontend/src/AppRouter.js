@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
   } from "react-router-dom";
+import Home from './pages/Home.js';
+import Sales from './pages/Sales.js';
 import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
 
@@ -15,33 +17,38 @@ function AppRouter()
       <Router>
         {/*TODO: Add Navbar*/}
         <div>
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <Link class="navbar-brand" to="/finances">Financial Area</Link>
-            <Link class="navbar-brand" to="/sales">Sales</Link>
-            <Link class="navbar-brand" to="/purchases">Purchases</Link>
-          </nav>
+          <div className="row">
+              <Link className="col-sm-4 d-flex justify-content-center nav-item finances_navbar" to="/finances">
+                <strong class="link">Financial Area</strong>
+              </Link>
+              <Link className="col-sm-4 d-flex justify-content-center nav-item sales_navbar" to="/sales">
+                <strong class="link">Sales</strong>
+              </Link>
+              <Link className="col-sm-4 d-flex justify-content-center nav-item purchases_navbar" to="/purchases">
+                <strong class="link">Purchases</strong>
+              </Link>
+          </div>
         </div>
-          <Switch>
-            <Route exact path="/finances">
-              <FinancialArea/>
-            </Route>
-            <Route path="/sales">
-              <About/>
-            </Route>
-            <Route path="/purchases">
-              <Users/>
-            </Route>
-          </Switch>
-      </Router>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/finances">
+            <Purchases/>
+          </Route>
+          <Route path="/sales">
+            <Sales/>
+          </Route>
+          <Route path="/purchases">
+            <Purchases/>
+          </Route>
+        </Switch>
+    </Router>
     )
 }
 
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
+function Purchases() {
+  return <h2>Purchases</h2>;
 }
 
 
