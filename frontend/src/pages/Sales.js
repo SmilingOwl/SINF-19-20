@@ -5,17 +5,28 @@ class Sales extends Component
 {
   constructor(props) {
     super(props);
-    this.state = { customers: "" };
+    this.state = {
+      customers: "",
+      products: "",
+    };
   }
 
   UNSAFE_componentWillMount() {
     this.fetchCustomers();
+    this.fetchProducts();
   }
 
   fetchCustomers() {
     fetch("http://localhost:9000/customers")
       .then(res => res.json())
       .then(res => this.setState({ customers: res }))
+      .catch(err => err);
+  }
+
+  fetchProducts() {
+    fetch("http://localhost:9000/products")
+      .then(res => res.json())
+      .then(res => this.setState({ products: res }))
       .catch(err => err);
   }
 
@@ -32,6 +43,22 @@ class Sales extends Component
       );
     }
     return customersTable;
+  }
+
+  fillProductsTable() {
+    let productsTable = [];
+    for (let i = 0; i < this.state.products.length; i++) {
+      productsTable.push(
+        <tr className="table-row" key={this.state.products[i].ProductCode}>
+          <th scope="row">{i+1}</th>
+          <td>{this.state.products[i].ProductDescription}</td>
+          <td>Units Sold</td>
+          <td>Price per Unit {'\u20AC'}</td>
+          <td>Total Earned {'\u20AC'}</td>
+        </tr>
+      );
+    }
+    return productsTable;
   }
 
   render(){
@@ -102,13 +129,7 @@ class Sales extends Component
                 </tr>
               </thead>
               <tbody>
-                <tr className="table-row">
-                  <th scope="row">1</th>
-                  <td>Lenços de Papel folha dupla</td>
-                  <td>120000</td>
-                  <td>3 {'\u20AC'} </td>
-                  <td>360000 {'\u20AC'}</td>
-                </tr>
+                {this.fillProductsTable()}
               </tbody>
             </table>
           </div>
@@ -142,6 +163,6 @@ class Sales extends Component
         </div>
       );
     }
-    }
+}
   
-  export default Sales;
+export default Sales;
