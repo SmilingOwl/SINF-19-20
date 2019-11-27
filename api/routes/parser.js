@@ -77,9 +77,4 @@ router.get('/sales_info', function(req, res, next) {
     res.send(sales);
 });
 
-router.get('/products', function(req, res, next) {
-    let json = JSON.parse(req.app.get('json'));
-    res.send(json.AuditFile.MasterFiles.Product);
-});
-
 module.exports = router;

@@ -28,7 +28,7 @@ class Sales extends Component
 
   fillCustomersTable() {
     let customersTable = [];
-    for (let i = 0; i < this.state.customers.length; i++) {
+    for (let i = 0; i < this.state.customers.length && i < 10; i++) {
       customersTable.push(
         <tr className="table-row" key={this.state.customers[i].CustomerID}>
           <th scope="row">{i+1}</th>
@@ -44,7 +44,7 @@ class Sales extends Component
 
   fillProductsTable() {
     let productsTable = [];
-    for (let i = 0; i < this.state.products.length; i++) {
+    for (let i = 0; i < this.state.products.length && i < 10; i++) {
       productsTable.push(
         <tr className="table-row" key={this.state.products[i].ProductCode}>
           <th scope="row">{i+1}</th>
