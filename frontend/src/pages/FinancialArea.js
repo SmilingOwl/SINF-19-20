@@ -6,7 +6,7 @@ class FinancialArea extends Component
     render(){
         return(
         <div>
-          <div className="row topic">
+          <div className="row mtop">
             <div className="col-lg-2"/>
               Profit / Sales
             <div className="col-lg-2"/>
@@ -29,7 +29,7 @@ class FinancialArea extends Component
               
               <div className="row">
                 <div className="col-lg-8">
-                  Cost
+                  Cost of Goods Sold
                 </div>
                 <div className="col-lg-4 price">
                   Price
@@ -79,8 +79,8 @@ class FinancialArea extends Component
               </div>
             </div>
 
-          {/*espaco-final}*/}
-          <div className="col-lg-2"/>
+            {/*espaco-final}*/}
+            <div className="col-lg-2"/>
           </div>
 
           

@@ -19,13 +19,13 @@ function AppRouter()
         <div>
           <div className="row">
               <Link className="col-sm-4 d-flex justify-content-center nav-item finances_navbar" to="/finances">
-                <strong class="link">Financial Area</strong>
+                <strong className="link">Financial Area</strong>
               </Link>
               <Link className="col-sm-4 d-flex justify-content-center nav-item sales_navbar" to="/sales">
-                <strong class="link">Sales</strong>
+                <strong className="link">Sales</strong>
               </Link>
               <Link className="col-sm-4 d-flex justify-content-center nav-item purchases_navbar" to="/purchases">
-                <strong class="link">Purchases</strong>
+                <strong className="link">Purchases</strong>
               </Link>
           </div>
         </div>
