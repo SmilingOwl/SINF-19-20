@@ -32,7 +32,7 @@ class Sales extends Component
     for (let i = 0; i < this.state.customers.length && i < 10; i++) {
       customersTable.push(
         <tr className="table-row" key={this.state.customers[i].CustomerID}>
-          <th scope="row">{i+1}</th>
+          <th scope="row" className="centered">{i+1}</th>
           <td>{this.state.customers[i].CompanyName}</td>
           <td>{this.state.customers[i].product}</td>
           <td className="centered">{this.state.customers[i].quantityBought}</td>
@@ -48,7 +48,7 @@ class Sales extends Component
     for (let i = 0; i < this.state.products.length && i < 10; i++) {
       productsTable.push(
         <tr className="table-row" key={this.state.products[i].ProductCode}>
-          <th scope="row">{i+1}</th>
+          <th scope="row" className="centered">{i+1}</th>
           <td>{this.state.products[i].ProductDescription}</td>
           <td className="centered">{this.state.products[i].quantity}</td>
           <td className="centered">{(this.state.products[i].totalEarned / this.state.products[i].quantity).toFixed(2)} {'\u20AC'}</td>
@@ -116,7 +116,7 @@ class Sales extends Component
             <table className="table">
               <thead>
                 <tr className="table-header">
-                  <th scope="col">Top</th>
+                  <th scope="col" className="centered">Top</th>
                   <th scope="col">Product</th>
                   <th scope="col" className="centered">Units Sold</th>
                   <th scope="col" className="centered">Price per Unit</th>
@@ -143,7 +143,7 @@ class Sales extends Component
             <table className="table">
               <thead>
                 <tr className="table-header">
-                  <th scope="col">Top</th>
+                  <th scope="col" className="centered">Top</th>
                   <th scope="col">Consumer</th>
                   <th scope="col">Most Bought Product</th>
                   <th scope="col" className="centered">Units Bought</th>
