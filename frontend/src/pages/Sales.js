@@ -12,21 +12,17 @@ class Sales extends Component
   }
 
   UNSAFE_componentWillMount() {
-    this.fetchCustomers();
-    this.fetchProducts();
+    this.fetchSalesInfo();
   }
 
-  fetchCustomers() {
-    fetch("http://localhost:9000/customers")
+  fetchSalesInfo() {
+    fetch("http://localhost:9000/sales_info")
       .then(res => res.json())
-      .then(res => this.setState({ customers: res }))
-      .catch(err => err);
-  }
-
-  fetchProducts() {
-    fetch("http://localhost:9000/products")
-      .then(res => res.json())
-      .then(res => this.setState({ products: res }))
+      .then(res => {
+        this.setState({ customers: res.customers });
+        this.setState({ products: res.products });
+        console.log(this.state);
+      })
       .catch(err => err);
   }
 
@@ -37,8 +33,9 @@ class Sales extends Component
         <tr className="table-row" key={this.state.customers[i].CustomerID}>
           <th scope="row">{i+1}</th>
           <td>{this.state.customers[i].CompanyName}</td>
-          <td>Product</td>
-          <td>Money Spent {'\u20AC'}</td>
+          <td>{this.state.customers[i].product}</td>
+          <td className="centered">{this.state.customers[i].quantityBought}</td>
+          <td className="centered">{this.state.customers[i].totalSpent.toFixed(2)} {'\u20AC'}</td>
         </tr>
       );
     }
@@ -52,9 +49,9 @@ class Sales extends Component
         <tr className="table-row" key={this.state.products[i].ProductCode}>
           <th scope="row">{i+1}</th>
           <td>{this.state.products[i].ProductDescription}</td>
-          <td>Units Sold</td>
-          <td>Price per Unit {'\u20AC'}</td>
-          <td>Total Earned {'\u20AC'}</td>
+          <td className="centered">{this.state.products[i].quantity}</td>
+          <td className="centered">{(this.state.products[i].totalEarned / this.state.products[i].quantity).toFixed(2)} {'\u20AC'}</td>
+          <td className="centered">{this.state.products[i].totalEarned.toFixed(2)} {'\u20AC'}</td>
         </tr>
       );
     }
@@ -123,9 +120,9 @@ class Sales extends Component
                 <tr className="table-header">
                   <th scope="col">Top</th>
                   <th scope="col">Product</th>
-                  <th scope="col">Units Sold</th>
-                  <th scope="col">Price per Unit</th>
-                  <th scope="col">Total Earned</th>
+                  <th scope="col" className="centered">Units Sold</th>
+                  <th scope="col" className="centered">Price per Unit</th>
+                  <th scope="col" className="centered">Total Earned</th>
                 </tr>
               </thead>
               <tbody>
@@ -150,7 +147,8 @@ class Sales extends Component
                     <th scope="col">Top</th>
                     <th scope="col">Consumer</th>
                     <th scope="col">Most Bought Product</th>
-                    <th scope="col">Total Spent</th>
+                    <th scope="col" className="centered">Units Bought</th>
+                    <th scope="col" className="centered">Total Spent</th>
                   </tr>
                 </thead>
                 <tbody>
