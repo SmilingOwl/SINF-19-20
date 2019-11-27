@@ -73,6 +73,7 @@ router.get('/sales_info', function(req, res, next) {
     sales = {
         customers: customers,
         products: products,
+        accounts_receivable: json.AuditFile.SourceDocuments.SalesInvoices.TotalCredit,
     }
     res.send(sales);
 });

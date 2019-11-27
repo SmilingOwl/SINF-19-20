@@ -8,6 +8,7 @@ class Sales extends Component
     this.state = {
       customers: "",
       products: "",
+      accounts_receivable: 0,
     };
   }
 
@@ -21,7 +22,7 @@ class Sales extends Component
       .then(res => {
         this.setState({ customers: res.customers });
         this.setState({ products: res.products });
-        console.log(this.state);
+        this.setState({ accounts_receivable: res.accounts_receivable });
       })
       .catch(err => err);
   }
@@ -63,47 +64,44 @@ class Sales extends Component
       <div>
         <div className="row mtop">
           <div className="col-md-2"/> 
-            <div className="col-md-3 smallBox">
-              <div className="row">
-                <div className="col-md-8">
-                  Sales
-                </div>
-                <div className="col-md-4 price">
-                  Price
-                </div>
-              </div>
-              
-              <div className="row">
-                <div className="col-md-8">
-                  Cost of Goods Sold
-                </div>
-                <div className="col-md-4 price">
-                  Price
-                </div>
-              </div>
-              <hr/>
-              <div className="row">
-                <div className="col-md-8 value">
-                  Gross Profit
-                </div>
-                <div className="col-md-4 price">
-                  Price
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-2"/>
-             <div className="col-md-3 smallBox align-items-center d-flex">              
+          <div className="col-md-3 smallBox">
+            <div className="row">
               <div className="col-md-8">
-                <strong>
-                  Accounts Receivable
-                </strong>
+                Sales
+              </div>
+              <div className="col-md-4 price">
+                Price
+              </div>
+            </div>  
+            <div className="row">
+              <div className="col-md-8">
+                Cost of Goods Sold
               </div>
               <div className="col-md-4 price">
                 Price
               </div>
             </div>
+            <hr/>
+            <div className="row">
+              <div className="col-md-8 value">
+                Gross Profit
+              </div>
+              <div className="col-md-4 price">
+                Price
+              </div>
+            </div>
+          </div>
           <div className="col-md-2"/>
+          <div className="col-md-3 smallBox align-items-center d-flex">              
+            <div className="col-md-7">
+              <strong>
+                Accounts Receivable
+              </strong>
+            </div>
+            <div className="col-md-5 price">
+              {this.state.accounts_receivable} {'\u20AC'}
+            </div>
+          </div>
         </div>
 
         <div className="row">
@@ -132,6 +130,7 @@ class Sales extends Component
           </div>
           <div className="col-md-1"/>
         </div>
+
         <div className="row">
           <div className="col-md-1"/>
           <div className="col-md-10">
@@ -140,25 +139,24 @@ class Sales extends Component
         </div>
         <div className="row">
           <div className="col-md-1"/>
-            <div className="col-md-10">
-              <table className="table">
-                <thead>
-                  <tr className="table-header">
-                    <th scope="col">Top</th>
-                    <th scope="col">Consumer</th>
-                    <th scope="col">Most Bought Product</th>
-                    <th scope="col" className="centered">Units Bought</th>
-                    <th scope="col" className="centered">Total Spent</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.fillCustomersTable()}
-                </tbody>
-              </table>
-            </div>
-            <div className="col-md-1"/>
+          <div className="col-md-10">
+            <table className="table">
+              <thead>
+                <tr className="table-header">
+                  <th scope="col">Top</th>
+                  <th scope="col">Consumer</th>
+                  <th scope="col">Most Bought Product</th>
+                  <th scope="col" className="centered">Units Bought</th>
+                  <th scope="col" className="centered">Total Spent</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.fillCustomersTable()}
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
       );
     }
 }
