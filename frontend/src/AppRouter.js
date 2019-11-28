@@ -9,6 +9,7 @@ import Home from './pages/Home.js';
 import Sales from './pages/Sales.js';
 import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
+import Purchases from './pages/Purchases.js';
 
 
 function AppRouter()
@@ -46,10 +47,5 @@ function AppRouter()
     </Router>
     )
 }
-
-function Purchases() {
-  return <h2>Purchases</h2>;
-}
-
 
 export default AppRouter;
