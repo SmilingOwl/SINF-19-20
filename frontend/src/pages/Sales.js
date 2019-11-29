@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import '../css/sales.css';
 
 class Sales extends Component
@@ -49,7 +50,7 @@ class Sales extends Component
       productsTable.push(
         <tr className="table-row" key={this.state.products[i].ProductCode}>
           <th scope="row" className="centered">{i+1}</th>
-          <td>{this.state.products[i].ProductDescription}</td>
+          <td><Link to={{pathname: `/products/${this.state.products[i].ProductCode}` }}>{this.state.products[i].ProductDescription}</Link></td>
           <td className="centered">{this.state.products[i].quantity}</td>
           <td className="centered">{(this.state.products[i].totalEarned / this.state.products[i].quantity).toFixed(2)} {'\u20AC'}</td>
           <td className="centered">{this.state.products[i].totalEarned.toFixed(2)} {'\u20AC'}</td>
@@ -57,6 +58,10 @@ class Sales extends Component
       );
     }
     return productsTable;
+  }
+
+  handleClickProduct() {
+
   }
 
   render(){
