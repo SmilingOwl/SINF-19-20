@@ -10,6 +10,7 @@ import Sales from './pages/Sales.js';
 import Supplier from './pages/Supplier.js';
 import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
+import Purchases from './pages/Purchases.js';
 
 
 function AppRouter()
@@ -49,10 +50,5 @@ function AppRouter()
     </Router>
     )
 }
-
-function Purchases() {
-  return <h2>Purchases</h2>;
-}
-
 
 export default AppRouter;
