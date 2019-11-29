@@ -1,60 +1,60 @@
-import React, { useState } from 'react';
-import { useParams } from "react-router-dom";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 //import '../css/product.css';
 
-function Product() {
+class Product extends Component
+{
+  constructor(props) {
+    super(props);
+    this.state = {
+        product: ""
+    };
+    this.id = this.props.match.params.id;
+    console.log(this.id);
+  }
 
-    let product;
-    let desc = "";
-    let code = "";
-    let n_code = "";
-    let { id } = useParams();
-    console.log(id);
-    console.log(useParams());
+  componentWillMount() {
+    this.fetchProduct();
+  }
 
-   
-    fetch("http://localhost:9000/products/" + id)
+  fetchProduct() {
+    fetch("http://localhost:9000/products/" + this.id)
         .then(res => res.json())
-        .then(res => {
-            product = res.product;
-            desc = product.ProductDescription;
-            code = product.ProductCode;
-            n_code = product.ProductNumberCode;
+        .then(res => {        
+            this.setState({ product: res });
         })
         .catch(err => err);
+  }
 
-  
+  render(){
     return(
         <div>
         <div className="row">
           <div className="col-md-2"/>
           <div className="col-md-10">
-            <h3 className="section-title">Product { id }</h3>
+            <h3 className="section-title">Product { this.id }</h3>
           </div>
         </div>
         <div className="row">
           <div className="col-md-2"/> 
           <div className="col-md-8 smallBox">
             <div className="row">
-              <div className="col-md-6">
-                <strong className="field-name">Name: </strong> { desc }
+              <div className="col-md-5">
+                <strong className="field-name">Name: </strong> { this.state.product.ProductDescription }
               </div>
-              <div className="col-md-2">
-                <strong className="field-name">Product Code: </strong> { code }
+              <div className="col-md-3">
+                <strong className="field-name">Code: </strong> { this.state.product.ProductCode }
               </div>
               <div className="col-md-4 align-right">
-                <strong className="field-name">Product Numeric Code: </strong> { n_code }
+                <strong className="field-name">Numeric Code: </strong> { this.state.product.ProductNumberCode }
               </div>
             </div>
             <hr></hr>
           </div>
         </div>
       </div>
-      );
+    );
+  }
 }
 
-function showInfo() {
-
-}
-
-export default Product;
+export default withRouter(Product);
