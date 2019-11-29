@@ -83,4 +83,11 @@ router.get('/suppliers', function() {
     res.send(json.AuditFile.MasterFiles.Supplier);
 });
 
+router.get('/products/:productId', function(req, res, next) {
+    let json = JSON.parse(req.app.get('json'));
+    let product = json.AuditFile.MasterFiles.Product.filter(p => p.ProductCode == req.params.productId);
+    console.log(product[0]);
+    res.send(product[0]);
+});
+
 module.exports = router;
