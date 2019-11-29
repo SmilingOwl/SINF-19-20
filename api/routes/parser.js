@@ -68,8 +68,8 @@ router.get('/sales_info', function(req, res, next) {
             products[i].totalEarned = 0;
         }
     }
-    customers.sort((a, b) => (a.totalSpent < b.totalSpent) ? 1 : -1);
-    products.sort((a,b) => (a.totalEarned < b.totalEarned) ? 1 : -1);
+    customers.sort((a, b) => (a.quantityBought < b.quantityBought) ? 1 : -1);
+    products.sort((a,b) => (a.quantity < b.quantity) ? 1 : -1);
     sales = {
         customers: customers,
         products: products,

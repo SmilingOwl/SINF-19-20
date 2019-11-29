@@ -8,6 +8,7 @@ import {
 import Home from './pages/Home.js';
 import Sales from './pages/Sales.js';
 import Supplier from './pages/Supplier.js';
+import Product from './pages/Product.js';
 import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
 import Purchases from './pages/Purchases.js';
@@ -46,6 +47,7 @@ function AppRouter()
           <Route path="/suppliers">
             <Supplier/>
           </Route>
+          <Route path="/products/:id" children={<Product/>} />
         </Switch>
     </Router>
     )
