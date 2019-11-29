@@ -78,4 +78,9 @@ router.get('/sales_info', function(req, res, next) {
     res.send(sales);
 });
 
+router.get('/suppliers', function() {
+    let json = JSON.parse(req.app.get('json'));
+    res.send(json.AuditFile.MasterFiles.Supplier);
+});
+
 module.exports = router;

@@ -7,6 +7,7 @@ import {
   } from "react-router-dom";
 import Home from './pages/Home.js';
 import Sales from './pages/Sales.js';
+import Supplier from './pages/Supplier.js';
 import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
 
@@ -15,7 +16,6 @@ function AppRouter()
 {
     return (
       <Router>
-        {/*TODO: Add Navbar*/}
         <div>
           <div className="row">
               <Link className="col-sm-4 d-flex justify-content-center nav-item finances_navbar" to="/finances">
@@ -31,7 +31,7 @@ function AppRouter()
         </div>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Home/>
           </Route>
           <Route path="/finances">
             <FinancialArea/>
@@ -41,6 +41,9 @@ function AppRouter()
           </Route>
           <Route path="/purchases">
             <Purchases/>
+          </Route>
+          <Route path="/suppliers">
+            <Supplier/>
           </Route>
         </Switch>
     </Router>
