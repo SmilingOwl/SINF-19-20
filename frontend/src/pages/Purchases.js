@@ -47,7 +47,7 @@ class Purchases extends Component
                   <thead>
                     <tr className="table-header">
                       <th scope="col" className="centered">Top</th>
-                      <th scope="col">Product</th>
+                      <th scope="col" className="centered">Product</th>
                       <th scope="col" className="centered">Units Sold</th>
                       <th scope="col" className="centered">Price per Unit</th>
                       <th scope="col" className="centered">Total Earned</th>
