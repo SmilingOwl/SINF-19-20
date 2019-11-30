@@ -59,13 +59,17 @@ router.get('/balance-sheet', function(req, res, next) {
         description: 'Serviços Externos',
         type: 'liability'
     }, {
+        index: 64,
+        description: 'Depreciação e Amortização',
+        type: 'liability'
+    }, {
         index: 71,
         description: 'Vendas',
         type: 'asset'
     }, {
         index: 72,
         description: 'Prestação de Serviços',
-        type: 'liability'
+        type: 'asset'
     }];
     for(let i = 0; i < balance_sheet.length; i++) {
         balance_sheet[i].credit = 0;

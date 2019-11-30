@@ -99,29 +99,46 @@ class FinancialArea extends Component {
   getSales() {
     let sales = this.state.balance_sheet.filter(p => p.index === 71);
     if(sales.length === 0) return 0;
-    return sales[0].credit + sales[0].debit;
+    return sales[0].credit - sales[0].debit;
   }
 
   getCOGS() {
     let cogs = this.state.balance_sheet.filter(p => p.index === 61);
     if(cogs.length === 0) return 0;
-    return cogs[0].credit + cogs[0].debit;
+    return cogs[0].debit - cogs[0].credit;
+  }
+
+  getExpenses() {
+    let earningsServices = this.state.balance_sheet.filter(p => p.index === 72);
+    let expensesServices = this.state.balance_sheet.filter(p => p.index === 62);
+    let expensesPersonnel = this.state.balance_sheet.filter(p => p.index === 63);
+    if(earningsServices.length === 0) earningsServices = 0;
+    else earningsServices = earningsServices[0].debit - earningsServices[0].credit;
+    if(expensesServices.length === 0) expensesServices = 0;
+    else expensesServices = expensesServices[0].credit - expensesServices[0].debit;
+    if(expensesPersonnel.length === 0) expensesPersonnel = 0;
+    else expensesPersonnel = expensesPersonnel[0].credit - expensesPersonnel[0].debit;
+    
+    return earningsServices - expensesServices - expensesPersonnel;
+  }
+
+  getDepreciationAmortization() {
+    let depreciationAmortization = this.state.balance_sheet.filter(p => p.index === 64);
+    if(depreciationAmortization.length === 0) return 0;
+    return depreciationAmortization[0].credit - depreciationAmortization[0].debit;
   }
 
   render() {
     return (
       <div>
-        <div className="row mtop">
+        <div className="row topic mtop">
           <div className="col-lg-2" />
-          Profit / Sales
-            <div className="col-lg-2" />
+            Profit / Sales
+          <div className="col-lg-2" />
         </div>
 
         <div className="row">
-          {/*espaco-inicial*/}
           <div className="col-lg-2" />
-
-          {/*Gross Profit table*/}
           <div className="col-lg-3 smallBox">
             <div className="row">
               <div className="col-lg-8">
@@ -159,10 +176,10 @@ class FinancialArea extends Component {
             <div className="row">
               <div className="col-lg-8">
                 Gross Profit
-                </div>
+              </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getSales() - this.getCOGS() } {'\u20AC'}
+              </div>
             </div>
 
             <div className="row">
@@ -170,17 +187,17 @@ class FinancialArea extends Component {
                 Expenses
                 </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getExpenses() } {'\u20AC'}
+              </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-lg-8 value">
                 EBITDA
-                  </div>
+              </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getSales() - this.getCOGS() - this.getExpenses() } {'\u20AC'}
+              </div>
             </div>
           </div>
 
@@ -198,37 +215,30 @@ class FinancialArea extends Component {
             <div className="row">
               <div className="col-lg-8">
                 EBITDA
-                </div>
+              </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getSales() - this.getCOGS() - this.getExpenses() } {'\u20AC'}
+              </div>
             </div>
 
             <div className="row">
               <div className="col-lg-8">
-                Depreciation
-                </div>
+                Depreciation and Amortization
+              </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getDepreciationAmortization() } {'\u20AC'}
+              </div>
             </div>
+            <div className="row"></div>
 
-            <div className="row">
-              <div className="col-lg-8">
-                Amortization
-                  </div>
-              <div className="col-lg-4 price">
-                Price
-                </div>
-            </div>
             <hr />
             <div className="row">
               <div className="col-lg-8 value">
                 EBIT
-                  </div>
+              </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getSales() - this.getCOGS() - this.getExpenses() - this.getDepreciationAmortization() } {'\u20AC'}
+              </div>
             </div>
           </div>
 
@@ -239,41 +249,40 @@ class FinancialArea extends Component {
             <div className="row">
               <div className="col-lg-8">
                 EBIT
-                </div>
+              </div>
               <div className="col-lg-4 price">
-                Price
-                </div>
+                { this.getSales() - this.getCOGS() - this.getExpenses() - this.getDepreciationAmortization() } {'\u20AC'}
+              </div>
             </div>
 
             <div className="row">
               <div className="col-lg-8">
                 Interest
-                </div>
+              </div>
               <div className="col-lg-4 price">
                 Price
-                </div>
+              </div>
             </div>
 
             <div className="row">
               <div className="col-lg-8">
                 Taxes
-                  </div>
+              </div>
               <div className="col-lg-4 price">
                 Price
-                </div>
+              </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-lg-8 value">
                 Net income
-                  </div>
+              </div>
               <div className="col-lg-4 price">
                 Price
-                </div>
+              </div>
             </div>
           </div>
           <div className="col-lg-2" />
-
         </div>
 
         <div className="row topic">
@@ -283,7 +292,6 @@ class FinancialArea extends Component {
         </div>
 
         <div className="row">
-          {/*espaco-inicial*/}
           <div className="col-lg-2" />
 
           <div className="col-lg-4 bigBox">
@@ -296,9 +304,7 @@ class FinancialArea extends Component {
             { this.renderBalanceSheet('liability') }
           </div>
 
-          {/*espaco-final*/}
           <div className="col-lg-2" />
-
         </div>
 
         <div className="row">
@@ -340,7 +346,6 @@ class FinancialArea extends Component {
           <div className="col-lg-2" />
         </div>
 
-        {/*Equity*/}
         <div className="row mbottom">
           <div className="col-lg-2" />
 
