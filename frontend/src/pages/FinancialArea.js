@@ -6,8 +6,16 @@ class FinancialArea extends Component {
     super(props);
     this.state = {
       balance_sheet: [],
-      total_assets: 0,
-      total_liabilities: 0
+      total_assets: {
+        debit: 0,
+        credit: 0,
+        total: 0
+      },
+      total_liabilities: {
+        debit: 0,
+        credit: 0,
+        total: 0
+      }
     };
   }
 
@@ -24,28 +32,66 @@ class FinancialArea extends Component {
 
   renderBalanceSheet(type) {
     let elements = [];
-    let total = 0;
+    let totalDebit = 0;
+    let totalCredit = 0;
+    elements.push(
+      <div>
+      <div className="row">
+        <div className="col-sm-1">
+          <strong>ID</strong>
+        </div>
+        <div className="col-sm-5">
+          Description
+        </div>
+        <div className="col-sm-2 price">
+          Debit
+        </div>
+        <div className="col-sm-2 price">
+          Credit
+        </div>
+        <div className="col-sm-2 price">
+          Total
+        </div>
+      </div> <hr/>
+      </div>
+    );
     for(let i = 0; i < this.state.balance_sheet.length; i++) {
       let element = this.state.balance_sheet[i];
-      total += element.credit + element.debit;
       if(element.type == type && element.credit + element.debit > 0) {
+        totalDebit += element.debit;
+        totalCredit += element.credit;
+        let total = element.debit - element.credit;
         elements.push(
           <div className="row" key={element.index}>
-            <div className="col-sm-1">
+            <div className="col-sm-1 small-text">
               <strong>{ element.index }</strong>
             </div>
-            <div className="col-sm-7">
+            <div className="col-sm-5 small-text">
               { element.description }
             </div>
-            <div className="col-sm-4 price">
-              { element.credit + element.debit } {'\u20AC'}
+            <div className="col-sm-2 price small-text">
+              { element.debit } {'\u20AC'}
+            </div>
+            <div className="col-sm-2 price small-text">
+              { element.credit } {'\u20AC'}
+            </div>
+            <div className="col-sm-2 price small-text">
+              { total >= 0 ? total : "(" + -total + ")" } {'\u20AC'}
             </div>
           </div>
         );
       }
     }
-    if(type == 'asset') this.state.total_assets = total;
-    else this.state.total_liabilities = total;
+    if(type == 'asset') {
+      this.state.total_assets.debit = totalDebit;
+      this.state.total_assets.credit = totalCredit;
+      this.state.total_assets.total = totalDebit - totalCredit;
+    }
+    else {
+      this.state.total_liabilities.debit = totalDebit;
+      this.state.total_liabilities.credit = totalCredit;
+      this.state.total_liabilities.total = totalDebit - totalCredit;
+    }
     return elements;
   }
 
@@ -56,7 +102,7 @@ class FinancialArea extends Component {
   }
 
   getCOGS() {
-    let cogs = this.state.balance_sheet.filter(p => p.index === 31);
+    let cogs = this.state.balance_sheet.filter(p => p.index === 61);
     if(cogs.length === 0) return 0;
     return cogs[0].credit + cogs[0].debit;
   }
@@ -262,8 +308,14 @@ class FinancialArea extends Component {
               <div className="col-lg-6">
                 <h5 className="value">Total assets</h5>
               </div>
-              <div className="col-lg-6 price">
-                { this.state.total_assets } {'\u20AC'}
+              <div className="col-lg-2 price small-text">
+                { this.state.total_assets.debit } {'\u20AC'}
+              </div>
+              <div className="col-lg-2 price small-text">
+                { this.state.total_assets.credit } {'\u20AC'}
+              </div>
+              <div className="col-lg-2 price small-text">
+                { this.state.total_assets.total > 0 ? this.state.total_assets.total : "(" + -this.state.total_assets.total + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
@@ -273,8 +325,14 @@ class FinancialArea extends Component {
               <div className="col-lg-6">
                 <h5 className="value">Total Liabilities</h5>
               </div>
-              <div className="col-lg-6 price">
-                { this.state.total_liabilities } {'\u20AC'}
+              <div className="col-lg-2 price small-text">
+                { this.state.total_liabilities.debit } {'\u20AC'}
+              </div>
+              <div className="col-lg-2 price small-text">
+                { this.state.total_liabilities.credit } {'\u20AC'}
+              </div>
+              <div className="col-lg-2 price small-text">
+                { this.state.total_liabilities.total > 0 ? this.state.total_liabilities.total : "(" + -this.state.total_liabilities.total + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
@@ -291,7 +349,9 @@ class FinancialArea extends Component {
                 <h5 className="value">Equity</h5>
               </div>
               <div className="col-lg-6 price">
-                { this.state.total_assets - this.state.total_liabilities } {'\u20AC'}
+                { this.state.total_assets.total + this.state.total_liabilities.total > 0 ?
+                  this.state.total_assets.total + this.state.total_liabilities.total :
+                  "(" + (-this.state.total_assets.total - this.state.total_liabilities.total) + ")" } {'\u20AC'}
               </div>
             </div>
           </div>

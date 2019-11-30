@@ -51,3 +51,7 @@
 .mbottom {
     margin-bottom: 2em;
 }
+
+.small-text {
+    font-size: 13px;
+}
