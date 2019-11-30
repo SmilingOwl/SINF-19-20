@@ -7,7 +7,7 @@ var cors = require("cors");
 var parserRouter = require('./routes/parser');
 var fs = require('fs');
 var parser = require('xml2json');
-var json = null;
+var request = require('request');
 
 var app = express();
 
@@ -45,11 +45,26 @@ if(process.argv.length === 2) {
 }
 
 fs.readFile(process.argv[2], 'utf8', function(err, contents) {
+  let json = null;
   if(err != null)
     console.log(err);
   else
     json = parser.toJson(contents);
     app.set('json', json);
+});
+
+request({
+    uri: 'https://identity.primaverabss.com/connect/token',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    method: "POST",
+    form: {
+      grant_type: 'client_credentials',
+      client_id: 'SNIF',
+      client_secret: '9de5d54c-74fd-4d96-b068-311e3273e4b6',
+      scope: 'application'
+    }
+  }, function(error, response, body) {
+    app.set('api_token', JSON.parse(body));
 });
 
 module.exports = app;

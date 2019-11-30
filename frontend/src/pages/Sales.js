@@ -10,6 +10,7 @@ class Sales extends Component
       customers: "",
       products: "",
       accounts_receivable: 0,
+      sales: 0,
     };
   }
 
@@ -24,6 +25,7 @@ class Sales extends Component
         this.setState({ customers: res.customers });
         this.setState({ products: res.products });
         this.setState({ accounts_receivable: res.accounts_receivable });
+        this.setState({ sales: res.sales });
       })
       .catch(err => err);
   }
@@ -75,7 +77,7 @@ class Sales extends Component
                 Sales
               </div>
               <div className="col-md-4 price">
-                Price
+                {this.state.sales} {'\u20AC'}
               </div>
             </div>  
             <div className="row">
