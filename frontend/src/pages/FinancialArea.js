@@ -61,6 +61,7 @@ class FinancialArea extends Component {
         totalDebit += element.debit;
         totalCredit += element.credit;
         let total = element.debit - element.credit;
+        if(type === 'liability') total = element.credit - element.debit;
         elements.push(
           <div className="row" key={element.index}>
             <div className="col-sm-1 small-text">
@@ -90,7 +91,7 @@ class FinancialArea extends Component {
     else {
       this.state.total_liabilities.debit = totalDebit;
       this.state.total_liabilities.credit = totalCredit;
-      this.state.total_liabilities.total = totalDebit - totalCredit;
+      this.state.total_liabilities.total = totalCredit - totalDebit;
     }
     return elements;
   }
@@ -349,9 +350,9 @@ class FinancialArea extends Component {
                 <h5 className="value">Equity</h5>
               </div>
               <div className="col-lg-6 price">
-                { this.state.total_assets.total + this.state.total_liabilities.total > 0 ?
-                  this.state.total_assets.total + this.state.total_liabilities.total :
-                  "(" + (-this.state.total_assets.total - this.state.total_liabilities.total) + ")" } {'\u20AC'}
+                { this.state.total_assets.total - this.state.total_liabilities.total > 0 ?
+                  this.state.total_assets.total - this.state.total_liabilities.total :
+                  "(" + (-this.state.total_assets.total + this.state.total_liabilities.total) + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
