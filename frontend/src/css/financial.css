@@ -44,3 +44,10 @@
     font-weight: bold;
 }
 
+.ptop {
+    padding-top: 2em;
+}
+
+.mbottom {
+    margin-bottom: 2em;
+}

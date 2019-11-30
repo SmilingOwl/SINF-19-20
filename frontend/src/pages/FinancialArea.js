@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../css/FinancialArea.css';
+import '../css/financial.css';
 
 class FinancialArea extends Component {
   constructor(props) {
@@ -257,7 +257,7 @@ class FinancialArea extends Component {
         <div className="row">
           <div className="col-lg-2" />
 
-          <div className="col-lg-4 extraSmallBox">
+          <div className="col-lg-4 extraSmallBox ptop">
             <div className="row">
               <div className="col-lg-6">
                 <h5 className="value">Total assets</h5>
@@ -268,7 +268,7 @@ class FinancialArea extends Component {
             </div>
           </div>
 
-          <div className="col-lg-4 extraSmallBox">
+          <div className="col-lg-4 extraSmallBox ptop">
             <div className="row">
               <div className="col-lg-6">
                 <h5 className="value">Total Liabilities</h5>
@@ -282,7 +282,7 @@ class FinancialArea extends Component {
         </div>
 
         {/*Equity*/}
-        <div className="row">
+        <div className="row mbottom">
           <div className="col-lg-2" />
 
           <div className="col-lg-8 extraSmallBox">
