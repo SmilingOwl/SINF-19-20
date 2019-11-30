@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
 var parserRouter = require('./routes/parser');
+var financesRouter = require('./routes/finances');
 var fs = require('fs');
 var parser = require('xml2json');
 var request = require('request');
@@ -22,7 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', parserRouter);
+app.use('/finances', financesRouter);
+app.use('/sales', parserRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

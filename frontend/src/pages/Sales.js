@@ -19,7 +19,7 @@ class Sales extends Component
   }
 
   fetchSalesInfo() {
-    fetch("http://localhost:9000/sales_info")
+    fetch("http://localhost:9000/sales/sales_info")
       .then(res => res.json())
       .then(res => {
         this.setState({ customers: res.customers });
@@ -77,7 +77,7 @@ class Sales extends Component
                 Sales
               </div>
               <div className="col-md-4 price">
-                {this.state.sales} {'\u20AC'}
+                {this.state.sales.toFixed(2)} {'\u20AC'}
               </div>
             </div>  
             <div className="row">

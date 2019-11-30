@@ -15,8 +15,9 @@ router.get('/sales_info', function(req, res, next) {
     let customer_invoice = [];
     let products = json.AuditFile.MasterFiles.Product;
     let product_info = [];
+    let totalSales = 0;
     for(let i = 0; i < invoices.length; i++) {
-
+        totalSales += parseFloat(invoices[i].DocumentTotals.GrossTotal);
         if(customer_invoice[invoices[i].CustomerID] == null) {
             customer_invoice[invoices[i].CustomerID] = {
                 totalSpent: parseFloat(invoices[i].DocumentTotals.GrossTotal),
@@ -75,8 +76,7 @@ router.get('/sales_info', function(req, res, next) {
         customers: customers,
         products: products,
         accounts_receivable: json.AuditFile.SourceDocuments.SalesInvoices.TotalCredit,
-        sales: parseFloat(json.AuditFile.SourceDocuments.SalesInvoices.TotalCredit)
-            + parseFloat(json.AuditFile.SourceDocuments.SalesInvoices.TotalDebit)
+        sales: totalSales
     }
     res.send(sales);
 });

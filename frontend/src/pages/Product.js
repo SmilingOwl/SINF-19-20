@@ -18,7 +18,7 @@ class Product extends Component
   }
 
   fetchProduct() {
-    fetch("http://localhost:9000/products/" + this.id)
+    fetch("http://localhost:9000/sales/products/" + this.id)
         .then(res => res.json())
         .then(res => {        
             this.setState({ product: res });

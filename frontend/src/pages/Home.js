@@ -13,7 +13,7 @@ class Home extends Component
   }
 
   fetchInfo() {
-    fetch("http://localhost:9000/company_info")
+    fetch("http://localhost:9000/sales/company_info")
       .then(res => res.json())
       .then(res => {this.setState({ companyInfo: res });})
       .catch(err => err);
