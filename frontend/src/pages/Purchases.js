@@ -24,7 +24,7 @@ class Purchases extends Component
               <div className="col-md-3 smallBox align-items-center d-flex">              
                 <div className="col-md-7">
                   <strong>
-                    Accounts Receivable
+                    Accounts Payable
                   </strong>
                 </div>
                 <div className="col-md-5 price">

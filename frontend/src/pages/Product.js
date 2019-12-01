@@ -7,7 +7,9 @@ class Product extends Component
   constructor(props) {
     super(props);
     this.state = {
-        product: ""
+        product: {
+          api: {}
+        }
     };
     this.id = this.props.match.params.id;
     console.log(this.id);
@@ -22,6 +24,7 @@ class Product extends Component
         .then(res => res.json())
         .then(res => {        
             this.setState({ product: res });
+            console.log(res);
         })
         .catch(err => err);
   }
@@ -40,16 +43,19 @@ class Product extends Component
           <div className="col-md-8 smallBox">
             <div className="row">
               <div className="col-md-5">
-                <strong className="field-name">Name: </strong> { this.state.product.ProductDescription }
+                <strong className="field-name">Name: </strong> { this.state.product.api.description }
               </div>
               <div className="col-md-3">
                 <strong className="field-name">Code: </strong> { this.state.product.ProductCode }
               </div>
               <div className="col-md-4 align-right">
-                <strong className="field-name">Numeric Code: </strong> { this.state.product.ProductNumberCode }
+                <strong className="field-name">Barcode: </strong> { this.state.product.api.barcode }
               </div>
             </div>
             <hr></hr>
+            <div className="row">
+              <strong className="field-name">Description: </strong> { this.state.product.api.complementaryDescription }
+            </div>
           </div>
         </div>
       </div>

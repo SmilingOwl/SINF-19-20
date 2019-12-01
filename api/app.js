@@ -7,6 +7,7 @@ var cors = require("cors");
 var parserRouter = require('./routes/parser');
 var financesRouter = require('./routes/finances');
 var salesRouter = require('./routes/sales');
+var productRouter = require('./routes/product');
 var fs = require('fs');
 var parser = require('xml2json');
 var request = require('request');
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/finances', financesRouter);
 app.use('/sales', salesRouter);
+app.use('/products', productRouter);
 app.use('/', parserRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
