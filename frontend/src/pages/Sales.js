@@ -9,24 +9,29 @@ class Sales extends Component
     this.state = {
       customers: "",
       products: "",
-      accounts_receivable: 0,
-      sales: 0,
+      balance_sheet: []
     };
   }
 
   UNSAFE_componentWillMount() {
     this.fetchSalesInfo();
+    this.fetchBalanceSheetInfo();
   }
 
   fetchSalesInfo() {
-    fetch("http://localhost:9000/sales/sales_info")
+    fetch("http://localhost:9000/sales/info")
       .then(res => res.json())
       .then(res => {
         this.setState({ customers: res.customers });
         this.setState({ products: res.products });
-        this.setState({ accounts_receivable: res.accounts_receivable });
-        this.setState({ sales: res.sales });
       })
+      .catch(err => err);
+  }
+
+  fetchBalanceSheetInfo() {
+    fetch("http://localhost:9000/finances/balance-sheet")
+      .then(res => res.json())
+      .then(res => { this.setState({ balance_sheet: res }); })
       .catch(err => err);
   }
 
@@ -62,8 +67,22 @@ class Sales extends Component
     return productsTable;
   }
 
-  handleClickProduct() {
+  getSales() {
+    let sales = this.state.balance_sheet.filter(p => p.index === 71);
+    if(sales.length === 0) return 0;
+    return sales[0].credit - sales[0].debit;
+  }
 
+  getCOGS() {
+    let cogs = this.state.balance_sheet.filter(p => p.index === 61);
+    if(cogs.length === 0) return 0;
+    return cogs[0].debit - cogs[0].credit;
+  }
+
+  getAccountsReceivable() {
+    let ar = this.state.balance_sheet.filter(p => p.index === 21);
+    if(ar.length === 0) return 0;
+    return ar[0].debit - ar[0].credit;
   }
 
   render(){
@@ -77,7 +96,7 @@ class Sales extends Component
                 Sales
               </div>
               <div className="col-md-4 price">
-                {this.state.sales.toFixed(2)} {'\u20AC'}
+                { this.getSales() } {'\u20AC'}
               </div>
             </div>  
             <div className="row">
@@ -85,7 +104,7 @@ class Sales extends Component
                 Cost of Goods Sold
               </div>
               <div className="col-md-4 price">
-                Price
+                { this.getCOGS() } {'\u20AC'}
               </div>
             </div>
             <hr/>
@@ -94,7 +113,7 @@ class Sales extends Component
                 Gross Profit
               </div>
               <div className="col-md-4 price">
-                Price
+                { this.getSales() - this.getCOGS() } {'\u20AC'}
               </div>
             </div>
           </div>
@@ -106,7 +125,7 @@ class Sales extends Component
               </strong>
             </div>
             <div className="col-md-5 price">
-              {this.state.accounts_receivable} {'\u20AC'}
+                { this.getAccountsReceivable() } {'\u20AC'}
             </div>
           </div>
         </div>
