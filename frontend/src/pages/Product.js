@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-//import '../css/product.css';
+import { Line } from 'react-chartjs-2';
+import '../css/product.css';
 
 class Product extends Component
 {
@@ -15,7 +16,7 @@ class Product extends Component
     console.log(this.id);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.fetchProduct();
   }
 
@@ -27,6 +28,19 @@ class Product extends Component
             console.log(res);
         })
         .catch(err => err);
+  }
+
+  getLineChartData() {
+    return {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      datasets: [
+        {
+          label: 'Quantity of Sales',
+          borderColor: '#588DA3',
+          data: this.state.product.chartInfo,
+        },
+      ]
+    }
   }
 
   render(){
@@ -54,8 +68,74 @@ class Product extends Component
             </div>
             <hr></hr>
             <div className="row">
-              <strong className="field-name">Description: </strong> { this.state.product.api.complementaryDescription }
+              <div className="col-md-12">
+                <strong className="field-name">Description: </strong> { this.state.product.api.complementaryDescription }
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-2"/> 
+          <div className="col-md-3">
+            <h3 className="section-title">Stock</h3>
+          </div>
+          <div className="col-md-2"/>
+          <div className="col-md-3">
+            <h3 className="section-title">Sales</h3>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-2"/> 
+          <div className="col-md-3 smallBox boxPadding">
+            <div className="row">
+              <div className="col-md-8">
+                Quantity Sold
+              </div>
+              <div className="col-md-4 price">
+                ...
+              </div>
+            </div>  
+            <div className="row">
+              <div className="col-md-8">
+                Quantity In stock
+              </div>
+              <div className="col-md-4 price">
+                ...
+              </div>
+            </div>
+          </div>
+          <div className="col-md-2"/>
+          <div className="col-md-3 smallBox boxPadding">
+            <div className="row">
+              <div className="col-md-8">
+                Average Price Per Unit
+              </div>
+              <div className="col-md-4 price">
+                ...
+              </div>
+            </div>  
+            <div className="row">
+              <div className="col-md-8">
+                Total Earnings
+              </div>
+              <div className="col-md-4 price">
+                ...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-2"/>
+          <div className="col-md-10">
+            <h3 className="section-title">Sales Over Time</h3>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-2"/> 
+          <div className="col-md-8 smallBox chart">
+            <Line data={this.getLineChartData()} />
           </div>
         </div>
       </div>

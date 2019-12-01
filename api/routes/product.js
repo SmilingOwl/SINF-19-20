@@ -16,11 +16,24 @@ router.get('/:productId', function(req, res, next) {
         method: "GET",
     }, function(error, response, body) {
         product[0].api = JSON.parse(body);
+        product[0].chartInfo = getProductSalesChart(req.params.productId, json);
         res.send(product[0]);
     });
 });
-function getProductSalesChart() {
 
+function getProductSalesChart(productCode, json) {
+    let quantityPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let invoices = json.AuditFile.SourceDocuments.SalesInvoices.Invoice;
+    for(let i = 0; i < invoices.length; i++) {
+        for(let j = 0; j < invoices[i].Line.length; j++) {
+            if(invoices[i].Line[j].ProductCode === productCode) {
+                let date = invoices[i].InvoiceDate;
+                let month = parseInt(date.substring(5, 7));
+                quantityPerMonth[month] += parseInt(invoices[i].Line[j].Quantity);
+            }
+        }
+    }
+    return quantityPerMonth;
 }
 
 module.exports = router;

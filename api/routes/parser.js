@@ -13,12 +13,6 @@ router.get('/suppliers', function() {
     res.send(json.AuditFile.MasterFiles.Supplier);
 });
 
-router.get('/products/:productId', function(req, res, next) {
-    let json = JSON.parse(req.app.get('json'));
-    let product = json.AuditFile.MasterFiles.Product.filter(p => p.ProductCode == req.params.productId);
-    res.send(product[0]);
-});
-
 router.get('/something', function(req, res, next) {
     if(req.app.get('api_token') == null)
         res.send('Error');

@@ -19,14 +19,14 @@ class FinancialArea extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.fetchInfo();
   }
 
   fetchInfo() {
     fetch("http://localhost:9000/finances/balance-sheet")
       .then(res => res.json())
-      .then(res => { this.setState({ balance_sheet: res }); console.log(res); })
+      .then(res => { this.setState({ balance_sheet: res }); })
       .catch(err => err);
   }
 
@@ -35,7 +35,7 @@ class FinancialArea extends Component {
     let totalDebit = 0;
     let totalCredit = 0;
     elements.push(
-      <div>
+      <div key="0">
       <div className="row">
         <div className="col-sm-1">
           <strong>ID</strong>
@@ -57,7 +57,7 @@ class FinancialArea extends Component {
     );
     for(let i = 0; i < this.state.balance_sheet.length; i++) {
       let element = this.state.balance_sheet[i];
-      if(element.type == type && element.credit + element.debit > 0) {
+      if(element.type === type && element.credit + element.debit > 0) {
         totalDebit += element.debit;
         totalCredit += element.credit;
         let total = element.debit - element.credit;
@@ -83,7 +83,7 @@ class FinancialArea extends Component {
         );
       }
     }
-    if(type == 'asset') {
+    if(type === 'asset') {
       this.state.total_assets.debit = totalDebit;
       this.state.total_assets.credit = totalCredit;
       this.state.total_assets.total = totalDebit - totalCredit;
