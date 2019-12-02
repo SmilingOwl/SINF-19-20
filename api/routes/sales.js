@@ -50,7 +50,7 @@ router.get('/info', function(req, res, next) {
             if(!customer_invoice[customers[i].CustomerID].hasOwnProperty(key) || key === 'totalSpent') continue;
             if(customer_invoice[customers[i].CustomerID][key].quantity > customers[i].quantityBought) {
                 customers[i].quantityBought = customer_invoice[customers[i].CustomerID][key].quantity;
-                customers[i].product = customer_invoice[customers[i].CustomerID][key].description;
+                customers[i].product = products.filter(p => p.ProductDescription === customer_invoice[customers[i].CustomerID][key].description)[0];
             }
         }
     }

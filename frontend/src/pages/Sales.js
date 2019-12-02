@@ -42,7 +42,11 @@ class Sales extends Component
         <tr className="table-row" key={this.state.customers[i].CustomerID}>
           <th scope="row" className="centered">{i+1}</th>
           <td>{this.state.customers[i].CompanyName}</td>
-          <td>{this.state.customers[i].product}</td>
+          <td>
+            <Link to={{pathname: `/products/${this.state.customers[i].product.ProductCode}` }}>
+              {this.state.customers[i].product.ProductDescription}
+            </Link>
+          </td>
           <td className="centered">{this.state.customers[i].quantityBought}</td>
           <td className="centered">{this.state.customers[i].totalSpent.toFixed(2)} {'\u20AC'}</td>
         </tr>
