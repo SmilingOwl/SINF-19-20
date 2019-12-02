@@ -1,16 +1,33 @@
 import React, { Component } from 'react';
-class Supplier extends Component {
+import { withRouter } from 'react-router-dom';
+
+class Supplier extends Component
+{
   constructor(props) {
     super(props);
-    this.state = { supplier: "" };
+    this.state = {
+      supplier: "",
+      products: "",
+      total_units_bought: 0,
+      total_spent: 0,
+    };
+    this.id = this.props.match.params.id;
+    console.log(this.id);
+    console.log(this.props.match.params);
   }
 
-  componentWillMount() {
-
+  UNSAFE_componentWillMount() {
+    this.fetchSuppliersInfo();
   }
 
-  fetchInfo() {
-
+  fetchSuppliersInfo() {
+    fetch("http://localhost:9000/suppliers/" + this.id)
+      .then(res => res.json())
+      .then(res => {
+        this.setState({supplier: res});
+        
+      })
+      .catch(err => err);
   }
 
   render() {
@@ -19,31 +36,40 @@ class Supplier extends Component {
         <div className="row">
           <div className="col-md-2" />
           <div className="col-md-10">
-            <h3 className="section-title">Supplier</h3>
+            <h3 className="section-title">Supplier {this.id} </h3>
           </div>
         </div>
         <div className="row">
           <div className="col-md-2" />
           <div className="col-md-8 smallBox">
             <div className="row">
+              <div className="col-md-8">
+                <p><strong className="field-name">Name: </strong> {this.state.supplier.name}</p>
+              </div>
               <div className="col-md-4">
-                <p><strong className="field-name">Name: </strong> ....</p>
-              </div>
-              <div className="col-md-4 align-right">
-                <p><strong className="field-name">ID: </strong>....</p>
-              </div>
-              <div className="col-md-4 align-right">
-                <p><strong className="field-name">Phone: </strong>....</p>
+                <p><strong className="field-name">Company TaxID: </strong> {this.state.supplier.companyTaxID}</p>
               </div>
             </div>
             <div className="row">
-              <div className="col-md-6">
-                <p><strong className="field-name">Email: </strong> ...</p>
+              <div className="col-md-8">
+                <p><strong className="field-name">Email: </strong>{this.state.supplier.electronicMail}</p>
+              </div>
+              <div className="col-md-4">
+                <p><strong className="field-name">Phone: </strong> {this.state.supplier.telephone}</p>
+              </div>
+            </div>
+            <hr/>
+            <div className="row">
+              <div className="col-md-8">
+                <p><strong className="field-name">Street name:  </strong> {this.state.supplier.streetName}</p>
               </div>
             </div>
             <div className="row">
-              <div className="col-md-6">
-                <p><strong className="field-name">Address: </strong> ...</p>
+              <div className="col-md-8">
+                <p><strong className="field-name">Building Number:  </strong> {this.state.supplier.buildingNumber}</p>
+              </div>
+              <div className="col-md-4">
+                <p><strong className="field-name">Postal Zone:  </strong> {this.state.supplier.postalZone} {this.state.supplier.cityName}</p>
               </div>
             </div>
           </div>
@@ -79,7 +105,7 @@ class Supplier extends Component {
           <div className="col-md-3 smallBox align-items-center d-flex">
             <div className="col-md-7">
               <strong>
-                Total Spent
+                Total Units Bought
                   </strong>
             </div>
             <div className="col-md-5 price">
@@ -91,7 +117,7 @@ class Supplier extends Component {
           <div className="col-md-3 smallBox align-items-center d-flex">
             <div className="col-md-7">
               <strong>
-                Accounts Receivable
+                Total Spent
                   </strong>
             </div>
             <div className="col-md-5 price">
@@ -105,4 +131,4 @@ class Supplier extends Component {
   }
 }
 
-export default Supplier;
+export default withRouter(Supplier);

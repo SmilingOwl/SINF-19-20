@@ -44,8 +44,7 @@ function AppRouter()
           <Route path="/purchases">
             <Purchases/>
           </Route>
-          <Route path="/suppliers">
-            <Supplier/>
+          <Route path="/suppliers/:id" children={<Supplier/>}>
           </Route>
           <Route path="/products/:id" children={<Product/>} />
         </Switch>
