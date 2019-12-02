@@ -92,7 +92,13 @@ class Sales extends Component
   render(){
     return(
       <div>
-        <div className="row mtop">
+        <div className="row">
+          <div className="col-md-1"/>
+          <div className="col-md-10">
+            <h3 className="section-title">Sales Information</h3>
+          </div>
+        </div>
+        <div className="row mtop-smaller">
           <div className="col-md-2"/> 
           <div className="col-md-3 smallBox">
             <div className="row">
@@ -140,7 +146,7 @@ class Sales extends Component
             <h3 className="section-title">Top Products</h3>
           </div>
         </div>
-        <div className="row">
+        <div className="row mtop-smaller">
           <div className="col-md-1"/>
           <div className="col-md-10">
             <table className="table">
@@ -167,7 +173,7 @@ class Sales extends Component
             <h3 className="section-title">Top Consumers</h3>
           </div>
         </div>
-        <div className="row">
+        <div className="row mtop-smaller">
           <div className="col-md-1"/>
           <div className="col-md-10">
             <table className="table">

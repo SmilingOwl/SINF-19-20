@@ -28,3 +28,7 @@
 .zero_padding  {
     padding: 0em !important;
 }
+
+.mtop-smaller {
+    margin-top: 1em;
+}

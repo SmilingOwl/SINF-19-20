@@ -64,19 +64,19 @@ class FinancialArea extends Component {
         if(type === 'liability') total = element.credit - element.debit;
         elements.push(
           <div className="row" key={element.index}>
-            <div className="col-sm-1 small-text">
+            <div className="col-sm-1">
               <strong>{ element.index }</strong>
             </div>
-            <div className="col-sm-5 small-text">
+            <div className="col-sm-5">
               { element.description }
             </div>
-            <div className="col-sm-2 price small-text">
+            <div className="col-sm-2 price">
               { element.debit } {'\u20AC'}
             </div>
-            <div className="col-sm-2 price small-text">
+            <div className="col-sm-2 price">
               { element.credit } {'\u20AC'}
             </div>
-            <div className="col-sm-2 price small-text">
+            <div className="col-sm-2 price">
               { total >= 0 ? total : "(" + -total + ")" } {'\u20AC'}
             </div>
           </div>
@@ -149,9 +149,9 @@ class FinancialArea extends Component {
     return (
       <div>
         <div className="row topic mtop">
-          <div className="col-md-2" />
+          <div className="col-md-1" />
             Profit / Sales
-          <div className="col-md-2" />
+          <div className="col-md-1" />
         </div>
 
         <div className="row">
@@ -295,70 +295,69 @@ class FinancialArea extends Component {
         </div>
 
         <div className="row topic">
-          <div className="col-md-2" />
-          Balance Sheet
-            <div className="col-md-2" />
+          <div className="col-md-1" />
+            Balance Sheet
         </div>
 
         <div className="row">
-          <div className="col-md-2" />
+          <div className="col-md-1" />
 
-          <div className="col-md-4 bigBox">
+          <div className="col-md-5 bigBox">
             <h5 className="value">Assets</h5>
             { this.renderBalanceSheet('asset') }
           </div>
 
-          <div className="col-md-4 bigBox">
+          <div className="col-md-5 bigBox">
             <h5 className="value">Liabilities</h5>
             { this.renderBalanceSheet('liability') }
           </div>
 
-          <div className="col-md-2" />
+          <div className="col-md-1" />
         </div>
 
         <div className="row">
-          <div className="col-md-2" />
+          <div className="col-md-1" />
 
-          <div className="col-md-4 extraSmallBox ptop">
+          <div className="col-md-5 extraSmallBox ptop">
             <div className="row">
               <div className="col-md-6">
                 <h5 className="value">Total assets</h5>
               </div>
-              <div className="col-md-2 price small-text">
+              <div className="col-md-2 price">
                 { this.state.total_assets.debit } {'\u20AC'}
               </div>
-              <div className="col-md-2 price small-text">
+              <div className="col-md-2 price">
                 { this.state.total_assets.credit } {'\u20AC'}
               </div>
-              <div className="col-md-2 price small-text">
+              <div className="col-md-2 price">
                 { this.state.total_assets.total > 0 ? this.state.total_assets.total : "(" + -this.state.total_assets.total + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
 
-          <div className="col-md-4 extraSmallBox ptop">
+          <div className="col-md-5 extraSmallBox ptop">
             <div className="row">
               <div className="col-md-6">
                 <h5 className="value">Total Liabilities</h5>
               </div>
-              <div className="col-md-2 price small-text">
+              <div className="col-md-2 price">
                 { this.state.total_liabilities.debit } {'\u20AC'}
               </div>
-              <div className="col-md-2 price small-text">
+              <div className="col-md-2 price">
                 { this.state.total_liabilities.credit } {'\u20AC'}
               </div>
-              <div className="col-md-2 price small-text">
+              <div className="col-md-2 price">
                 { this.state.total_liabilities.total > 0 ? this.state.total_liabilities.total : "(" + -this.state.total_liabilities.total + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
-          <div className="col-md-2" />
+          <div className="col-md-1" />
         </div>
 
         <div className="row mbottom">
-          <div className="col-md-2" />
+          <div className="col-md-1" />
 
-          <div className="col-md-8 extraSmallBox">
+          <div className="col-md-10 extraSmallBox">
             <div className="row">
               <div className="col-md-6">
                 <h5 className="value">Equity</h5>
@@ -369,7 +368,7 @@ class FinancialArea extends Component {
             </div>
           </div>
 
-          <div className="col-md-2" />
+          <div className="col-md-1" />
         </div>
 
       </div>

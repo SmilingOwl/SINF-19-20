@@ -6,7 +6,13 @@ class Purchases extends Component
     render(){
         return(
         <div>
-            <div className="row mtop">
+            <div className="row">
+              <div className="col-md-1"/>
+              <div className="col-md-10">
+                <h3 className="section-title">Purchases Information</h3>
+              </div>
+            </div>
+            <div className="row mtop-smaller">
               <div className="col-md-2"/> 
               
               <div className="col-md-3 smallBox align-items-center d-flex">
@@ -40,7 +46,7 @@ class Purchases extends Component
                 <h3 className="section-title">Top Purchases</h3>
               </div>
             </div>
-            <div className="row">
+            <div className="row mtop-smaller">
               <div className="col-md-1"/>
               <div className="col-md-10">
                 <table className="table">
@@ -67,7 +73,7 @@ class Purchases extends Component
                 <h3 className="section-title">Top Suppliers</h3>
               </div>
             </div>
-            <div className="row">
+            <div className="row mtop-smaller">
               <div className="col-md-1"/>
               <div className="col-md-10">
                 <table className="table">
