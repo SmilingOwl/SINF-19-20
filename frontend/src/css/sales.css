@@ -24,3 +24,7 @@
 .centered {
     text-align: center;
 }
+
+.zero_padding  {
+    padding: 0em !important;
+}

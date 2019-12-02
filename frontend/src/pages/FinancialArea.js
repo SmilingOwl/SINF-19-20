@@ -128,104 +128,121 @@ class FinancialArea extends Component {
     return depreciationAmortization[0].credit - depreciationAmortization[0].debit;
   }
 
+  getInterestTaxes() {
+    let interest = this.state.balance_sheet.filter(p => p.index === 691);
+    let taxes = this.state.balance_sheet.filter(p => p.index === 681);
+    let interest_count = 0;
+    if(interest.length !== 0)
+      interest_count = interest[0].credit - interest[0].debit;
+    if(taxes.length === 0)
+      return interest_count;
+    return interest_count + taxes[0].credit - taxes[0].debit;
+  }
+
+  getEquity() {
+    let equity = this.state.balance_sheet.filter(p => p.index === 51);
+    if(equity.length === 0) return 0;
+    return equity[0].credit - equity[0].debit;
+  }
+
   render() {
     return (
       <div>
         <div className="row topic mtop">
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
             Profit / Sales
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
         </div>
 
         <div className="row">
-          <div className="col-lg-2" />
-          <div className="col-lg-3 smallBox">
+          <div className="col-md-2" />
+          <div className="col-md-3 smallBox">
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 Sales
                 </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getSales() } {'\u20AC'}
               </div>
             </div>
 
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 Cost of Goods Sold
                 </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getCOGS() } {'\u20AC'}
               </div>
             </div>
             <hr />
             <div className="row">
-              <div className="col-lg-8 value">
+              <div className="col-md-8 value">
                 Gross Profit
                 </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price">
                 { this.getSales() - this.getCOGS() } {'\u20AC'}
               </div>
             </div>
           </div>
 
           {/*espaco-entre-boxs*/}
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
 
           {/*EBITDA table*/}
-          <div className="col-lg-3 smallBox">
+          <div className="col-md-3 smallBox">
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 Gross Profit
               </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getSales() - this.getCOGS() } {'\u20AC'}
               </div>
             </div>
 
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 Expenses
                 </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getExpenses() } {'\u20AC'}
               </div>
             </div>
             <hr />
             <div className="row">
-              <div className="col-lg-8 value">
+              <div className="col-md-8 value">
                 EBITDA
               </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price">
                 { this.getSales() - this.getCOGS() - this.getExpenses() } {'\u20AC'}
               </div>
             </div>
           </div>
 
           {/*espaco-final}*/}
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
         </div>
 
 
         <div className="row">
 
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
 
           {/*EBIT table*/}
-          <div className="col-lg-3 smallBox">
+          <div className="col-md-3 smallBox">
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 EBITDA
               </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getSales() - this.getCOGS() - this.getExpenses() } {'\u20AC'}
               </div>
             </div>
 
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 Depreciation and Amortization
               </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getDepreciationAmortization() } {'\u20AC'}
               </div>
             </div>
@@ -233,136 +250,126 @@ class FinancialArea extends Component {
 
             <hr />
             <div className="row">
-              <div className="col-lg-8 value">
+              <div className="col-md-8 value">
                 EBIT
               </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price">
                 { this.getSales() - this.getCOGS() - this.getExpenses() - this.getDepreciationAmortization() } {'\u20AC'}
               </div>
             </div>
           </div>
 
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
 
           {/*Net income table*/}
-          <div className="col-lg-3 smallBox">
+          <div className="col-md-3 smallBox">
             <div className="row">
-              <div className="col-lg-8">
+              <div className="col-md-8 smallerSize">
                 EBIT
               </div>
-              <div className="col-lg-4 price">
+              <div className="col-md-4 price smallerSize">
                 { this.getSales() - this.getCOGS() - this.getExpenses() - this.getDepreciationAmortization() } {'\u20AC'}
               </div>
             </div>
 
             <div className="row">
-              <div className="col-lg-8">
-                Interest
+              <div className="col-md-8 smallerSize">
+                Interest and Taxes
               </div>
-              <div className="col-lg-4 price">
-                Price
+              <div className="col-md-4 price smallerSize">
+                { this.getInterestTaxes() } {'\u20AC'}
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-lg-8">
-                Taxes
-              </div>
-              <div className="col-lg-4 price">
-                Price
-              </div>
-            </div>
             <hr />
             <div className="row">
-              <div className="col-lg-8 value">
+              <div className="col-md-8 value">
                 Net income
               </div>
-              <div className="col-lg-4 price">
-                Price
+              <div className="col-md-4 price">
+                { this.getSales() - this.getCOGS() - this.getExpenses() - this.getDepreciationAmortization() - this.getInterestTaxes() } {'\u20AC'}
               </div>
             </div>
           </div>
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
         </div>
 
         <div className="row topic">
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
           Balance Sheet
-            <div className="col-lg-2" />
+            <div className="col-md-2" />
         </div>
 
         <div className="row">
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
 
-          <div className="col-lg-4 bigBox">
+          <div className="col-md-4 bigBox">
             <h5 className="value">Assets</h5>
             { this.renderBalanceSheet('asset') }
           </div>
 
-          <div className="col-lg-4 bigBox">
+          <div className="col-md-4 bigBox">
             <h5 className="value">Liabilities</h5>
             { this.renderBalanceSheet('liability') }
           </div>
 
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
         </div>
 
         <div className="row">
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
 
-          <div className="col-lg-4 extraSmallBox ptop">
+          <div className="col-md-4 extraSmallBox ptop">
             <div className="row">
-              <div className="col-lg-6">
+              <div className="col-md-6">
                 <h5 className="value">Total assets</h5>
               </div>
-              <div className="col-lg-2 price small-text">
+              <div className="col-md-2 price small-text">
                 { this.state.total_assets.debit } {'\u20AC'}
               </div>
-              <div className="col-lg-2 price small-text">
+              <div className="col-md-2 price small-text">
                 { this.state.total_assets.credit } {'\u20AC'}
               </div>
-              <div className="col-lg-2 price small-text">
+              <div className="col-md-2 price small-text">
                 { this.state.total_assets.total > 0 ? this.state.total_assets.total : "(" + -this.state.total_assets.total + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
 
-          <div className="col-lg-4 extraSmallBox ptop">
+          <div className="col-md-4 extraSmallBox ptop">
             <div className="row">
-              <div className="col-lg-6">
+              <div className="col-md-6">
                 <h5 className="value">Total Liabilities</h5>
               </div>
-              <div className="col-lg-2 price small-text">
+              <div className="col-md-2 price small-text">
                 { this.state.total_liabilities.debit } {'\u20AC'}
               </div>
-              <div className="col-lg-2 price small-text">
+              <div className="col-md-2 price small-text">
                 { this.state.total_liabilities.credit } {'\u20AC'}
               </div>
-              <div className="col-lg-2 price small-text">
+              <div className="col-md-2 price small-text">
                 { this.state.total_liabilities.total > 0 ? this.state.total_liabilities.total : "(" + -this.state.total_liabilities.total + ")" } {'\u20AC'}
               </div>
             </div>
           </div>
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
         </div>
 
         <div className="row mbottom">
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
 
-          <div className="col-lg-8 extraSmallBox">
+          <div className="col-md-8 extraSmallBox">
             <div className="row">
-              <div className="col-lg-6">
+              <div className="col-md-6">
                 <h5 className="value">Equity</h5>
               </div>
-              <div className="col-lg-6 price">
-                { this.state.total_assets.total - this.state.total_liabilities.total > 0 ?
-                  this.state.total_assets.total - this.state.total_liabilities.total :
-                  "(" + (-this.state.total_assets.total + this.state.total_liabilities.total) + ")" } {'\u20AC'}
+              <div className="col-md-6 price">
+                { this.getEquity() } {'\u20AC'}
               </div>
             </div>
           </div>
 
-          <div className="col-lg-2" />
+          <div className="col-md-2" />
         </div>
 
       </div>

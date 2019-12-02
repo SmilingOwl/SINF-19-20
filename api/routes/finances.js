@@ -51,6 +51,10 @@ router.get('/balance-sheet', function(req, res, next) {
         description: 'Produtos e Trabalhos em Curso',
         type: 'asset'
     }, {
+        index: 51,
+        description: 'Equity',
+        type: 'equity'
+    }, {
         index: 61,
         description: 'Custo de Mercadorias Vendidas',
         type: 'liability'
@@ -61,6 +65,14 @@ router.get('/balance-sheet', function(req, res, next) {
     }, {
         index: 64,
         description: 'Depreciação e Amortização',
+        type: 'liability'
+    }, {
+        index: 681,
+        description: 'Impostos e Taxas',
+        type: 'liability'
+    }, {
+        index: 691,
+        description: 'Juros',
         type: 'liability'
     }, {
         index: 71,

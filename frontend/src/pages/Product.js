@@ -13,7 +13,6 @@ class Product extends Component
         }
     };
     this.id = this.props.match.params.id;
-    console.log(this.id);
   }
 
   UNSAFE_componentWillMount() {
@@ -25,7 +24,6 @@ class Product extends Component
         .then(res => res.json())
         .then(res => {        
             this.setState({ product: res });
-            console.log(res);
         })
         .catch(err => err);
   }
@@ -48,7 +46,7 @@ class Product extends Component
         <div>
         <div className="row">
           <div className="col-md-2"/>
-          <div className="col-md-10">
+          <div className="col-md-8 zero_padding">
             <h3 className="section-title">Product { this.id }</h3>
           </div>
         </div>
@@ -77,11 +75,11 @@ class Product extends Component
 
         <div className="row">
           <div className="col-md-2"/> 
-          <div className="col-md-3">
+          <div className="col-md-3 zero_padding">
             <h3 className="section-title">Stock</h3>
           </div>
           <div className="col-md-2"/>
-          <div className="col-md-3">
+          <div className="col-md-3 zero_padding">
             <h3 className="section-title">Sales</h3>
           </div>
         </div>
@@ -128,13 +126,13 @@ class Product extends Component
 
         <div className="row">
           <div className="col-md-2"/>
-          <div className="col-md-10">
+          <div className="col-md-8 zero_padding">
             <h3 className="section-title">Sales Over Time</h3>
           </div>
         </div>
         <div className="row">
           <div className="col-md-2"/> 
-          <div className="col-md-8 smallBox chart">
+          <div className="col-md-8 smallBox">
             <Line data={this.getLineChartData()} />
           </div>
         </div>
