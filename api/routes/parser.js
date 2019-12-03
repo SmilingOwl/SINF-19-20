@@ -43,27 +43,25 @@ router.get('/suppliers/:taxId/products', function (req, res, next) {
         headers: { 'Content-Type': 'application/json', Authorization: authorization },
         method: "GET",
     }, function (error, response, body) {
-        let products = [];
+        let products = {};
         let invoices = JSON.parse(body);
         
         invoices.forEach(invoice => {
             if (req.params.taxId == invoice.sellerSupplierPartyTaxId) {
                
-                invoice.documentLines.forEach(line=> {
+                invoice.documentLines.forEach(line => {
                     if(products[line.purchasesItem] == null) {
-                    products[line.purchasesItem] = {
-                        product: line.description,
-                        unitsBought: line.quantity,
-                        pricePerUnit: line.unitPrice.amount,
+                        products[line.purchasesItem] = {
+                            product: line.description,
+                            unitsBought: line.quantity,
+                            pricePerUnit: line.unitPrice.amount,
+                        }
+                    } else {
+                        products[line.purchasesItem].unitsBought += line.quantity;
                     }
-                } else {
-                    products[line.purchasesItem].unitsBought += invoice.documentLines.quantity;
-                }
-            });
-        }
-        
+                });
+            }
         });
-       // console.log(products);
         res.send(products);
     });
 });

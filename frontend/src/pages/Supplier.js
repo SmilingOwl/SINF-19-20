@@ -33,25 +33,24 @@ class Supplier extends Component
     fetch("http://localhost:9000/suppliers/"+ this.state.supplier.companyTaxID +"/products")
       .then(res => res.json())
       .then(res => {
-        this.setState({products: res});
-        console.log(res);
-        
+        this.setState({products: res});        
       })
       .catch(err => err);
   }
 
   fillSuppliersTable() {
-    console.log(this.state.products);
     let suppliersTable = [];
-    for (let i = 0; i < this.state.products.length && i < 10; i++) {
+    let i = 1;
+    for (var key in this.state.products) {
       suppliersTable.push(
-        <tr className="table-row" key={this.state.products[i].id}>
-          <th scope="row" className="centered">{i+1}</th>
-          <td className="centered">{this.state.products[i].product}</td>
-          <td className="centered">{this.state.products[i].unitsBought}</td>
-          <td className="centered">{this.state.products[i].pricePerUnit}</td>
+        <tr className="table-row" key={key}>
+          <th scope="row" className="centered">{i}</th>
+          <td className="centered">{this.state.products[key].product}</td>
+          <td className="centered">{this.state.products[key].unitsBought}</td>
+          <td className="centered">{this.state.products[key].pricePerUnit}</td>
         </tr>
       );
+      i++;
     }
     return suppliersTable;
   }
