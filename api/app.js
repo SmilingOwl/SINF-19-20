@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.disable('etag');
+
 app.use('/finances', financesRouter);
 app.use('/sales', salesRouter);
 app.use('/products', productRouter);
@@ -72,5 +72,28 @@ request({
   }, function(error, response, body) {
     app.set('api_token', JSON.parse(body));
 });
+
+app.set('users', [
+  {
+      type: 'Head of Sales',
+      username: 'sales@snif.pt',
+      password: 'sales'
+  },
+  {
+      type: 'Head of Purchases',
+      username: 'purchases@snif.pt',
+      password: 'purchases'
+  },
+  {
+      type: 'CEO',
+      username: 'ceo@snif.pt',
+      password: 'ceo'
+  },
+  {
+      type: 'Shareholder',
+      username: 'shareholder@snif.pt',
+      password: 'shareholder'
+  }
+]);
 
 module.exports = app;
