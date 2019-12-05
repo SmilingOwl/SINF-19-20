@@ -3,6 +3,40 @@ import '../css/sales.css';
 
 class Purchases extends Component
 {
+  constructor(props) {
+    super(props);
+    this.state = {
+      balance_sheet: [],
+      total_spent: 0,
+    };
+  }
+
+  UNSAFE_componentWillMount() {
+    this.fetchBalanceSheetInfo();
+    this.fetchTotalSpentInfo();
+  }
+
+  fetchTotalSpentInfo() {
+    fetch("http://localhost:9000/purchases")
+      .then(res => res.json())
+      .then(res => {
+        this.setState({total_spent: res});
+      })
+  }
+
+  fetchBalanceSheetInfo() {
+    fetch("http://localhost:9000/finances/balance-sheet")
+      .then(res => res.json())
+      .then(res => { this.setState({ balance_sheet: res }); })
+      .catch(err => err);
+  }
+
+  getAccountsReceivable() {
+    let ar = this.state.balance_sheet.filter(p => p.index === 22);
+    if(ar.length === 0) return 0;
+    return Math.abs(ar[0].debit - ar[0].credit);
+  }
+
     render(){
         return(
         <div>
@@ -22,7 +56,7 @@ class Purchases extends Component
                   </strong>
                 </div>
                 <div className="col-md-5 price">
-                  Price
+                  {this.state.total_spent.total_spent} {'\u20AC'}
                 </div>
               </div>
              
@@ -34,7 +68,7 @@ class Purchases extends Component
                   </strong>
                 </div>
                 <div className="col-md-5 price">
-                  Price
+                { this.getAccountsReceivable() } {'\u20AC'}
                 </div>
               </div>
 

@@ -7,9 +7,7 @@ class Supplier extends Component
     super(props);
     this.state = {
       supplier: "",
-      products: "",
-      total_units_bought: 0,
-      total_spent: 0,
+      products_info:{},
     };
     this.id = this.props.match.params.id;
     console.log(this.id);
@@ -33,7 +31,8 @@ class Supplier extends Component
     fetch("http://localhost:9000/suppliers/"+ this.state.supplier.companyTaxID +"/products")
       .then(res => res.json())
       .then(res => {
-        this.setState({products: res});        
+        this.setState({products_info: res}); 
+        console.log(this.state.products_info);       
       })
       .catch(err => err);
   }
@@ -41,13 +40,15 @@ class Supplier extends Component
   fillSuppliersTable() {
     let suppliersTable = [];
     let i = 1;
-    for (var key in this.state.products) {
+    if (!this.state.products_info)
+      return [];
+    for (var key in this.state.products_info.products) {
       suppliersTable.push(
         <tr className="table-row" key={key}>
           <th scope="row" className="centered">{i}</th>
-          <td className="centered">{this.state.products[key].product}</td>
-          <td className="centered">{this.state.products[key].unitsBought}</td>
-          <td className="centered">{this.state.products[key].pricePerUnit}</td>
+          <td className="centered">{this.state.products_info.products[key].product}</td>
+          <td className="centered">{this.state.products_info.products[key].unitsBought}</td>
+          <td className="centered">{this.state.products_info.products[key].pricePerUnit}</td>
         </tr>
       );
       i++;
@@ -120,7 +121,7 @@ class Supplier extends Component
                 </tr>
               </thead>
               <tbody>
-              {this.fillSuppliersTable()}
+                {this.fillSuppliersTable()}
               </tbody>
             </table>
           </div>
@@ -136,8 +137,8 @@ class Supplier extends Component
                   </strong>
             </div>
             <div className="col-md-5 price">
-              Price
-                </div>
+              {this.state.products_info?this.state.products_info.total_units:0 }
+            </div>
           </div>
 
           <div className="col-md-2" />
@@ -148,8 +149,8 @@ class Supplier extends Component
                   </strong>
             </div>
             <div className="col-md-5 price">
-              Price
-                </div>
+              {this.state.products_info?this.state.products_info.total_spent:0}
+            </div>
           </div>
 
         </div>
