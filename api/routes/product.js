@@ -21,6 +21,25 @@ router.get('/:productId', function(req, res, next) {
     });
 });
 
+router.get('/:productId/sales', function(req, res, next) {
+    let json = JSON.parse(req.app.get('json'));
+    let invoices = json.AuditFile.SourceDocuments.SalesInvoices.Invoice;
+    let product_info = {
+        quantity_sold: 0,
+        total_price: 0,
+    };
+    for(let i = 0; i < invoices.length; i++) {
+        for(let j = 0; j < invoices[i].Line.length; j++) {
+            if(invoices[i].Line[j].ProductCode == req.params.productId) {
+                product_info.quantity_sold += parseInt(invoices[i].Line[j].Quantity);
+                product_info.total_price += parseInt(invoices[i].Line[j].Quantity) * parseFloat(invoices[i].Line[j].UnitPrice);
+            }
+        }
+    }
+
+    return res.send(product_info);
+});
+
 function getProductSalesChart(productCode, json) {
     let quantityPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     let invoices = json.AuditFile.SourceDocuments.SalesInvoices.Invoice;
