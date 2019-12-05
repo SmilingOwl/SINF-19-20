@@ -43,8 +43,8 @@ class Sales extends Component
           <th scope="row" className="centered">{i+1}</th>
           <td>{this.state.customers[i].CompanyName}</td>
           <td>
-            <Link to={{pathname: `/products/${this.state.customers[i].product.ProductCode}` }}>
-              {this.state.customers[i].product.ProductDescription}
+            <Link to={{pathname: `/products/${this.state.customers[i].product.code}` }}>
+              {this.state.customers[i].product.description}
             </Link>
           </td>
           <td className="centered">{this.state.customers[i].quantityBought}</td>
@@ -74,19 +74,19 @@ class Sales extends Component
   getSales() {
     let sales = this.state.balance_sheet.filter(p => p.index === 71);
     if(sales.length === 0) return 0;
-    return sales[0].credit - sales[0].debit;
+    return Math.abs(sales[0].debit - sales[0].credit);
   }
 
   getCOGS() {
     let cogs = this.state.balance_sheet.filter(p => p.index === 61);
     if(cogs.length === 0) return 0;
-    return cogs[0].debit - cogs[0].credit;
+    return Math.abs(cogs[0].credit - cogs[0].debit);
   }
 
   getAccountsReceivable() {
     let ar = this.state.balance_sheet.filter(p => p.index === 21);
     if(ar.length === 0) return 0;
-    return ar[0].debit - ar[0].credit;
+    return Math.abs(ar[0].debit - ar[0].credit);
   }
 
   render(){

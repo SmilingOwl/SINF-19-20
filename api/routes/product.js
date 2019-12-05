@@ -8,7 +8,7 @@ router.get('/:productId', function(req, res, next) {
     let product = json.AuditFile.MasterFiles.Product.filter(p => p.ProductCode == req.params.productId);
     product[0].ProductCode = "LENCOS"; //TODO remove
     if(req.app.get('api_token') == null)
-        res.send('Error');
+        return res.send('Error');
     let authorization = req.app.get('api_token').token_type.concat(" ").concat(req.app.get('api_token').access_token);
     request({
         uri: 'https://my.jasminsoftware.com/api/224974/224974-0001/salesCore/salesItems/' + product[0].ProductCode,
@@ -17,7 +17,7 @@ router.get('/:productId', function(req, res, next) {
     }, function(error, response, body) {
         product[0].api = JSON.parse(body);
         product[0].chartInfo = getProductSalesChart(req.params.productId, json);
-        res.send(product[0]);
+        return res.send(product[0]);
     });
 });
 
