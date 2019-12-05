@@ -10,13 +10,15 @@ class Product extends Component
     this.state = {
         product: {
           api: {}
-        }
+        },
+        sales_info: "",
     };
     this.id = this.props.match.params.id;
   }
 
   UNSAFE_componentWillMount() {
     this.fetchProduct();
+    this.fetchProductSalesInfo();
   }
 
   fetchProduct() {
@@ -24,6 +26,15 @@ class Product extends Component
         .then(res => res.json())
         .then(res => {        
             this.setState({ product: res });
+        })
+        .catch(err => err);
+  }
+
+  fetchProductSalesInfo() {
+    fetch("http://localhost:9000/products/" + this.id + "/sales")
+        .then(res => res.json())
+        .then(res => {        
+            this.setState({ sales_info: res });
         })
         .catch(err => err);
   }
@@ -91,7 +102,7 @@ class Product extends Component
                 Quantity Sold
               </div>
               <div className="col-md-4 price">
-                ...
+                {this.state.sales_info ? this.state.sales_info.quantity_sold : 0}
               </div>
             </div>  
             <div className="row">
@@ -110,7 +121,7 @@ class Product extends Component
                 Average Price Per Unit
               </div>
               <div className="col-md-4 price">
-                ...
+                {this.state.sales_info ? (this.state.sales_info.total_price / this.state.sales_info.quantity_sold).toFixed(2) : 0.00} {'\u20AC'}
               </div>
             </div>  
             <div className="row">
@@ -118,7 +129,7 @@ class Product extends Component
                 Total Earnings
               </div>
               <div className="col-md-4 price">
-                ...
+                {this.state.sales_info ? this.state.sales_info.total_price.toFixed(2) : 0.00} {'\u20AC'}
               </div>
             </div>
           </div>
