@@ -87,4 +87,42 @@ router.get('/purchases/', function (req, res, next) {
 
 });
 
+router.get('/purchases/products', function (req, res, next) {
+    if (req.app.get('api_token') == null)
+        return res.send('Error');
+    let authorization = req.app.get('api_token').token_type.concat(" ").concat(req.app.get('api_token').access_token);
+    request({
+        uri: 'https://my.jasminsoftware.com/api/224974/224974-0001/invoiceReceipt/invoices',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization },
+        method: "GET",
+    }, function (error, response, body) {
+        let products = [];
+        let invoices = JSON.parse(body);
+        invoices.forEach(invoice => {
+            invoice.documentLines.forEach(line => {
+                if (products[line.purchasesItem] == null) {
+                    products[line.purchasesItem] = {
+                        product: line.description,
+                        unitsSold: line.quantity,
+                        pricePerUnit: line.unitPrice.amount,  
+                        total_earned: line.quantity * line.unitPrice.amount,
+                    };
+                   
+                }else{
+                    products[line.purchasesItem].unitsSold += line.quantity;
+                    products[line.purchasesItem].total_earned += line.quantity * line.unitPrice.amount;
+                }
+                
+            });
+        });
+       products.sort((a,b) => (a.unitsSold < b.unitsSold) ? 1 : -1);
+        let data = {
+            products: products,
+        };
+        console.log(data);
+       return res.send(data);
+    });
+
+});
+
 module.exports = router;

@@ -8,12 +8,14 @@ class Purchases extends Component
     this.state = {
       balance_sheet: [],
       total_spent: 0,
+      products:{},
     };
   }
 
   UNSAFE_componentWillMount() {
     this.fetchBalanceSheetInfo();
     this.fetchTotalSpentInfo();
+    this.fetchProductsTable();
   }
 
   fetchTotalSpentInfo() {
@@ -22,6 +24,35 @@ class Purchases extends Component
       .then(res => {
         this.setState({total_spent: res});
       })
+  }
+
+  fetchProductsTable(){
+    fetch("http://localhost:9000/purchases/products")
+    .then(res => res.json())
+    .then(res => {
+      this.setState({products: res});
+    })
+  }
+
+  fillProductsTable() {
+    let productsTable = [];
+    console.log(this.state.products);
+    if (!this.state.products)
+      return [];
+    for (let i = 0; i < this.state.products.length && i < 10 ; i++) {
+      productsTable.push(
+        <tr className="table-row">
+          <th scope="row" className="centered">i</th>
+          <td className="centered">{this.state.products[i].product}</td>
+          <td className="centered">{this.state.products[i].unitsSold}</td>
+          <td className="centered">{this.state.products[i].pricePerUnit}</td>
+          <td className="centered">{this.state.products[i].total_earned}</td>
+        </tr>
+      );
+      
+    }
+    
+    return productsTable;
   }
 
   fetchBalanceSheetInfo() {
@@ -94,7 +125,7 @@ class Purchases extends Component
                     </tr>
                   </thead>
                   <tbody>
-                   
+                    {this.fillProductsTable()}
                   </tbody>
                 </table>
               </div>
