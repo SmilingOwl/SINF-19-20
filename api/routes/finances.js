@@ -89,7 +89,7 @@ router.get('/balance-sheet', function(req, res, next) {
     }
 
     process_accounts(balance_sheet, req);
-    res.send(balance_sheet);
+    return res.send(balance_sheet);
 });
 
 function process_accounts(balance_sheet, req) {

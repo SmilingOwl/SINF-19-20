@@ -32,6 +32,7 @@ router.get('/info', function(req, res, next) {
             }
             if(customer_invoice[invoices[i].CustomerID][invoices[i].Line[j].ProductCode] == null) {
                 customer_invoice[invoices[i].CustomerID][invoices[i].Line[j].ProductCode] = {
+                    code: invoices[i].Line[j].ProductCode,
                     description: invoices[i].Line[j].ProductDescription,
                     quantity: parseInt(invoices[i].Line[j].Quantity),
                 };
@@ -40,17 +41,21 @@ router.get('/info', function(req, res, next) {
             }
         }
     }
-
     for(let i = 0; i < customers.length; i++) {
         customers[i].totalSpent = customer_invoice[customers[i].CustomerID].totalSpent;
         customers[i].quantityBought = 0;
         customers[i].product = null;
-        if(customer_invoice[customers[i].CustomerID] != null)
-        for(let key in customer_invoice[customers[i].CustomerID]) {
-            if(!customer_invoice[customers[i].CustomerID].hasOwnProperty(key) || key === 'totalSpent') continue;
-            if(customer_invoice[customers[i].CustomerID][key].quantity > customers[i].quantityBought) {
-                customers[i].quantityBought = customer_invoice[customers[i].CustomerID][key].quantity;
-                customers[i].product = products.filter(p => p.ProductDescription === customer_invoice[customers[i].CustomerID][key].description)[0];
+        if(customer_invoice[customers[i].CustomerID] != null){
+            for(let key in customer_invoice[customers[i].CustomerID]) {
+                if(!customer_invoice[customers[i].CustomerID].hasOwnProperty(key) || key === 'totalSpent') continue;
+                if(customer_invoice[customers[i].CustomerID][key].quantity > customers[i].quantityBought) {
+                    customers[i].quantityBought = customer_invoice[customers[i].CustomerID][key].quantity;
+                    customers[i].product = customer_invoice[customers[i].CustomerID][key];
+                }
+            }
+            if(customers[i].product == null) {
+                customers.splice(i, 1);
+                i--;
             }
         }
     }
@@ -69,7 +74,7 @@ router.get('/info', function(req, res, next) {
         customers: customers,
         products: products
     }
-    res.send(sales);
+    return res.send(sales);
 });
 
 module.exports = router;
