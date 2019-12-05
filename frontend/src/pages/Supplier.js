@@ -28,7 +28,6 @@ class Supplier extends Component
   }
 
   fetchProductsInfo(){
-    console.log(this.state.supplier.companyTaxID);
     fetch("http://localhost:9000/suppliers/"+ this.state.supplier.companyTaxID +"/products")
       .then(res => res.json())
       .then(res => {
