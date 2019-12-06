@@ -21,6 +21,7 @@ class FinancialArea extends Component {
 
   UNSAFE_componentWillMount() {
     this.fetchInfo();
+    console.log();
   }
 
   fetchInfo() {
