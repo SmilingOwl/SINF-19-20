@@ -77,7 +77,7 @@ class FinancialArea extends Component {
               { element.credit } {'\u20AC'}
             </div>
             <div className="col-sm-2 price">
-              { Math.abs(total) } {'\u20AC'}
+              { total } {'\u20AC'}
             </div>
           </div>
         );
@@ -99,13 +99,13 @@ class FinancialArea extends Component {
   getSales() {
     let sales = this.state.balance_sheet.filter(p => p.index === 71);
     if(sales.length === 0) return 0;
-    return Math.abs(sales[0].debit - sales[0].credit);
+    return sales[0].debit - sales[0].credit;
   }
 
   getCOGS() {
     let cogs = this.state.balance_sheet.filter(p => p.index === 61);
     if(cogs.length === 0) return 0;
-    return Math.abs(cogs[0].credit - cogs[0].debit);
+    return cogs[0].credit - cogs[0].debit;
   }
 
   getExpenses() {
@@ -119,13 +119,13 @@ class FinancialArea extends Component {
     if(expensesPersonnel.length === 0) expensesPersonnel = 0;
     else expensesPersonnel = expensesPersonnel[0].credit - expensesPersonnel[0].debit;
     
-    return Math.abs(earningsServices - expensesServices - expensesPersonnel);
+    return -earningsServices + expensesServices + expensesPersonnel;
   }
 
   getDepreciationAmortization() {
     let depreciationAmortization = this.state.balance_sheet.filter(p => p.index === 64);
     if(depreciationAmortization.length === 0) return 0;
-    return Math.abs(depreciationAmortization[0].credit - depreciationAmortization[0].debit);
+    return depreciationAmortization[0].credit - depreciationAmortization[0].debit;
   }
 
   getInterestTaxes() {
@@ -135,14 +135,14 @@ class FinancialArea extends Component {
     if(interest.length !== 0)
       interest_count = interest[0].credit - interest[0].debit;
     if(taxes.length === 0)
-      return Math.abs(interest_count);
-    return Math.abs(interest_count + taxes[0].credit - taxes[0].debit);
+      return interest_count;
+    return interest_count + taxes[0].credit - taxes[0].debit;
   }
 
   getEquity() {
     let equity = this.state.balance_sheet.filter(p => p.index === 51);
     if(equity.length === 0) return 0;
-    return Math.abs(equity[0].credit - equity[0].debit);
+    return equity[0].credit - equity[0].debit;
   }
 
   render() {

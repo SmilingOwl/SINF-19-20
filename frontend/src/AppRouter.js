@@ -12,6 +12,7 @@ import Product from './pages/Product.js';
 import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
 import Purchases from './pages/Purchases.js';
+import Login from './pages/Login.js';
 
 
 function AppRouter()
@@ -44,9 +45,11 @@ function AppRouter()
           <Route path="/purchases">
             <Purchases/>
           </Route>
-          <Route path="/suppliers/:id" children={<Supplier/>}>
-          </Route>
+          <Route path="/suppliers/:id" children={<Supplier/>} />
           <Route path="/products/:id" children={<Product/>} />
+          <Route path="/login">
+            <Login/>
+          </Route>
         </Switch>
     </Router>
     )
