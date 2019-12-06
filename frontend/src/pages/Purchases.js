@@ -16,6 +16,7 @@ class Purchases extends Component
     this.fetchBalanceSheetInfo();
     this.fetchTotalSpentInfo();
     this.fetchProductsTable();
+    this.fetchSuppliersTable();
   }
 
   fetchTotalSpentInfo() {
@@ -30,23 +31,49 @@ class Purchases extends Component
     fetch("http://localhost:9000/purchases/products")
     .then(res => res.json())
     .then(res => {
-      this.setState({products: res});
+      this.setState({products:res.products});
     })
+  }
+
+  fetchSuppliersTable(){
+    fetch("http://localhost:9000/purchases/suppliers")
+    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      this.setState({suppliers:res.suppliers});
+    })
+  }
+
+  fillSuppliersTable(){
+    let suppliersTable = [];
+    console.log(this.state.suppliers);
+    if (!this.state.suppliers)
+      return [];
+    for (let i = 1; i <= this.state.suppliers.length && i <= 10 ; i++) {
+      suppliersTable.push(
+        <tr className="table-row" key={i}>
+          <th scope="row" className="centered">{i}</th>
+          <td>{this.state.suppliers[i-1].name}</td>
+          <td className="centered"></td>
+          <td className="centered"></td>
+          <td className="centered"></td>
+        </tr>
+      );
+    }
   }
 
   fillProductsTable() {
     let productsTable = [];
-    console.log(this.state.products);
     if (!this.state.products)
       return [];
-    for (let i = 0; i < this.state.products.length && i < 10 ; i++) {
+    for (let i = 1; i <= this.state.products.length && i <= 10 ; i++) {
       productsTable.push(
-        <tr className="table-row">
-          <th scope="row" className="centered">i</th>
-          <td className="centered">{this.state.products[i].product}</td>
-          <td className="centered">{this.state.products[i].unitsSold}</td>
-          <td className="centered">{this.state.products[i].pricePerUnit}</td>
-          <td className="centered">{this.state.products[i].total_earned}</td>
+        <tr className="table-row" key={i}>
+          <th scope="row" className="centered">{i}</th>
+          <td>{this.state.products[i-1].product}</td>
+          <td className="centered">{this.state.products[i-1].unitsSold}</td>
+          <td className="centered">{this.state.products[i-1].pricePerUnit}</td>
+          <td className="centered">{this.state.products[i-1].total_earned}</td>
         </tr>
       );
       
@@ -151,7 +178,7 @@ class Purchases extends Component
                     </tr>
                   </thead>
                   <tbody>
-                   
+                  {this.fillSuppliersTable()}
                   </tbody>
                 </table>
               </div>
