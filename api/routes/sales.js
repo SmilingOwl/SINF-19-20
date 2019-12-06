@@ -74,7 +74,6 @@ router.get('/info', function(req, res, next) {
         customers: customers,
         products: products
     }
-    console.log(sales);
     return res.send(sales);
 });
 

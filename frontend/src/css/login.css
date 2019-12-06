@@ -1,0 +1,19 @@
+.padding-2 {
+    padding: 2em !important;
+}
+
+.padding-bottom-1 {
+    padding-bottom: 1em !important;
+}
+
+button.btn-primary {
+    background-color: #588DA3;
+    border-color: white;
+    float: right;
+}
+
+button.btn-primary:hover {
+    background-color: white;
+    border-color: #588DA3;
+    color:  #588DA3;
+}
