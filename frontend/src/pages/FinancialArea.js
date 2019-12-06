@@ -9,20 +9,16 @@ import NetIncome from '../components/financialArea/NetIncome';
 import TotalAssets from '../components/financialArea/TotalAssets';
 import TotalLiabilities from '../components/financialArea/TotalLiabilities';
 import Equity from '../components/financialArea/Equity';
-import { useAuth } from "../context/auth";
 
 const FinancialArea = () => {
-  const { authTokens } = useAuth();
   const [balanceSheet, setBalanceSheet] = useState([]);
   const [totalAssets, settotalAssets] = useState({
     debit: 0,
     credit: 0,
-    total: 0,
   });
   const [totalLiabilities, setTotalLiabilities] = useState({
     debit: 0,
     credit: 0,
-    total: 0,
   });
   const [assets, setAssets] = useState([]);
   const [liabilities, setLiabilities] = useState([]);
@@ -78,7 +74,7 @@ const FinancialArea = () => {
     setTotalLiabilities({
       debit: calTotalDebit,
       credit: calTotalCredit,
-      total: calTotalDebit - calTotalCredit,
+      total: calTotalCredit - calTotalDebit,
     });
   }, [liabilities]);
 
@@ -121,7 +117,7 @@ const FinancialArea = () => {
         Balance Sheet
       </div>
 
-      <div className="row smallerSize">
+      <div className="row">
         <div className="col-md-1" />
 
         <div className="col-md-5 bigBox">

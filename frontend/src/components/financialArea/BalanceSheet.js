@@ -6,17 +6,14 @@ const BalanceSheet = ({ type, balanceSheet }) => {
   for (let i = 0; i < balanceSheet.length; i += 1) {
     const element = balanceSheet[i];
     if (element.type === type && element.credit + element.debit > 0) {
-      let total = element.debit - element.credit;
-      if (type === 'liability') total = element.credit - element.debit;
       elements.push(
         <div className="row" key={element.index}>
           <div className="col-sm-1">
             <strong>{element.index}</strong>
           </div>
           <div className="col-sm-5">{element.description}</div>
-          <div className="col-sm-2 price">{`${element.debit}€`}</div>
-          <div className="col-sm-2 price">{`${element.credit}€`}</div>
-          <div className="col-sm-2 price">{`${Math.abs(total)}€`}</div>
+          <div className="col-sm-3 price">{`${element.debit}€`}</div>
+          <div className="col-sm-3 price">{`${element.credit}€`}</div>
         </div>,
       );
     }
@@ -30,9 +27,8 @@ const BalanceSheet = ({ type, balanceSheet }) => {
             <strong>ID</strong>
           </div>
           <div className="col-sm-5">Description</div>
-          <div className="col-sm-2 price">Debit</div>
-          <div className="col-sm-2 price">Credit</div>
-          <div className="col-sm-2 price">Total</div>
+          <div className="col-sm-3 price">Debit</div>
+          <div className="col-sm-3 price">Credit</div>
         </div>
         {' '}
         <hr />
