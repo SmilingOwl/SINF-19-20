@@ -21,7 +21,6 @@ const BalanceSheet = ({ type, balanceSheet }) => {
 
   return (
     <>
-      <div key="0">
         <div className="row">
           <div className="col-sm-1">
             <strong>ID</strong>
@@ -32,7 +31,6 @@ const BalanceSheet = ({ type, balanceSheet }) => {
         </div>
         {' '}
         <hr />
-      </div>
       <div>{elements}</div>
     </>
   );

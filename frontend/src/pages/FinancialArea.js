@@ -80,7 +80,7 @@ const FinancialArea = () => {
   }, [liabilities]);
 
   return (
-    <Container>
+    <div>
       <Row className="topic mtop">
         <Col sm={{ size: '10', offset: 1 }}>Profit / Sales</Col>
       </Row>
@@ -128,7 +128,7 @@ const FinancialArea = () => {
 
         <div className="col-md-1" />
       </Row>
-    </Container>
+    </div>
   );
 };
 
