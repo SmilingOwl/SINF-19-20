@@ -1,24 +1,32 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { Row, Col } from 'reactstrap';
 import { getSales, getCOGS } from '../../common/Math';
 
 const GrossProfit = ({ balanceSheet }) => (
-  <div className="col-md-3 smallBox">
-    <div className="row">
-      <div className="col-md-8 smallerSize">Sales</div>
-      <div className="col-md-4 price smallerSize">{`${getSales(balanceSheet)}€`}</div>
-    </div>
-
-    <div className="row">
-      <div className="col-md-8 smallerSize">Cost of Goods Sold</div>
-      <div className="col-md-4 price smallerSize">{`${getCOGS(balanceSheet)}€`}</div>
-    </div>
+  <Col md={{ size: '3', offset: 2 }} className="smallBox">
+    <Row>
+      <Col md="8" className="smallerSize">
+        Sales
+      </Col>
+      <Col md="4" className="price smallerSize">
+        {`${getSales(balanceSheet)}€`}
+      </Col>
+    </Row>
+    <Row>
+      <Col md="8" className="smallerSize">
+        Cost of Goods Sold
+      </Col>
+      <Col md="4" className="price smallerSize">{`${getCOGS(balanceSheet)}€`}</Col>
+    </Row>
     <hr />
-    <div className="row">
-      <div className="col-md-8 value">Gross Profit</div>
-      <div className="col-md-4 price">{`${getSales(balanceSheet) - getCOGS(balanceSheet)}€`}</div>
-    </div>
-  </div>
+    <Row>
+      <Col md="8" className="value">
+        Gross Profit
+      </Col>
+      <Col md="4" className="price">{`${getSales(balanceSheet) - getCOGS(balanceSheet)}€`}</Col>
+    </Row>
+  </Col>
 );
 
 GrossProfit.propTypes = {

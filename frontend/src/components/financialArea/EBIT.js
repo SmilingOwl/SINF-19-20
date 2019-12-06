@@ -1,38 +1,42 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { Row, Col } from 'reactstrap';
 import {
   getSales, getCOGS, getExpenses, getDepreciationAmortization,
 } from '../../common/Math';
 
 const EBIT = ({ balanceSheet }) => (
-  <div className="col-md-3 smallBox">
-    <div className="row">
-      <div className="col-md-8 smallerSize">EBITDA</div>
-      <div className="col-md-4 price smallerSize">
+  <Col md={{ size: '3', offset: 2 }} className="  smallBox">
+    <Row>
+      <Col md="8" className="smallerSize">
+        EBITDA
+      </Col>
+      <Col md="4" className="price smallerSize">
         {`${getSales(balanceSheet) - getCOGS(balanceSheet) - getExpenses(balanceSheet)}€`}
-      </div>
-    </div>
-
-    <div className="row">
-      <div className="col-md-8 smallerSize">Depreciation and Amortization</div>
-      <div className="col-md-4 price smallerSize">
+      </Col>
+    </Row>
+    <Row>
+      <Col md="8" className="smallerSize">
+        Depreciation and Amortization
+      </Col>
+      <Col md="4" className="price smallerSize">
         {`${getDepreciationAmortization(balanceSheet)}€`}
-      </div>
-    </div>
-    <div className="row" />
-
+      </Col>
+    </Row>
+    <Row />
     <hr />
-    <div className="row">
-      <div className="col-md-8 value">EBIT</div>
-      <div className="col-md-4 price">
+    <Row>
+      <Col md="8" className="value">
+        EBIT
+      </Col>
+      <Col md="4" className="price">
         {`${getSales(balanceSheet)
           - getCOGS(balanceSheet)
           - getExpenses(balanceSheet)
-          - getDepreciationAmortization(balanceSheet)
-        }€`}
-      </div>
-    </div>
-  </div>
+          - getDepreciationAmortization(balanceSheet)}€`}
+      </Col>
+    </Row>
+  </Col>
 );
 
 EBIT.propTypes = {

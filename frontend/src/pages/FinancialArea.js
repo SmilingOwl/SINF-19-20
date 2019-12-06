@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../css/financial.css';
+import { Container, Row, Col } from 'reactstrap';
 import BalanceSheet from '../components/financialArea/BalanceSheet';
 import GrossProfit from '../components/financialArea/GrossProfit';
 import EBITDA from '../components/financialArea/EBITDA';
@@ -81,77 +82,55 @@ const FinancialArea = () => {
   }, [liabilities]);
 
   return (
-    <div>
-      <div className="row topic mtop">
-        <div className="col-md-1" />
-        Profit / Sales
-        <div className="col-md-1" />
-      </div>
+    <Container>
+      <Row className="topic mtop">
+        <Col sm={{ size: '10', offset: 1 }}>Profit / Sales</Col>
+      </Row>
 
-      <div className="row">
-        <div className="col-md-2" />
+      <Row>
         <GrossProfit balanceSheet={balanceSheet} />
-
-        {/* espaco-entre-boxs */}
-        <div className="col-md-2" />
-
         <EBITDA balanceSheet={balanceSheet} />
+      </Row>
 
-        {/* espaco-final} */}
-        <div className="col-md-2" />
-      </div>
-
-      <div className="row">
-        <div className="col-md-2" />
-
-        {/* EBIT table */}
+      <Row>
         <EBIT balanceSheet={balanceSheet} />
-
-        <div className="col-md-2" />
-
-        {/* Net income table */}
         <NetIncome balanceSheet={balanceSheet} />
-        <div className="col-md-2" />
-      </div>
+      </Row>
 
-      <div className="row topic">
-        <div className="col-md-1" />
-        Balance Sheet
-      </div>
+      <Row className="topic">
+        <Col md={{ size: 'auto', offset: 1 }}>Balance Sheet</Col>
+      </Row>
 
-      <div className="row smallerSize">
-        <div className="col-md-1" />
+      <Row className="smallerSize">
 
-        <div className="col-md-5 bigBox">
+        <Col md={{ size: '5', offset: 1 }} className="bigBox">
           <h5 className="value">Assets</h5>
           <BalanceSheet type="asset" balanceSheet={assets} />
-        </div>
+        </Col>
 
-        <div className="col-md-5 bigBox">
+        <Col md="5" className="bigBox">
           <h5 className="value">Liabilities</h5>
           <BalanceSheet type="liability" balanceSheet={liabilities} />
-        </div>
+        </Col>
+      </Row>
 
-        <div className="col-md-1" />
-      </div>
-
-      <div className="row">
+      <Row>
         <div className="col-md-1" />
 
         <TotalAssets totalAssets={totalAssets} />
 
         <TotalLiabilities totalLiabilities={totalLiabilities} />
         <div className="col-md-1" />
-      </div>
+      </Row>
 
-      <div className="row mbottom">
+      <Row className="mbottom">
         <div className="col-md-1" />
 
         <Equity balanceSheet={balanceSheet} />
 
         <div className="col-md-1" />
-      </div>
-    </div>
+      </Row>
+    </Container>
   );
 };
 

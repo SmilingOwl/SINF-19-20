@@ -1,28 +1,28 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { Row, Col } from 'reactstrap';
 import { getSales, getCOGS, getExpenses } from '../../common/Math';
 
 const EBITDA = ({ balanceSheet }) => (
-  <div className="col-md-3 smallBox">
-    <div className="row">
-      <div className="col-md-8 smallerSize">Gross Profit</div>
-      <div className="col-md-4 price smallerSize">
+  <Col md={{ size: '3', offset: 2 }} className="smallBox">
+    <Row>
+      <Col md="8" className="smallerSize">Gross Profit</Col>
+      <Col md="4" className="price smallerSize">
         {`${getSales(balanceSheet) - getCOGS(balanceSheet)}€`}
-      </div>
-    </div>
-
-    <div className="row">
-      <div className="col-md-8 smallerSize">Expenses</div>
-      <div className="col-md-4 price smallerSize">{`${getExpenses(balanceSheet)}€`}</div>
-    </div>
+      </Col>
+    </Row>
+    <Row>
+      <Col md="8" className="smallerSize">Expenses</Col>
+      <Col md="4" className="price smallerSize">{`${getExpenses(balanceSheet)}€`}</Col>
+    </Row>
     <hr />
-    <div className="row">
-      <div className="col-md-8 value">EBITDA</div>
-      <div className="col-md-4 price">
+    <Row>
+      <Col md="8" className="value">EBITDA</Col>
+      <Col md="4" className="price">
         {`${getSales(balanceSheet) - getCOGS(balanceSheet) - getExpenses(balanceSheet)}€`}
-      </div>
-    </div>
-  </div>
+      </Col>
+    </Row>
+  </Col>
 );
 
 EBITDA.propTypes = {
