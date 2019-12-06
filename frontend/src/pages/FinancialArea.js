@@ -9,8 +9,10 @@ import NetIncome from '../components/financialArea/NetIncome';
 import TotalAssets from '../components/financialArea/TotalAssets';
 import TotalLiabilities from '../components/financialArea/TotalLiabilities';
 import Equity from '../components/financialArea/Equity';
+import { useAuth } from "../context/auth";
 
 const FinancialArea = () => {
+  const { authTokens } = useAuth();
   const [balanceSheet, setBalanceSheet] = useState([]);
   const [totalAssets, settotalAssets] = useState({
     debit: 0,

@@ -1,7 +1,8 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from "react-router-dom";
-import '../css/login.css'
 import { useAuth } from "../context/auth";
+import axios from 'axios';
+import '../css/login.css'
 
 function Login() {
     const [isLoggedIn, setLoggedIn] = useState(false);
@@ -9,13 +10,22 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { setAuthTokens } = useAuth();
-    const { authTokens } = useAuth();
 
     function login() {
-        setAuthTokens({
-            type: 'Head of Finance'
-        });
-        setLoggedIn(true);
+      setIsError(false);
+      axios.post("http://localhost:9000/auth/login", {
+        email,
+        password
+      }).then(result => {
+        if (result.status === 200) {
+          setAuthTokens(result.data);
+          setLoggedIn(true);
+        } else {
+          setIsError(true);
+        }
+      }).catch(e => {
+        setIsError(true);
+      });
     }
 
     if (isLoggedIn) {
@@ -43,6 +53,7 @@ function Login() {
                     setPassword(e.target.value);
                   }}/>
                 </div>
+                { isError &&<div className="padding-bottom-1 alert alert-danger" role="alert">The credentials provided are invalid.</div> }
                 <button onClick={login} className="btn btn-primary">Login</button>
             </div>
           </div>

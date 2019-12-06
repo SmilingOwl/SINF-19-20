@@ -8,6 +8,7 @@ var parserRouter = require('./routes/parser');
 var financesRouter = require('./routes/finances');
 var salesRouter = require('./routes/sales');
 var productRouter = require('./routes/product');
+var authRouter = require('./routes/auth');
 var fs = require('fs');
 var parser = require('xml2json');
 var request = require('request');
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/finances', financesRouter);
 app.use('/sales', salesRouter);
 app.use('/products', productRouter);
+app.use('/auth', authRouter);
 app.use('/', parserRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -76,22 +78,22 @@ request({
 app.set('users', [
   {
       type: 'Head of Sales',
-      username: 'sales@snif.pt',
+      email: 'sales@snif.pt',
       password: 'sales'
   },
   {
       type: 'Head of Purchases',
-      username: 'purchases@snif.pt',
+      email: 'purchases@snif.pt',
       password: 'purchases'
   },
   {
       type: 'CEO',
-      username: 'ceo@snif.pt',
+      email: 'ceo@snif.pt',
       password: 'ceo'
   },
   {
       type: 'Shareholder',
-      username: 'shareholder@snif.pt',
+      email: 'shareholder@snif.pt',
       password: 'shareholder'
   }
 ]);
