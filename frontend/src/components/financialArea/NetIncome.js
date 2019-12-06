@@ -1,5 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { Row, Col } from 'reactstrap';
 import {
   getSales,
   getCOGS,
@@ -9,36 +10,34 @@ import {
 } from '../../common/Math';
 
 const NetIncome = ({ balanceSheet }) => (
-  <div className="col-md-3 smallBox">
-    <div className="row">
-      <div className="col-md-8 smallerSize">EBIT</div>
-      <div className="col-md-4 price smallerSize">
+  <Col md={{ size: '3', offset: 2 }} className="smallBox">
+    <Row>
+      <Col md="8" className="smallerSize">EBIT</Col>
+      <Col md="4" className="price smallerSize">
         {`${getSales(balanceSheet)
           - getCOGS(balanceSheet)
           - getExpenses(balanceSheet)
           - getDepreciationAmortization(balanceSheet)
         }€`}
-      </div>
-    </div>
-
-    <div className="row">
-      <div className="col-md-8 smallerSize">Interest and Taxes</div>
-      <div className="col-md-4 price smallerSize">{`${getInterestTaxes(balanceSheet)}€`}</div>
-    </div>
-
+      </Col>
+    </Row>
+    <Row>
+      <Col md="8" className="smallerSize">Interest and Taxes</Col>
+      <Col md="4" className="price smallerSize">{`${getInterestTaxes(balanceSheet)}€`}</Col>
+    </Row>
     <hr />
-    <div className="row">
-      <div className="col-md-8 value">Net income</div>
-      <div className="col-md-4 price">
+    <Row>
+      <Col md="8" className="value">Net income</Col>
+      <Col md="4" className="price">
         {`${getSales(balanceSheet)
           - getCOGS(balanceSheet)
           - getExpenses(balanceSheet)
           - getDepreciationAmortization(balanceSheet)
           - getInterestTaxes(balanceSheet)
         }€`}
-      </div>
-    </div>
-  </div>
+      </Col>
+    </Row>
+  </Col>
 );
 
 NetIncome.propTypes = {
