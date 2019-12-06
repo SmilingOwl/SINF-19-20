@@ -100,17 +100,20 @@ router.get('/purchases/products', function (req, res, next) {
         let invoices = JSON.parse(body);
         invoices.forEach(invoice => {
             invoice.documentLines.forEach(line => {
-                if (products[line.purchasesItem] == null) {
-                    products[line.purchasesItem] = {
+                let product = products.filter(element=> element.code == line.purchasesItem);
+                if (product.length == 0 ) {
+                   
+                    products.push( {
+                        code: line.purchasesItem,
                         product: line.description,
                         unitsSold: line.quantity,
                         pricePerUnit: line.unitPrice.amount,  
                         total_earned: line.quantity * line.unitPrice.amount,
-                    };
+                    });
                    
                 }else{
-                    products[line.purchasesItem].unitsSold += line.quantity;
-                    products[line.purchasesItem].total_earned += line.quantity * line.unitPrice.amount;
+                    product[0].unitsSold += line.quantity;
+                    product[0].total_earned += line.quantity * line.unitPrice.amount;
                 }
                 
             });
@@ -119,10 +122,35 @@ router.get('/purchases/products', function (req, res, next) {
         let data = {
             products: products,
         };
-        console.log(data);
        return res.send(data);
     });
 
+});
+
+router.get('/purchases/suppliers', function (req, res, next) {
+    if (req.app.get('api_token') == null)
+        return res.send('Error');
+    let authorization = req.app.get('api_token').token_type.concat(" ").concat(req.app.get('api_token').access_token);
+    request({
+        uri: 'https://my.jasminsoftware.com/api/224974/224974-0001/invoiceReceipt/invoices',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization },
+        method: "GET",
+    }, function (error, response, body) {
+        let suppliers = [];
+        let invoices = JSON.parse(body);
+
+        invoices.forEach(invoice => {
+
+            suppliers.push([invoice.sellerSupplierPartyTaxId, {
+                name: invoice.sellerSupplierPartyDescription,
+            }]);
+
+        });
+        let data = {
+            suppliers: suppliers,
+        };
+       return res.send(data);
+    });
 });
 
 module.exports = router;
