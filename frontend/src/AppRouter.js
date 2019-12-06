@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -13,45 +13,54 @@ import './css/navbar.css';
 import FinancialArea from './pages/FinancialArea.js';
 import Purchases from './pages/Purchases.js';
 import Login from './pages/Login.js';
-
+import { AuthContext } from "./context/auth";
 
 function AppRouter()
 {
+  const [authTokens, setAuthTokens] = useState();
+  
+  const setTokens = (data) => {
+    localStorage.setItem("tokens", JSON.stringify(data));
+    setAuthTokens(data);
+  }
+
     return (
-      <Router>
-        <div>
-          <div className="row">
-              <Link className="col-sm-4 d-flex justify-content-center nav-item finances_navbar" to="/finances">
-                <strong className="link">Financial Area</strong>
-              </Link>
-              <Link className="col-sm-4 d-flex justify-content-center nav-item sales_navbar" to="/sales">
-                <strong className="link">Sales</strong>
-              </Link>
-              <Link className="col-sm-4 d-flex justify-content-center nav-item purchases_navbar" to="/purchases">
-                <strong className="link">Purchases</strong>
-              </Link>
+      <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
+        <Router>
+          <div>
+            <div className="row">
+                <Link className="col-sm-4 d-flex justify-content-center nav-item finances_navbar" to="/finances">
+                  <strong className="link">Financial Area</strong>
+                </Link>
+                <Link className="col-sm-4 d-flex justify-content-center nav-item sales_navbar" to="/sales">
+                  <strong className="link">Sales</strong>
+                </Link>
+                <Link className="col-sm-4 d-flex justify-content-center nav-item purchases_navbar" to="/purchases">
+                  <strong className="link">Purchases</strong>
+                </Link>
+            </div>
           </div>
-        </div>
-        <Switch>
-          <Route exact path="/">
-            <Home/>
-          </Route>
-          <Route path="/finances">
-            <FinancialArea/>
-          </Route>
-          <Route path="/sales">
-            <Sales/>
-          </Route>
-          <Route path="/purchases">
-            <Purchases/>
-          </Route>
-          <Route path="/suppliers/:id" children={<Supplier/>} />
-          <Route path="/products/:id" children={<Product/>} />
-          <Route path="/login">
-            <Login/>
-          </Route>
-        </Switch>
-    </Router>
+          <Switch>
+            <Route exact path="/">
+              <Home/>
+            </Route>
+            <Route path="/finances">
+              <FinancialArea/>
+            </Route>
+            <Route path="/sales">
+              <Sales/>
+            </Route>
+            <Route path="/purchases">
+              <Purchases/>
+            </Route>
+            <Route path="/suppliers/:id" children={<Supplier/>} />
+            <Route path="/products/:id" children={<Product/>} />
+            <Route path="/login">
+              <Login/>
+            </Route>
+          </Switch>
+      </Router>
+    </AuthContext.Provider>
     )
 }
 
