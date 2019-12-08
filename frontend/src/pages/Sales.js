@@ -23,7 +23,6 @@ class Sales extends Component
       .then(res => {
         this.setState({ customers: res.customers });
         this.setState({ products: res.products });
-        console.log(res.products);
       })
       .catch(err => err);
   }

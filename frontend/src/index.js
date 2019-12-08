@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/common.css';
 
-localStorage.setItem("tokens", null);
+if(localStorage.length === 0) localStorage.setItem("tokens", null);
 ReactDOM.render(<AppRouter /> , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
