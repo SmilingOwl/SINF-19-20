@@ -146,13 +146,15 @@ button.btn-primary:hover {
 }
 
 .nav-item {
-    margin-top: 0.9em;
-    margin-bottom: 0.9em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
 
 strong.link {
     text-decoration: none;
     color: #588DA3;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 .nav-item:hover strong.link {
@@ -163,4 +165,8 @@ strong.link {
     background-color: #588DA3;
     cursor: pointer;
     text-decoration: none;
+}
+
+nav.navbar {
+    border-bottom: 1px solid #588DA3;
 }
