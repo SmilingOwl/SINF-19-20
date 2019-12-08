@@ -19,6 +19,27 @@ router.get('/:productId', function(req, res, next) {
     });
 });
 
+router.get('/:productId/stock', function(req, res, next) {
+    if(req.app.get('api_token') == null)
+        return res.send('Error');
+    let authorization = req.app.get('api_token').token_type.concat(" ").concat(req.app.get('api_token').access_token);
+    request({
+        uri: 'https://my.jasminsoftware.com/api/224974/224974-0001/materialsCore/materialsItems/' + req.params.productId,
+        headers: { 'Content-Type': 'application/json', Authorization: authorization },
+        method: "GET",
+    }, function(error, response, body) {
+        let stock = JSON.parse(body);
+        let quantity = 0;
+        stock.materialsItemWarehouses.forEach((warehouse) => {
+            quantity += warehouse.stockBalance;
+        });
+        let stockInfo = {
+            quantity: quantity,
+        }
+        return res.send(stockInfo);
+    });
+});
+
 router.get('/:productId/sales', function(req, res, next) {
     if(req.app.get('api_token') == null)
         return res.send('Error');
