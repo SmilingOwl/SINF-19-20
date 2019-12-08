@@ -154,12 +154,13 @@ router.get('/purchases/suppliers', function (req, res, next) {
                     supplier: invoice.sellerSupplierPartyDescription,
                     products:[],
                     most_bought_product: '',
+                    quantity_bought: 0,
                 });
                 sup = suppliers[suppliers.length-1];
             }
 
             invoice.documentLines.forEach(line => {
-                let product = sup.products.filter(element => element.code == invoice.documentLines.description);
+                let product = sup.products.filter(element => element.code == line.description);
                 
                 if (sup.total_spent == null) {
                    sup.total_spent = totalSpent;
@@ -174,7 +175,7 @@ router.get('/purchases/suppliers', function (req, res, next) {
                     });
 
                 } else {
-                    sup.product[0].unitsSold += line.quantity;  
+                    product[0].unitsSold += line.quantity;  
                 }
 
             });
@@ -189,12 +190,13 @@ router.get('/purchases/suppliers', function (req, res, next) {
             for(let i = 0; i< suppliers[j].products.length; i++){
                 if(initialValue <= suppliers[j].products[i].unitsSold){
                     suppliers[j].most_bought_product = suppliers[j].products[i].code;
+                    suppliers[j].quantity_bought = suppliers[j].products[i].unitsSold;
                     initialValue = suppliers[j].products[i].unitsSold;
                 }
             }
         }
 
-        suppliers.sort((a, b) => (a.products.unitsSold < b.products.unitsSold) ? 1 : -1);
+        suppliers.sort((a, b) => (a.quantity_bought < b.quantity_bought) ? 1 : -1);
         let data = {
             suppliers: suppliers,
         };

@@ -39,6 +39,7 @@ class Purchases extends Component
     .then(res => res.json())
     .then(res => {
       this.setState({suppliers:res.suppliers});
+      console.log(res.suppliers);
     })
   }
 
@@ -52,10 +53,11 @@ class Purchases extends Component
           <th scope="row" className="centered">{i}</th>
           <td>{this.state.suppliers[i-1].supplier}</td>
           <td className="centered">{this.state.suppliers[i-1].most_bought_product}</td>
-          <td className="centered">{this.state.suppliers[i-1].totalSpent}</td>
+          <td className="centered">{this.state.suppliers[i-1].total_spent}</td>
         </tr>
       );
     }
+    return suppliersTable;
   }
 
   fillProductsTable() {
