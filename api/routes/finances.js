@@ -88,43 +88,72 @@ router.get('/balance-sheet', function(req, res, next) {
         balance_sheet[i].debit = 0;
     }
 
-    process_accounts(balance_sheet, req);
-    return res.send(balance_sheet);
+    sales_over_time = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    process_accounts(balance_sheet, req, sales_over_time);
+    let balance = {
+        balance_sheet: balance_sheet,
+        sales_over_time: sales_over_time,
+    }
+    return res.send(balance);
 });
 
-function process_accounts(balance_sheet, req) {
+function process_accounts(balance_sheet, req, sales_over_time) {
     let json = JSON.parse(req.app.get('json'));
     let journals = json.AuditFile.GeneralLedgerEntries.Journal;
     journals.forEach(journal => {
         if (Array.isArray(journal.Transaction)) {
-            journal.Transaction.forEach(transaction => process_transaction(transaction, balance_sheet));
+            journal.Transaction.forEach(transaction => process_transaction(transaction, balance_sheet, sales_over_time));
         } else if (journal.Transaction) {
-            process_transaction(journal.Transaction, balance_sheet);
+            process_transaction(journal.Transaction, balance_sheet, sales_over_time);
         }
     });
 }
 
-function process_transaction(transaction, balance_sheet) {
+function process_transaction(transaction, balance_sheet, sales_over_time) {
     if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
         let credit_lines = transaction.Lines.CreditLine;
         credit_lines.forEach(credit_line => {
             let element = balance_sheet.filter(p => p.index == credit_line.AccountID.substring(0, 2));
-            if(element.length > 0) element[0].credit += parseInt(credit_line.CreditAmount);
+            if(element.length > 0) {
+                element[0].credit += parseInt(credit_line.CreditAmount);
+                if(element[0].index === 71) {
+                    let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                    sales_over_time[month-1] -= parseInt(credit_line.CreditAmount);
+                }
+            }
         });
     } else if (transaction.Lines.CreditLine) {
         let element = balance_sheet.filter(p => p.index == transaction.Lines.CreditLine.AccountID.substring(0, 2));
-        if(element.length > 0) element[0].credit += parseInt(transaction.Lines.CreditLine.CreditAmount);
+        if(element.length > 0) {
+            element[0].credit += parseInt(transaction.Lines.CreditLine.CreditAmount);
+            if(element[0].index === 71) {
+                let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                sales_over_time[month-1] -= parseInt(transaction.Lines.CreditLine.CreditAmount);
+            }
+        }
     }
 
     if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
         let debit_lines = transaction.Lines.DebitLine;
         debit_lines.forEach(debit_line => {
             let element = balance_sheet.filter(p => p.index == debit_line.AccountID.substring(0, 2));
-            if(element.length > 0) element[0].debit += parseInt(debit_line.DebitAmount);
+            if(element.length > 0){
+                element[0].debit += parseInt(debit_line.DebitAmount);
+                if(element[0].index === 71) {
+                    let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                    sales_over_time[month-1] += parseInt(debit_line.DebitAmount);
+                }
+            }
         });
     } else if (transaction.Lines.DebitLine) {
         let element = balance_sheet.filter(p => p.index == transaction.Lines.DebitLine.AccountID.substring(0, 2));
-        if(element.length > 0) element[0].debit += parseInt(transaction.Lines.DebitLine.DebitAmount);
+        if(element.length > 0){
+            element[0].debit += parseInt(transaction.Lines.DebitLine.DebitAmount);
+            if(element[0].index === 71) {
+                let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                sales_over_time[month-1] += parseInt(transaction.Lines.DebitLine.DebitAmount);
+            }
+        }
     }
 }
 

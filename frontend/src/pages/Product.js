@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Line } from 'react-chartjs-2';
+import SalesGraph from '../components/financialArea/SalesGraph';
 
 class Product extends Component
 {
@@ -10,7 +10,7 @@ class Product extends Component
         product: {
           api: {}
         },
-        sales_info: "",
+        sales_info: ""
     };
     this.id = this.props.match.params.id;
   }
@@ -18,6 +18,7 @@ class Product extends Component
   UNSAFE_componentWillMount() {
     this.fetchProduct();
     this.fetchProductSalesInfo();
+    this.fetchProductChart();
   }
 
   fetchProduct() {
@@ -38,6 +39,15 @@ class Product extends Component
         .catch(err => err);
   }
 
+  fetchProductChart() {
+    fetch("http://localhost:9000/products/" + this.id + "/chart")
+        .then(res => res.json())
+        .then(res => {        
+            this.setState({ chartInfo: res });
+        })
+        .catch(err => err);
+  }
+
   getLineChartData() {
     return {
       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -45,7 +55,7 @@ class Product extends Component
         {
           label: 'Quantity of Sales',
           borderColor: '#588DA3',
-          data: this.state.product.chartInfo,
+          data: this.state.chartInfo,
         },
       ]
     }
@@ -68,7 +78,7 @@ class Product extends Component
                 <strong className="field-name">Name: </strong> { this.state.product.api.description }
               </div>
               <div className="col-md-3">
-                <strong className="field-name">Code: </strong> { this.state.product.ProductCode }
+                <strong className="field-name">Code: </strong> { this.id }
               </div>
               <div className="col-md-4 align-right">
                 <strong className="field-name">Barcode: </strong> { this.state.product.api.barcode }
@@ -139,13 +149,9 @@ class Product extends Component
           <div className="col-md-8 zero_padding">
             <h3 className="section-title">Sales Over Time</h3>
           </div>
+          <div className="col-md-2"/>
         </div>
-        <div className="row">
-          <div className="col-md-2"/> 
-          <div className="col-md-8 smallBox">
-            <Line data={this.getLineChartData()} />
-          </div>
-        </div>
+        <SalesGraph elements={this.state.product.chartInfo} />
       </div>
     );
   }

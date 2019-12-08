@@ -4,77 +4,87 @@ var router = express.Router();
 var request = require('request');
 
 router.get('/info', function(req, res, next) {
-    let json = JSON.parse(req.app.get('json'));
-    let customers = json.AuditFile.MasterFiles.Customer;
-    let invoices = json.AuditFile.SourceDocuments.SalesInvoices.Invoice;
-    let customer_invoice = [];
-    let products = json.AuditFile.MasterFiles.Product;
-    let product_info = [];
-    for(let i = 0; i < invoices.length; i++) {
-        if(customer_invoice[invoices[i].CustomerID] == null) {
-            customer_invoice[invoices[i].CustomerID] = {
-                totalSpent: parseFloat(invoices[i].DocumentTotals.GrossTotal),
-            };
-        } else {
-            customer_invoice[invoices[i].CustomerID].totalSpent += parseFloat(invoices[i].DocumentTotals.GrossTotal);
+    if(req.app.get('api_token') == null)
+        return res.send('Error');
+    let authorization = req.app.get('api_token').token_type.concat(" ").concat(req.app.get('api_token').access_token);
+    request({
+        uri: 'https://my.jasminsoftware.com/api/224974/224974-0001/billing/invoices',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization },
+        method: "GET",
+    }, function(error, response, body) {
+        let invoices = JSON.parse(body);
+        let customers = [];
+        let products = [];
+        invoices.forEach(invoice => {
+            if(customers[invoice.buyerCustomerPartyName] == null) {
+                customers[invoice.buyerCustomerPartyName] = {
+                    totalSpent: invoice.grossValue.amount,
+                    name: invoice.buyerCustomerPartyName,
+                    taxId: invoice.buyerCustomerPartyTaxId,
+                    product: null,
+                    quantityBought: 0,
+                };
+            } else {
+                customers[invoice.buyerCustomerPartyName].totalSpent += parseFloat(invoice.grossValue.amount);
+            }
+            invoice.documentLines.forEach(line => {
+                if(products[line.salesItem] == null) {
+                    products[line.salesItem] = {
+                        code: line.salesItem,
+                        description: line.description,
+                        quantity: line.quantity,
+                        totalEarned: line.quantity * line.unitPrice.amount,
+                    };
+                } else {
+                    products[line.salesItem].quantity += line.quantity;
+                    products[line.salesItem].totalEarned += line.quantity * line.unitPrice.amount;
+                }
+
+                if(customers[invoice.buyerCustomerPartyName][line.salesItem] == null) {
+                    customers[invoice.buyerCustomerPartyName][line.salesItem] = {
+                        code: line.salesItem,
+                        description: line.description,
+                        quantity: line.quantity,
+                    };
+                } else {
+                    customers[invoice.buyerCustomerPartyName][line.salesItem].quantity += line.quantity;
+                }
+            });
+        });
+
+        let customers_to_return = [];
+        for (let item in customers ){
+            customers_to_return.push(customers[item]);
         }
 
-        for(let j = 0; j < invoices[i].Line.length; j++) {
-            if(product_info[invoices[i].Line[j].ProductCode] == null) {
-                product_info[invoices[i].Line[j].ProductCode] = {
-                    quantity: parseInt(invoices[i].Line[j].Quantity),
-                    totalEarned: parseInt(invoices[i].Line[j].Quantity) * parseFloat(invoices[i].Line[j].UnitPrice),
-                };
-            } else {
-                product_info[invoices[i].Line[j].ProductCode].quantity += parseInt(invoices[i].Line[j].Quantity);
-                product_info[invoices[i].Line[j].ProductCode].totalEarned += 
-                    parseInt(invoices[i].Line[j].Quantity) * parseFloat(invoices[i].Line[j].UnitPrice);
-            }
-            if(customer_invoice[invoices[i].CustomerID][invoices[i].Line[j].ProductCode] == null) {
-                customer_invoice[invoices[i].CustomerID][invoices[i].Line[j].ProductCode] = {
-                    code: invoices[i].Line[j].ProductCode,
-                    description: invoices[i].Line[j].ProductDescription,
-                    quantity: parseInt(invoices[i].Line[j].Quantity),
-                };
-            } else {
-                customer_invoice[invoices[i].CustomerID][invoices[i].Line[j].ProductCode].quantity += parseInt(invoices[i].Line[j].Quantity);
-            }
+        let products_to_return = [];
+        for (let item in products){
+            products_to_return.push(products[item]);
         }
-    }
-    for(let i = 0; i < customers.length; i++) {
-        customers[i].totalSpent = customer_invoice[customers[i].CustomerID].totalSpent;
-        customers[i].quantityBought = 0;
-        customers[i].product = null;
-        if(customer_invoice[customers[i].CustomerID] != null){
-            for(let key in customer_invoice[customers[i].CustomerID]) {
-                if(!customer_invoice[customers[i].CustomerID].hasOwnProperty(key) || key === 'totalSpent') continue;
-                if(customer_invoice[customers[i].CustomerID][key].quantity > customers[i].quantityBought) {
-                    customers[i].quantityBought = customer_invoice[customers[i].CustomerID][key].quantity;
-                    customers[i].product = customer_invoice[customers[i].CustomerID][key];
+
+        customers_to_return.forEach(customer => {
+            customer.quantityBought = 0;
+            customer.product = null;
+            for(let key in customer) {
+                if(!customer.hasOwnProperty(key) || key === 'totalSpent' || key === 'name' || key === 'taxId'
+                    || key === 'quantityBought' || key === 'product') continue;
+                if(customer[key].quantity > customer.quantityBought) {
+                    customer.quantityBought = customer[key].quantity;
+                    customer.product = products[key];
                 }
             }
-            if(customers[i].product == null) {
-                customers.splice(i, 1);
-                i--;
-            }
-        }
-    }
+        });
 
-    for(let i = 0; i < products.length; i++) {
-        products[i].totalEarned = product_info[products[i].ProductCode].totalEarned;
-        products[i].quantity = product_info[products[i].ProductCode].quantity;
-        if(products[i].quantity == null) {
-            products[i].quantity = 0;
-            products[i].totalEarned = 0;
+        customers_to_return.sort((a, b) => (a.quantityBought < b.quantityBought) ? 1 : -1);
+        products_to_return.sort((a, b) => (a.quantity < b.quantity) ? 1 : -1);
+        
+        sales = {
+            customers: customers_to_return,
+            products: products_to_return
         }
-    }
-    customers.sort((a, b) => (a.quantityBought < b.quantityBought) ? 1 : -1);
-    products.sort((a,b) => (a.quantity < b.quantity) ? 1 : -1);
-    sales = {
-        customers: customers,
-        products: products
-    }
-    return res.send(sales);
+
+        return res.send(sales);
+    });
 });
 
 module.exports = router;

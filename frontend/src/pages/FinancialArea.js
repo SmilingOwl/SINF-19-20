@@ -9,9 +9,11 @@ import NetIncome from '../components/financialArea/NetIncome';
 import TotalAssets from '../components/financialArea/TotalAssets';
 import TotalLiabilities from '../components/financialArea/TotalLiabilities';
 import Equity from '../components/financialArea/Equity';
+import SalesGraph from '../components/financialArea/SalesGraph';
 
 const FinancialArea = () => {
   const [balanceSheet, setBalanceSheet] = useState([]);
+  const [salesOverTime, setSalesOverTime] = useState([]);
   const [totalAssets, setTotalAssets] = useState({
     debit: 0,
     credit: 0,
@@ -26,7 +28,8 @@ const FinancialArea = () => {
   useEffect(() => {
     const fetchInfo = async () => {
       const res = await axios.get('http://localhost:9000/finances/balance-sheet');
-      setBalanceSheet(res.data);
+      setBalanceSheet(res.data.balance_sheet);
+      setSalesOverTime(res.data.sales_over_time);
     };
     fetchInfo();
   }, []);
@@ -97,10 +100,15 @@ const FinancialArea = () => {
       </Row>
 
       <Row className="topic">
+        <Col sm={{ size: '10', offset: 1 }}>Sales Over Time</Col>
+      </Row>
+      <SalesGraph elements={salesOverTime} />
+
+      <Row className="topic">
         <Col md={{ size: 'auto', offset: 1 }}>Balance Sheet</Col>
       </Row>
 
-      <Row className="smallerSize">
+      <Row>
 
         <Col md={{ size: '5', offset: 1 }} className="bigBox">
           <h5 className="value">Assets</h5>

@@ -23,6 +23,7 @@ class Sales extends Component
       .then(res => {
         this.setState({ customers: res.customers });
         this.setState({ products: res.products });
+        console.log(res.products);
       })
       .catch(err => err);
   }
@@ -30,7 +31,7 @@ class Sales extends Component
   fetchBalanceSheetInfo() {
     fetch("http://localhost:9000/finances/balance-sheet")
       .then(res => res.json())
-      .then(res => { this.setState({ balance_sheet: res }); })
+      .then(res => { this.setState({ balance_sheet: res.balance_sheet }); })
       .catch(err => err);
   }
 
@@ -38,9 +39,9 @@ class Sales extends Component
     let customersTable = [];
     for (let i = 0; i < this.state.customers.length && i < 10; i++) {
       customersTable.push(
-        <tr className="table-row" key={this.state.customers[i].CustomerID}>
+        <tr className="table-row" key={this.state.customers[i].name}>
           <th scope="row" className="centered">{i+1}</th>
-          <td>{this.state.customers[i].CompanyName}</td>
+          <td>{this.state.customers[i].name}</td>
           <td>
             <Link to={{pathname: `/products/${this.state.customers[i].product.code}` }}>
               {this.state.customers[i].product.description}
@@ -58,9 +59,9 @@ class Sales extends Component
     let productsTable = [];
     for (let i = 0; i < this.state.products.length && i < 10; i++) {
       productsTable.push(
-        <tr className="table-row" key={this.state.products[i].ProductCode}>
+        <tr className="table-row" key={i}>
           <th scope="row" className="centered">{i+1}</th>
-          <td><Link to={{pathname: `/products/${this.state.products[i].ProductCode}` }}>{this.state.products[i].ProductDescription}</Link></td>
+          <td><Link to={{pathname: `/products/${this.state.products[i].code}` }}>{this.state.products[i].description}</Link></td>
           <td className="centered">{this.state.products[i].quantity}</td>
           <td className="centered">{(this.state.products[i].totalEarned / this.state.products[i].quantity).toFixed(2)} {'\u20AC'}</td>
           <td className="centered">{this.state.products[i].totalEarned.toFixed(2)} {'\u20AC'}</td>
