@@ -125,6 +125,7 @@ button.btn-primary:hover {
     margin-top: 2em;
 }
 
+
 .mtop {
     margin-top: 4em;
 }
@@ -155,6 +156,7 @@ strong.link {
     color: #588DA3;
     padding-left: 0.5em;
     padding-right: 0.5em;
+    font-size: 20px;
 }
 
 .nav-item:hover strong.link {
@@ -162,7 +164,7 @@ strong.link {
 }
 
 .nav-item:hover {
-    background-color: #588DA3;
+    background-color: rgb(130, 151, 160);
     cursor: pointer;
     text-decoration: none;
 }

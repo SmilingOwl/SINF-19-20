@@ -38,24 +38,21 @@ class Purchases extends Component
     fetch("http://localhost:9000/purchases/suppliers")
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       this.setState({suppliers:res.suppliers});
     })
   }
 
   fillSuppliersTable(){
     let suppliersTable = [];
-    console.log(this.state.suppliers);
     if (!this.state.suppliers)
       return [];
     for (let i = 1; i <= this.state.suppliers.length && i <= 10 ; i++) {
       suppliersTable.push(
         <tr className="table-row" key={i}>
           <th scope="row" className="centered">{i}</th>
-          <td>{this.state.suppliers[i-1].name}</td>
-          <td className="centered"></td>
-          <td className="centered"></td>
-          <td className="centered"></td>
+          <td>{this.state.suppliers[i-1].supplier}</td>
+          <td className="centered">{this.state.suppliers[i-1].most_bought_product}</td>
+          <td className="centered">{this.state.suppliers[i-1].totalSpent}</td>
         </tr>
       );
     }
@@ -177,7 +174,7 @@ class Purchases extends Component
                     </tr>
                   </thead>
                   <tbody>
-                  {this.fillSuppliersTable()}
+                    {this.fillSuppliersTable()}
                   </tbody>
                 </table>
               </div>
