@@ -13,6 +13,7 @@ const Product = (props) => {
   } });
   const [salesInfo, setSalesInfo] = useState(null);
   const [chartInfo, setChartInfo] = useState([]);
+  const [stockInfo, setStockInfo] = useState(null);
   const [id] = useState(props.match.params.id);
 
   useEffect(() => {
@@ -35,6 +36,14 @@ const Product = (props) => {
     const fetchProductChart = async () => {
       const res = await axios.get('http://localhost:9000/products/' + id + '/chart');
       setChartInfo(res.data);
+    };
+    fetchProductChart();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchProductChart = async () => {
+      const res = await axios.get('http://localhost:9000/products/' + id + '/stock');
+      setStockInfo(res.data);
     };
     fetchProductChart();
   }, [id]);
@@ -91,10 +100,10 @@ const Product = (props) => {
             </div>  
             <div className="row">
               <div className="col-md-8">
-                Quantity In stock
+                Quantity In Stock
               </div>
               <div className="col-md-4 price">
-                ...
+                {stockInfo ? stockInfo.quantity : 0}
               </div>
             </div>
           </div>
