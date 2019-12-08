@@ -84,7 +84,7 @@ class Purchases extends Component
   fetchBalanceSheetInfo() {
     fetch("http://localhost:9000/finances/balance-sheet")
       .then(res => res.json())
-      .then(res => { this.setState({ balance_sheet: res }); })
+      .then(res => { this.setState({ balance_sheet: res.balance_sheet }); })
       .catch(err => err);
   }
 
