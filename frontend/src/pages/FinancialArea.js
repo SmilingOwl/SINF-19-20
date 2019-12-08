@@ -85,8 +85,10 @@ const FinancialArea = () => {
 
   return (
     <div>
-      <Row className="topic mtop">
-        <Col className="section-title" sm={{ size: '10', offset: 1 }}>Profit / Loss</Col>
+      <Row className="topic">
+        <Col  sm={{ size: '10', offset: 1 }}>
+          <h3 className="section-title">Profit / Loss</h3>
+        </Col>
       </Row>
 
       <Row>
@@ -100,12 +102,16 @@ const FinancialArea = () => {
       </Row>
 
       <Row className="topic">
-        <Col sm={{ size: '10', offset: 1 }}>Sales Over Time</Col>
+        <Col sm={{ size: '10', offset: 1 }}>
+          <h3 className="section-title">Sales Over Time</h3>
+          </Col>
       </Row>
       <SalesGraph elements={salesOverTime} />
 
       <Row className="topic">
-        <Col className="section-title" md={{ size: 'auto', offset: 1 }}>Balance Sheet</Col>
+        <Col md={{ size: '10', offset: 1 }}>
+        <h3 className="section-title">Balance Sheet</h3>
+          </Col>
       </Row>
 
       <Row>

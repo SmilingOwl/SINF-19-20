@@ -7,6 +7,7 @@ div.container .smallBox, .smallBox{
     padding-top: 0.9em;
     padding-bottom: 0.5em;
     margin-bottom: 3em;
+
 }
 
 div.container .bigBox, .bigBox{
@@ -125,11 +126,6 @@ button.btn-primary:hover {
     margin-top: 2em;
 }
 
-
-.mtop {
-    margin-top: 4em;
-}
-
 .price {
     text-align: right;
 }
@@ -154,9 +150,16 @@ button.btn-primary:hover {
 strong.link {
     text-decoration: none;
     color: #588DA3;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    font-size: 20px;
+    padding-left: 3em;
+    padding-right: 3em;
+    padding-top:0em;
+    padding-bottom: 0em;
+    font-size: 15px;
+}
+
+.nav-item.active.logout{
+    position: absolute;
+    right: 0px;
 }
 
 .nav-item:hover strong.link {
@@ -164,11 +167,16 @@ strong.link {
 }
 
 .nav-item:hover {
-    background-color: rgb(130, 151, 160);
+    background-color: #588DA3;
     cursor: pointer;
     text-decoration: none;
 }
 
 nav.navbar {
     border-bottom: 1px solid #588DA3;
+    padding: 0em;
+}
+
+div.col-md-8.smallBox{
+    margin-top: 3em;
 }

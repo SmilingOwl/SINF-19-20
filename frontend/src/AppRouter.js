@@ -71,7 +71,7 @@ function AppRouter()
             </li>
             }
             { JSON.parse(localStorage.tokens) != null &&
-            <li className="nav-item active">
+            <li className="nav-item active logout">
               <Link className="nav-link" to="/logout"><strong className="link">Logout</strong></Link>
             </li>
             }

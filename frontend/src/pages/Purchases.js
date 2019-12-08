@@ -52,7 +52,7 @@ class Purchases extends Component
         <tr className="table-row" key={i}>
           <th scope="row" className="centered">{i}</th>
           <td>{this.state.suppliers[i-1].supplier}</td>
-          <td className="centered">{this.state.suppliers[i-1].most_bought_product}</td>
+          <td>{this.state.suppliers[i-1].most_bought_product}</td>
           <td className="centered">{this.state.suppliers[i-1].total_spent}</td>
         </tr>
       );
@@ -170,8 +170,8 @@ class Purchases extends Component
                   <thead>
                     <tr className="table-header">
                       <th scope="col" className="centered">Top</th>
-                      <th scope="col" className="centered">Supplier</th>
-                      <th scope="col" className="centered">Most Bought Product</th>
+                      <th scope="col">Supplier</th>
+                      <th scope="col">Most Bought Product</th>
                       <th scope="col" className="centered">Total Spent</th>
                     </tr>
                   </thead>
