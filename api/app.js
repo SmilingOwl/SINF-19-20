@@ -95,6 +95,11 @@ app.set('users', [
       type: 'Shareholder',
       email: 'shareholder@snif.pt',
       password: 'shareholder'
+  },
+  {
+      type: 'Head of Finances',
+      email: 'finances@snif.pt',
+      password: 'finances'
   }
 ]);
 

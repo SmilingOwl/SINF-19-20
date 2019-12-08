@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Redirect } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import axios from 'axios';
-import '../css/login.css'
 
 function Login() {
     const [isLoggedIn, setLoggedIn] = useState(false);

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../css/sales.css';
 
 class Purchases extends Component
 {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../css/financial.css';
-import { Container, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import BalanceSheet from '../components/financialArea/BalanceSheet';
 import GrossProfit from '../components/financialArea/GrossProfit';
 import EBITDA from '../components/financialArea/EBITDA';
@@ -13,7 +12,7 @@ import Equity from '../components/financialArea/Equity';
 
 const FinancialArea = () => {
   const [balanceSheet, setBalanceSheet] = useState([]);
-  const [totalAssets, settotalAssets] = useState({
+  const [totalAssets, setTotalAssets] = useState({
     debit: 0,
     credit: 0,
   });
@@ -23,6 +22,7 @@ const FinancialArea = () => {
   });
   const [assets, setAssets] = useState([]);
   const [liabilities, setLiabilities] = useState([]);
+
   useEffect(() => {
     const fetchInfo = async () => {
       const res = await axios.get('http://localhost:9000/finances/balance-sheet');
@@ -45,6 +45,7 @@ const FinancialArea = () => {
     setAssets(elementsAssets);
     setLiabilities(elementsLiabilities);
   }, [balanceSheet]);
+
   useEffect(() => {
     let calTotalDebit = 0;
     let calTotalCredit = 0;
@@ -55,7 +56,7 @@ const FinancialArea = () => {
         calTotalCredit += element.credit;
       }
     }
-    settotalAssets({
+    setTotalAssets({
       debit: calTotalDebit,
       credit: calTotalCredit,
       total: calTotalDebit - calTotalCredit,

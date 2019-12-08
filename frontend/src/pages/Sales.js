@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import '../css/sales.css';
 
 class Sales extends Component
 {
