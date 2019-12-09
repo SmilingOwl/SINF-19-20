@@ -161,11 +161,6 @@ strong.link {
     font-size: 15px;
 }
 
-.nav-item.active.logout{
-    position: absolute;
-    right: 0px;
-}
-
 .nav-item:hover strong.link {
     color: white !important;
 }
@@ -177,6 +172,8 @@ strong.link {
 }
 
 nav.navbar {
+    display: flex;
+    flex-direction: row;
     border-bottom: 1px solid #588DA3;
     padding: 0em;
 }

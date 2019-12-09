@@ -26,23 +26,27 @@ const NavBar = () => {
     </li>
   );
   const Login = () => (
-    <li className="nav-item active logout">
-      <Link className="nav-link" to="/login">
-        <strong className="link">Login</strong>
-      </Link>
-    </li>
+    <ul className="nav navbar-nav navbar-right">
+      <li className="nav-item active logout">
+        <Link className="nav-link" to="/login">
+          <strong className="link">Login</strong>
+        </Link>
+      </li>
+    </ul>
   );
   const LogOut = () => (
-    <li className="nav-item active logout">
-      <Link className="nav-link" to="/logout">
-        <strong className="link">Logout</strong>
-      </Link>
-    </li>
+    <ul className="nav navbar-nav navbar-right">
+      <li className="nav-item active logout">
+        <Link className="nav-link" to="/logout">
+          <strong className="link">Logout</strong>
+        </Link>
+      </li>
+    </ul>
   );
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <ul className="navbar-nav mr-auto">
+      <nav className="navbar navbar-expand-md navbar-light bg-light">
+        <ul className="nav navbar-nav mr-auto">
           <li className="nav-item active">
             <Link className="nav-link" to="/">
               <strong className="link">Home</strong>
@@ -55,7 +59,6 @@ const NavBar = () => {
                   <FinancialArea />
                   <Sales />
                   <Purchases />
-                  <LogOut />
                 </>
               );
             }
@@ -64,7 +67,6 @@ const NavBar = () => {
                 <>
                   <FinancialArea />
                   <Sales />
-                  <LogOut />
                 </>
               );
             }
@@ -72,7 +74,6 @@ const NavBar = () => {
               return (
                 <>
                   <FinancialArea />
-                  <LogOut />
                 </>
               );
             }
@@ -80,7 +81,6 @@ const NavBar = () => {
               return (
                 <>
                   <Sales />
-                  <LogOut />
                 </>
               );
             }
@@ -88,13 +88,18 @@ const NavBar = () => {
               return (
                 <>
                   <Purchases />
-                  <LogOut />
                 </>
               );
             }
-            return <Login />;
+            return <></>;
           })()}
         </ul>
+        {(() => {
+          if (isLogged() === null) {
+            return <Login />;
+          }
+          return <LogOut />;
+        })()}
       </nav>
     </>
   );
