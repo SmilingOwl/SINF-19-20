@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppRouter from './AppRouter.js';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/common.css';
+import App from './App';
 
-if(localStorage.length === 0) localStorage.setItem("tokens", null);
-ReactDOM.render(<AppRouter /> , document.getElementById('root'));
+if (localStorage.length === 0) localStorage.setItem('tokens', null);
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
