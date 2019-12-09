@@ -26,7 +26,7 @@ const NavBar = () => {
     </li>
   );
   const Login = () => (
-    <li className="nav-item active">
+    <li className="nav-item active logout">
       <Link className="nav-link" to="/login">
         <strong className="link">Login</strong>
       </Link>
