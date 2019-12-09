@@ -30,6 +30,7 @@ const FinancialArea = () => {
       const res = await axios.get('http://localhost:9000/finances/balance-sheet');
       setBalanceSheet(res.data.balance_sheet);
       setSalesOverTime(res.data.sales_over_time);
+      console.log(res.data.sales_over_time);
     };
     fetchInfo();
   }, []);

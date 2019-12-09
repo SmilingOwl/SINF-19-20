@@ -75,13 +75,13 @@ router.get('/:productId/chart', function(req, res, next) {
         headers: { 'Content-Type': 'application/json', Authorization: authorization },
         method: "GET",
     }, function(error, response, body) {
-        let quantityPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let quantityPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         let invoices = JSON.parse(body);
         invoices.forEach((invoice) => {
             invoice.documentLines.forEach((line) => {
                 if(line.salesItem.trim() == req.params.productId) {
                     let month = parseInt(invoice.documentDate.substring(5, 7));
-                    quantityPerMonth[month-1] += line.quantity;
+                    quantityPerMonth[month] += line.quantity;
                 }
             });
         });

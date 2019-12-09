@@ -8,6 +8,7 @@ var parserRouter = require('./routes/parser');
 var financesRouter = require('./routes/finances');
 var salesRouter = require('./routes/sales');
 var productRouter = require('./routes/product');
+var purchasesRouter = require('./routes/purchases');
 var authRouter = require('./routes/auth');
 var fs = require('fs');
 var parser = require('xml2json');
@@ -30,6 +31,7 @@ app.use('/finances', financesRouter);
 app.use('/sales', salesRouter);
 app.use('/products', productRouter);
 app.use('/auth', authRouter);
+app.use('/purchases', purchasesRouter);
 app.use('/', parserRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

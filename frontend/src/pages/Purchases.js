@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import {
+  getAccountsPayable,
+} from '../common/Math';
+import { Link } from 'react-router-dom';
 
 class Purchases extends Component
 {
@@ -6,7 +10,9 @@ class Purchases extends Component
     super(props);
     this.state = {
       balance_sheet: [],
-      total_spent: 0,
+      total_spent: {
+        total_spent: 0,
+      },
       products:{},
     };
   }
@@ -51,9 +57,13 @@ class Purchases extends Component
       suppliersTable.push(
         <tr className="table-row" key={i}>
           <th scope="row" className="centered">{i}</th>
-          <td>{this.state.suppliers[i-1].supplier}</td>
+          <td>
+            <Link to={{pathname: `/suppliers/${this.state.suppliers[i-1].supplier_id}` }}>
+              {this.state.suppliers[i-1].supplier}
+            </Link>
+          </td>
           <td>{this.state.suppliers[i-1].most_bought_product}</td>
-          <td className="centered">{this.state.suppliers[i-1].total_spent}</td>
+          <td className="centered">{this.state.suppliers[i-1].total_spent.toFixed(2)} €</td>
         </tr>
       );
     }
@@ -70,8 +80,8 @@ class Purchases extends Component
           <th scope="row" className="centered">{i}</th>
           <td>{this.state.products[i-1].product}</td>
           <td className="centered">{this.state.products[i-1].unitsSold}</td>
-          <td className="centered">{this.state.products[i-1].pricePerUnit}</td>
-          <td className="centered">{this.state.products[i-1].total_earned}</td>
+          <td className="centered">{(this.state.products[i-1].totalSpent / this.state.products[i-1].unitsSold).toFixed(2) } € </td>
+          <td className="centered">{this.state.products[i-1].totalSpent.toFixed(2)} €</td>
         </tr>
       );
       
@@ -85,12 +95,6 @@ class Purchases extends Component
       .then(res => res.json())
       .then(res => { this.setState({ balance_sheet: res.balance_sheet }); })
       .catch(err => err);
-  }
-
-  getAccountsReceivable() {
-    let ar = this.state.balance_sheet.filter(p => p.index === 22);
-    if(ar.length === 0) return 0;
-    return Math.abs(ar[0].debit - ar[0].credit);
   }
 
     render(){
@@ -112,7 +116,7 @@ class Purchases extends Component
                   </strong>
                 </div>
                 <div className="col-md-5 price">
-                  {this.state.total_spent.total_spent} {'\u20AC'}
+                  {this.state.total_spent.total_spent} €
                 </div>
               </div>
              
@@ -124,7 +128,7 @@ class Purchases extends Component
                   </strong>
                 </div>
                 <div className="col-md-5 price">
-                { this.getAccountsReceivable() } {'\u20AC'}
+                { `${getAccountsPayable(this.state.balance_sheet)} €`}
                 </div>
               </div>
 
@@ -143,10 +147,10 @@ class Purchases extends Component
                   <thead>
                     <tr className="table-header">
                       <th scope="col" className="centered">Top</th>
-                      <th scope="col" className="centered">Product</th>
-                      <th scope="col" className="centered">Units Sold</th>
+                      <th scope="col">Product</th>
+                      <th scope="col" className="centered">Units Bought</th>
                       <th scope="col" className="centered">Price per Unit</th>
-                      <th scope="col" className="centered">Total Earned</th>
+                      <th scope="col" className="centered">Total Spent</th>
                     </tr>
                   </thead>
                   <tbody>

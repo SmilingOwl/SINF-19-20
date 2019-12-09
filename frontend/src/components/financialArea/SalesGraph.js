@@ -9,7 +9,7 @@ const SalesGraph = ({ elements }) => {
     }
     
     const chart_data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Next Year'],
         datasets: [
             {
                 label: 'Sales',

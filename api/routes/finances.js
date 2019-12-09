@@ -88,8 +88,9 @@ router.get('/balance-sheet', function(req, res, next) {
         balance_sheet[i].debit = 0;
     }
 
-    sales_over_time = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    sales_over_time = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     process_accounts(balance_sheet, req, sales_over_time);
+    
     let balance = {
         balance_sheet: balance_sheet,
         sales_over_time: sales_over_time,
@@ -118,7 +119,7 @@ function process_transaction(transaction, balance_sheet, sales_over_time) {
                 element[0].credit += parseInt(credit_line.CreditAmount);
                 if(element[0].index === 71) {
                     let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                    sales_over_time[month-1] -= parseInt(credit_line.CreditAmount);
+                    sales_over_time[month] += parseInt(credit_line.CreditAmount);
                 }
             }
         });
@@ -128,7 +129,7 @@ function process_transaction(transaction, balance_sheet, sales_over_time) {
             element[0].credit += parseInt(transaction.Lines.CreditLine.CreditAmount);
             if(element[0].index === 71) {
                 let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                sales_over_time[month-1] -= parseInt(transaction.Lines.CreditLine.CreditAmount);
+                sales_over_time[month] += parseInt(transaction.Lines.CreditLine.CreditAmount);
             }
         }
     }
@@ -141,7 +142,7 @@ function process_transaction(transaction, balance_sheet, sales_over_time) {
                 element[0].debit += parseInt(debit_line.DebitAmount);
                 if(element[0].index === 71) {
                     let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                    sales_over_time[month-1] += parseInt(debit_line.DebitAmount);
+                    sales_over_time[month] -= parseInt(debit_line.DebitAmount);
                 }
             }
         });
@@ -151,7 +152,7 @@ function process_transaction(transaction, balance_sheet, sales_over_time) {
             element[0].debit += parseInt(transaction.Lines.DebitLine.DebitAmount);
             if(element[0].index === 71) {
                 let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                sales_over_time[month-1] += parseInt(transaction.Lines.DebitLine.DebitAmount);
+                sales_over_time[month] -= parseInt(transaction.Lines.DebitLine.DebitAmount);
             }
         }
     }
