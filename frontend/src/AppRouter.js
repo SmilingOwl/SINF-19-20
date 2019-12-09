@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Logout from './pages/Logout';
 import { AuthContext } from './context/auth';
 import NavBar from './components/layout/NavBar';
+import LoggedRoute from './routes/LoggedRoute';
 
 function AppRouter() {
   const [authTokens, setAuthTokens] = useState();
@@ -27,23 +28,15 @@ function AppRouter() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/finances">
-            <FinancialArea />
-          </Route>
-          <Route path="/sales">
-            <Sales />
-          </Route>
-          <Route path="/purchases">
-            <Purchases />
-          </Route>
-          <Route path="/suppliers/:id" component={Supplier} />
-          <Route path="/products/:id" component={Product} />
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/logout">
-            <Logout />
-          </Route>
+          <LoggedRoute path="/finances" component={FinancialArea} />
+          <LoggedRoute path="/sales" component={Sales} />
+          <LoggedRoute path="/purchases" component={Purchases} />
+          <LoggedRoute path="/suppliers/:id" component={Supplier} />
+          <LoggedRoute path="/products/:id" component={Product} />
+          <LoggedRoute path="/logout" component={Logout} />
         </Switch>
       </Router>
     </AuthContext.Provider>
