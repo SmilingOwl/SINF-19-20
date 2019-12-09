@@ -45,7 +45,6 @@ class Purchases extends Component
     .then(res => res.json())
     .then(res => {
       this.setState({suppliers:res.suppliers});
-      console.log(res.suppliers);
     })
   }
 

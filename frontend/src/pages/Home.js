@@ -14,7 +14,7 @@ class Home extends Component
   fetchInfo() {
     fetch("http://localhost:9000/company_info")
       .then(res => res.json())
-      .then(res => {this.setState({ companyInfo: res });})
+      .then(res => {this.setState({ companyInfo: res }); console.log(res);})
       .catch(err => err);
   }
 
@@ -34,9 +34,6 @@ class Home extends Component
           <div className="row">
             <div className="col-md-8">
               <p><strong className="field-name">City: </strong> {this.state.companyInfo.CompanyAddress.City}</p>
-            </div>
-            <div className="col-md-4">
-              <p><strong className="field-name">Country: </strong> {this.state.companyInfo.CompanyAddress.Country}</p>
             </div>
           </div>
         </div>;
