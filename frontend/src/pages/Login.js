@@ -13,7 +13,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { setAuthTokens } = useAuth();
 
-  const login = async () => {
+  const login = async (event) => {
+    event.preventDefault();
     setIsLoading(true);
     setIsError(false);
     await axios
@@ -43,7 +44,7 @@ const Login = () => {
     <div>
       <div className="row mtop">
         <div className="col-md-4" />
-        <div className="col-md-4 smallBox padding-2">
+        <form onSubmit={login} className="smallBox">
           <h3>Login</h3>
           <hr className="padding-bottom-1" />
           <div className="padding-bottom-1">
@@ -88,11 +89,11 @@ const Login = () => {
           {isLoading ? (
             <Spinner />
           ) : (
-            <button onClick={login} type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary">
               Login
             </button>
           )}
-        </div>
+        </form>
       </div>
     </div>
   );
