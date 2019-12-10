@@ -31,7 +31,7 @@ const CompanyInfo = ({ companyInformation }) => (
         <p>
           <strong className="field-name">Country: </strong>
           {' '}
-          { companyInformation.countryDescription}
+          {companyInformation.countryDescription}
         </p>
       </div>
     </div>
@@ -40,11 +40,10 @@ const CompanyInfo = ({ companyInformation }) => (
 
 CompanyInfo.propTypes = {
   companyInformation: PropTypes.shape({
-    CompanyAddress: PropTypes.shape({
-      StreetName: PropTypes.string.isRequired,
-      PostalCode: PropTypes.string.isRequired,
-      City: PropTypes.string.isRequired,
-    }).isRequired,
+    streetName: PropTypes.string.isRequired,
+    postalZone: PropTypes.string.isRequired,
+    cityName: PropTypes.string.isRequired,
+    countryDescription: PropTypes.string.isRequired,
   }).isRequired,
 };
 

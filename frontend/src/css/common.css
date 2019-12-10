@@ -188,3 +188,22 @@ nav.navbar {
 form label, form label input {
     width: 100%;
 }
+
+.login-box
+{
+    padding-top: 2em !important;
+    padding-bottom: 2em !important;
+    background-color: #F7FAFC;
+    border-style: solid;
+    border-color:#588DA3;
+    padding-right:  2.5em !important;
+    padding-left:  2.5em !important;
+    padding-top: 0.9em;
+    padding-bottom: 0.5em;
+    margin-bottom: 3em;
+}
+
+.login-input
+{
+    margin-top: 0.5em;
+}
