@@ -30,7 +30,6 @@ const FinancialArea = () => {
       const res = await axios.get('http://localhost:9000/finances/balance-sheet');
       setBalanceSheet(res.data.balance_sheet);
       setSalesOverTime(res.data.sales_over_time);
-      console.log(res.data.sales_over_time);
     };
     fetchInfo();
   }, []);
@@ -87,7 +86,7 @@ const FinancialArea = () => {
   return (
     <div>
       <Row className="topic">
-        <Col  sm={{ size: '10', offset: 1 }}>
+        <Col sm={{ size: '10', offset: 1 }}>
           <h3 className="section-title">Profit / Loss</h3>
         </Col>
       </Row>
@@ -105,18 +104,17 @@ const FinancialArea = () => {
       <Row className="topic">
         <Col sm={{ size: '10', offset: 1 }}>
           <h3 className="section-title">Sales Over Time</h3>
-          </Col>
+        </Col>
       </Row>
       <SalesGraph elements={salesOverTime} />
 
       <Row className="topic">
         <Col md={{ size: '10', offset: 1 }}>
-        <h3 className="section-title">Balance Sheet</h3>
-          </Col>
+          <h3 className="section-title">Balance Sheet</h3>
+        </Col>
       </Row>
 
       <Row>
-
         <Col md={{ size: '5', offset: 1 }} className="bigBox">
           <h5 className="value">Assets</h5>
           <BalanceSheet type="asset" balanceSheet={assets} />
