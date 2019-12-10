@@ -184,3 +184,7 @@ nav.navbar {
     top: 25%;
     left: 50%;
 }
+
+form label, form label input {
+    width: 100%;
+}

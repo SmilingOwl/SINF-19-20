@@ -44,7 +44,8 @@ const Login = () => {
     <div>
       <div className="row mtop">
         <div className="col-md-4" />
-        <form onSubmit={login} className="smallBox">
+        <div className="col-md-4 smallBox">
+        <form onSubmit={login}>
           <h3>Login</h3>
           <hr className="padding-bottom-1" />
           <div className="padding-bottom-1">
@@ -87,13 +88,14 @@ const Login = () => {
             return <></>;
           })()}
           {isLoading ? (
-            <Spinner />
+            <Spinner className="center-spinner" />
           ) : (
             <button type="submit" className="btn btn-primary">
               Login
             </button>
           )}
         </form>
+        </div>
       </div>
     </div>
   );
