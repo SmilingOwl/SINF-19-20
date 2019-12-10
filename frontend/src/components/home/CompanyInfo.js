@@ -8,14 +8,14 @@ const CompanyInfo = ({ companyInformation }) => (
         <p>
           <strong className="field-name">Street: </strong>
           {' '}
-          {companyInformation.CompanyAddress.StreetName}
+          {companyInformation.streetName}
         </p>
       </div>
       <div className="col-md-4">
         <p>
           <strong className="field-name">Postal Code: </strong>
           {' '}
-          {companyInformation.CompanyAddress.PostalCode}
+          {companyInformation.postalZone}
         </p>
       </div>
     </div>
@@ -24,7 +24,14 @@ const CompanyInfo = ({ companyInformation }) => (
         <p>
           <strong className="field-name">City: </strong>
           {' '}
-          {companyInformation.CompanyAddress.City}
+          {companyInformation.cityName}
+        </p>
+      </div>
+      <div className="col-md-4">
+        <p>
+          <strong className="field-name">Country: </strong>
+          {' '}
+          { companyInformation.countryDescription}
         </p>
       </div>
     </div>

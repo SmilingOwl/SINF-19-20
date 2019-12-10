@@ -177,3 +177,10 @@ nav.navbar {
     border-bottom: 1px solid #588DA3;
     padding: 0em;
 }
+
+.center-spinner {
+    color: #588DA3;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+}
