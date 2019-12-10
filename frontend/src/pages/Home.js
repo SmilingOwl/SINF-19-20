@@ -1,23 +1,55 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-class Home extends Component
-{
-  constructor(props) {
-    super(props);
-    this.state = { companyInfo: "" };
-  }
+const Home = () => {
+  const [companyInfo, setCompanyInfo] = useState({});
 
-  componentWillMount() {
-    this.fetchInfo();
-  }
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      const res = await axios.get('http://localhost:9000/company_info');
+      setCompanyInfo(res.data);
+      console.log(res.data);
+    };
+    fetchCompanyInfo();
+  }, []);
 
-  fetchInfo() {
-    fetch("http://localhost:9000/company_info")
-      .then(res => res.json())
-      .then(res => {this.setState({ companyInfo: res }); console.log(res);})
-      .catch(err => err);
-  }
+  return (
+    <div>
+      <div className="row mtop">
+        <div className="col-md-2"/> 
+        <div className="col-md-8 smallBox">
+          <div className="row">
+            <div className="col-md-8">
+              <strong className="field-name">Company: </strong>{ companyInfo.companyKey }
+            </div>
+            <div className="col-md-4">
+              <strong className="field-name">Company Tax ID: </strong>{ companyInfo.companyTaxID } 
+            </div>
+          </div>
+          <hr></hr>
+          <div className="row">
+            <div className="col-md-8">
+              <p><strong className="field-name">Street: </strong> { companyInfo.streetName}</p>
+            </div>
+            <div className="col-md-4">
+              <p><strong className="field-name">Postal Code: </strong> { companyInfo.postalZone}</p>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-8">
+              <p><strong className="field-name">City: </strong> { companyInfo.cityName}</p>
+            </div>
+            <div className="col-md-4">
+              <p><strong className="field-name">Country: </strong> { companyInfo.countryDescription}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
+};
+/*
   renderAddress() {
     let address = "";
     if(this.state.companyInfo.CompanyAddress != null) {
@@ -44,7 +76,7 @@ class Home extends Component
   render(){
     return(
       <div>
-        <div className="row mtop">
+        {/*<div className="row mtop">
           <div className="col-md-2"/> 
           <div className="col-md-8 smallBox">
             <div className="row">
@@ -58,10 +90,10 @@ class Home extends Component
             <hr></hr>
             {this.renderAddress()}
           </div>
-        </div>
+    </div>
       </div>
     );
   }
 }
-  
+  */
 export default Home;
