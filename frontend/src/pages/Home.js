@@ -1,67 +1,70 @@
-import React, { Component } from 'react';
+/* eslint-disable linebreak-style */
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Spinner } from 'reactstrap';
+import CompanyInfo from '../components/home/CompanyInfo';
 
-class Home extends Component
-{
-  constructor(props) {
-    super(props);
-    this.state = { companyInfo: "" };
-  }
+const Home = () => {
+  const [companyInformation, setcompanyInformation] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setError] = useState(false);
 
-  componentWillMount() {
-    this.fetchInfo();
-  }
+  useEffect(() => {
+    const fetchInfo = async () => {
+      setError(false);
+      setIsLoading(true);
+      await axios
+        .get('http://localhost:9000/company_info')
+        .then((result) => {
+          if (result.status === 200) {
+            setcompanyInformation(result.data);
+          } else {
+            setError(true);
+          }
+        })
+        .catch(() => {
+          setError(true);
+        });
+      setIsLoading(false);
+    };
+    fetchInfo();
+  }, []);
 
-  fetchInfo() {
-    fetch("http://localhost:9000/company_info")
-      .then(res => res.json())
-      .then(res => {this.setState({ companyInfo: res }); console.log(res);})
-      .catch(err => err);
-  }
-
-  renderAddress() {
-    let address = "";
-    if(this.state.companyInfo.CompanyAddress != null) {
-      address=
-        <div>
-          <div className="row">
-            <div className="col-md-8">
-              <p><strong className="field-name">Street: </strong> {this.state.companyInfo.CompanyAddress.StreetName}</p>
+  return (
+    <div>
+      {(() => {
+        if (isLoading) {
+          return <Spinner />;
+        }
+        if (isError) {
+          return (
+            <div className="padding-bottom-1 alert alert-danger" role="alert">
+              Error trying to fetch company information
             </div>
-            <div className="col-md-4">
-              <p><strong className="field-name">Postal Code: </strong> {this.state.companyInfo.CompanyAddress.PostalCode}</p>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-8">
-              <p><strong className="field-name">City: </strong> {this.state.companyInfo.CompanyAddress.City}</p>
-            </div>
-          </div>
-        </div>;
-    }
-    return address;
-  }
-
-  render(){
-    return(
-      <div>
-        <div className="row mtop">
-          <div className="col-md-2"/> 
-          <div className="col-md-8 smallBox">
-            <div className="row">
-              <div className="col-md-8">
-                <strong className="field-name">Company: </strong>{ this.state.companyInfo.CompanyName }
+          );
+        }
+        return (
+          <div className="row mtop">
+            <div className="col-md-2" />
+            <div className="col-md-8 smallBox">
+              <div className="row">
+                <div className="col-md-8">
+                  <strong className="field-name">Company: </strong>
+                  {companyInformation.CompanyName}
+                </div>
+                <div className="col-md-4">
+                  <strong className="field-name">Company ID: </strong>
+                  {companyInformation.CompanyID}
+                </div>
               </div>
-              <div className="col-md-4">
-                <strong className="field-name">Company ID: </strong>{ this.state.companyInfo.CompanyID } 
-              </div>
+              <hr />
+              <CompanyInfo companyInformation={companyInformation} />
             </div>
-            <hr></hr>
-            {this.renderAddress()}
           </div>
-        </div>
-      </div>
-    );
-  }
-}
-  
+        );
+      })()}
+    </div>
+  );
+};
+
 export default Home;
