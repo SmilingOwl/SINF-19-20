@@ -2,89 +2,48 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Row, Col } from 'reactstrap';
 import BalanceSheet from '../components/financialArea/BalanceSheet';
-import GrossProfit from '../components/financialArea/GrossProfit';
-import EBITDA from '../components/financialArea/EBITDA';
-import EBIT from '../components/financialArea/EBIT';
-import NetIncome from '../components/financialArea/NetIncome';
-import TotalAssets from '../components/financialArea/TotalAssets';
-import TotalLiabilities from '../components/financialArea/TotalLiabilities';
-import Equity from '../components/financialArea/Equity';
-import SalesGraph from '../components/financialArea/SalesGraph';
+import ProfitLoss from '../components/financialArea/ProfitLoss';
 
 const FinancialArea = () => {
   const [balanceSheet, setBalanceSheet] = useState({});
-  const [salesOverTime, setSalesOverTime] = useState([]);
-  const [totalAssets, setTotalAssets] = useState({
-    debit: 0,
-    credit: 0,
-  });
-  const [totalLiabilities, setTotalLiabilities] = useState({
-    debit: 0,
-    credit: 0,
-  });
-  const [assets, setAssets] = useState([]);
-  const [liabilities, setLiabilities] = useState([]);
+  const [profitLoss, setProfitLoss] = useState([]);
 
   useEffect(() => {
-    const fetchInfo = async () => {
+    const fetchBalanceSheetInfo = async () => {
       const res = await axios.get('http://localhost:9000/finances/balance-sheet');
       setBalanceSheet(res.data);
-      console.log(res.data);
     };
-    fetchInfo();
+    fetchBalanceSheetInfo();
   }, []);
-/*
-  useEffect(() => {
-    const elementsAssets = [];
-    const elementsLiabilities = [];
-    for (let i = 0; i < balanceSheet.length; i += 1) {
-      const element = balanceSheet[i];
-      if (element.type === 'asset') {
-        elementsAssets.push(element);
-      } else if (element.type === 'liability') {
-        elementsLiabilities.push(element);
-      }
-    }
-    setAssets(elementsAssets);
-    setLiabilities(elementsLiabilities);
-  }, [balanceSheet]);
 
   useEffect(() => {
-    let calTotalDebit = 0;
-    let calTotalCredit = 0;
-    for (let i = 0; i < assets.length; i += 1) {
-      const element = assets[i];
-      if (element.credit + element.debit > 0) {
-        calTotalDebit += element.debit;
-        calTotalCredit += element.credit;
-      }
-    }
-    setTotalAssets({
-      debit: calTotalDebit,
-      credit: calTotalCredit,
-      total: calTotalDebit - calTotalCredit,
-    });
-  }, [assets]);
-
-  useEffect(() => {
-    let calTotalDebit = 0;
-    let calTotalCredit = 0;
-    for (let i = 0; i < liabilities.length; i += 1) {
-      const element = liabilities[i];
-      if (element.credit + element.debit > 0) {
-        calTotalDebit += element.debit;
-        calTotalCredit += element.credit;
-      }
-    }
-    setTotalLiabilities({
-      debit: calTotalDebit,
-      credit: calTotalCredit,
-      total: calTotalCredit - calTotalDebit,
-    });
-  }, [liabilities]);*/
+    const fetchProfitLossInfo = async () => {
+      const res = await axios.get('http://localhost:9000/finances/profit-loss');
+      setProfitLoss(res.data);
+    };
+    fetchProfitLossInfo();
+  }, []);
 
   return (
     <div>
+      <div className="row">
+        <div className="col-sm-1"/>
+        <div className="col-sm-10">
+          <h1 className="section-title">Profit / Loss</h1>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-sm-1"/>
+        <div className="col-sm-10">
+          <ProfitLoss profitLoss={profitLoss} />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-sm-1"/>
+        <div className="col-sm-10">
+          <h1 className="section-title">Balance Sheet</h1>
+        </div>
+      </div>
       <div className="row">
         <div className="col-sm-1"/>
         <div className="col-sm-10">

@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+
+/************************************ Balance Sheet ************************************/
+
 router.get('/balance-sheet', function(req, res, next) {
     let balance_sheet = {
         non_current_assets: [
@@ -438,7 +441,7 @@ router.get('/balance-sheet', function(req, res, next) {
                 value: 0,
             }, {
                 index: 'A00152',
-                description: 'Passivos fi nanceiros detidos para negociação',
+                description: 'Passivos financeiros detidos para negociação',
                 accounts: {
                     sum: [5, 7],
                     sub: [],
@@ -475,7 +478,6 @@ router.get('/balance-sheet', function(req, res, next) {
 
     process_accounts(balance_sheet, req);
     calculate_results(balance_sheet);
-    console.log(balance_sheet);
     
     return res.send(balance_sheet);
 });
@@ -486,28 +488,28 @@ function process_accounts(balance_sheet, req) {
         return;
     let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
     accounts.forEach((account) => {
-        let account_debit = parseInt(account.ClosingDebitBalance - account.OpeningDebitBalance);
-        let account_credit = parseInt(account.ClosingCreditBalance - account.OpeningCreditBalance);
+        let account_debit = parseFloat(account.ClosingDebitBalance - account.OpeningDebitBalance);
+        let account_credit = parseFloat(account.ClosingCreditBalance - account.OpeningCreditBalance);
         let value = Math.abs(account_debit - account_credit);
         balance_sheet.current_assets.forEach((element) => {
-            process_element(element, account, value, account_debit, account_credit);
+            process_element_balance_sheet(element, account, value, account_debit, account_credit);
         });
         balance_sheet.non_current_assets.forEach((element) => {
-            process_element(element, account, value, account_debit, account_credit);
+            process_element_balance_sheet(element, account, value, account_debit, account_credit);
         });
         balance_sheet.equitity.forEach((element) => {
-            process_element(element, account, value, account_debit, account_credit);
+            process_element_balance_sheet(element, account, value, account_debit, account_credit);
         });
         balance_sheet.current_liabilities.forEach((element) => {
-            process_element(element, account, value, account_debit, account_credit);
+            process_element_balance_sheet(element, account, value, account_debit, account_credit);
         });
         balance_sheet.non_current_liabilities.forEach((element) => {
-            process_element(element, account, value, account_debit, account_credit);
+            process_element_balance_sheet(element, account, value, account_debit, account_credit);
         });
     });
 }
 
-function process_element(element, account, value, account_debit, account_credit) {
+function process_element_balance_sheet(element, account, value, account_debit, account_credit) {
     if(element.accounts.sum.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
         element.value += value;
     } else if(element.accounts.sub.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
@@ -568,65 +570,295 @@ function sum(balance_sheet, type) {
     });
     return value;
 }
-/*
-function process_accounts(balance_sheet, req, sales_over_time) {
+
+/************************************ Profit / Loss ************************************/
+
+router.get('/profit-loss', function(req, res, next) {
     let json = JSON.parse(req.app.get('json'));
-    let journals = json.AuditFile.GeneralLedgerEntries.Journal;
-    journals.forEach(journal => {
-        if (Array.isArray(journal.Transaction)) {
-            journal.Transaction.forEach(transaction => process_transaction(transaction, balance_sheet, sales_over_time));
-        } else if (journal.Transaction) {
-            process_transaction(journal.Transaction, balance_sheet, sales_over_time);
+    let profit_loss_elements = [
+        {
+            index: 1,
+            description: 'Vendas e serviços prestados',
+            accounts: {
+                sum: [506, 507, 508, 509, 513, 514, 515, 516],
+                sub: [511, 512, 518],
+                u: [510, 517]
+            },
+            value: 0,
+        },
+        {
+            index: 2,
+            description: 'Subsídios à exploração',
+            accounts: {
+                sum: [527, 528],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 3,
+            description: 'Ganhos / perdas imputados de subsidiárias, associadas e empreendimentos conjuntos ',
+            accounts: {
+                sum: [614, 615, 616, 638, 639],
+                sub: [479, 480, 481, 482],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 4,
+            description: 'Variação nos inventários da produção',
+            accounts: {
+                sum: [],
+                sub: [],
+                u: [519, 520, 521, 522]
+            },
+            value: 0,
+        },
+        {
+            index: 5,
+            description: 'Trabalhos para a própria entidade',
+            accounts: {
+                sum: [523, 524, 525, 526],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 6,
+            description: 'Custo das mercadorias vendidas',
+            accounts: {
+                sum: [353, 354, 355],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 7,
+            description: 'Fornecimentos e serviços externos',
+            accounts: {
+                sum: [356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372,
+                    373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 8,
+            description: 'Gastos com o pessoal',
+            accounts: {
+                sum: [385, 386, 389, 390, 391, 392, 393],
+                sub: [],
+                u: [387, 388]
+            },
+            value: 0,
+        },
+        {
+            index: 10,
+            description: 'Imparidade / ajustamentos de inventários (perdas / reversões) ',
+            accounts: {
+                sum: [415, 416, 417, 418, 419, 420, 421],
+                sub: [549, 550, 551, 552, 553, 554, 555],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 11,
+            description: 'Imparidade de dívidas a receber (perdas / reversões)',
+            accounts: {
+                sum: [413, 414],
+                sub: [547, 548],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 12,
+            description: 'Provisões (aumentos / reduções)',
+            accounts: {
+                sum: [463, 464, 465, 466, 467, 468, 469, 470],
+                sub: [586, 587, 588, 589, 590, 591, 592, 593],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 13,
+            description: 'Imparidade de investimentos não depreciáveis / amortizáveis (perdas / reversões) ',
+            accounts: {
+                sum: [422, 423, 424, 425, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450, 451, 452, 453],
+                sub: [556, 557, 558, 573, 574, 575, 576, 577, 578, 579, 580, 581, 582, 583, 584, 585],
+                u: [412]
+            },
+            value: 0,
+        },
+        {
+            index: 15,
+            description: 'Aumentos / reduções de justo valor',
+            accounts: {
+                sum: [594, 595, 596, 597, 598, 599, 600, 601, 602],
+                sub: [454, 455, 456, 457, 458, 459, 460, 461, 462],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 16,
+            description: 'Outros rendimentos',
+            accounts: {
+                sum: [603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 617, 618, 619, 620,
+                    621, 622, 623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 636, 637, 640, 642],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 17,
+            description: 'Outros gastos',
+            accounts: {
+                sum: [471, 472, 473, 474, 475, 476, 477, 478, 483, 484, 485, 486, 487, 488, 489,
+                    490, 491, 492, 493, 494, 495, 496, 497, 498, 499],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 19,
+            description: 'Gastos / reversões de depreciação e de amortização',
+            accounts: {
+                sum: [394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
+                    408, 409, 410, 411],
+                sub: [529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 20,
+            description: 'Imparidade de investimentos depreciáveis / amortizáveis (perdas / reversões)',
+            accounts: {
+                sum: [426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440],
+                sub: [559, 560, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 22,
+            description: 'Juros e rendimentos similares obtidos',
+            accounts: {
+                sum: [635, 641],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 23,
+            description: 'Juros e gastos similares suportados',
+            accounts: {
+                sum: [500, 501, 502, 503, 504, 505],
+                sub: [],
+                u: []
+            },
+            value: 0,
+        },
+        {
+            index: 25,
+            description: 'Imposto sobre o rendimento do período',
+            accounts: {
+                sum: [644],
+                sub: [],
+                u: [645]
+            },
+            value: 0,
         }
+    ];
+    let ebitda = {
+        value: 0,
+        sum: [1, 2, 3, 4, 5, 15, 16],
+        sub: [6, 7, 8, 9, 10, 11, 12, 13, 14, 17],
+    };
+
+    process_accounts_profit_loss(profit_loss_elements, req)
+    calculate_ebitda(ebitda, profit_loss_elements);
+    
+    let ebit = ebitda.value - profit_loss_elements.filter(p => p.index === 19)[0].value
+        - profit_loss_elements.filter(p => p.index === 20)[0].value;
+    let ebt = ebit + profit_loss_elements.filter(p => p.index === 22)[0].value
+        - profit_loss_elements.filter(p => p.index === 23)[0].value;
+    let net_profit = ebt - profit_loss_elements.filter(p => p.index === 25)[0].value;
+
+    let profit_loss = {
+        sales: {
+            description: 'Vendas e Serviços',
+            value: profit_loss_elements.filter(p => p.index === 1)[0].value,
+        },
+        cogs: {
+            description: 'Custo de Mercadorias',
+            value: profit_loss_elements.filter(p => p.index === 6)[0].value,
+        },
+        ebitda: {
+            description: 'EBITDA',
+            value: ebitda.value,
+        },
+        ebit: {
+            description: 'EBIT',
+            value: ebit,
+        },
+        ebt: {
+            description: 'EBT',
+            value: ebt,
+        },
+        net_profit: {
+            description: 'Resultado Líquido',
+            value: net_profit,
+        },
+    };
+    return res.send(profit_loss);
+});
+
+function process_accounts_profit_loss(profit_loss, req) {
+    let json = JSON.parse(req.app.get('json'));
+    if(!json.AuditFile.MasterFiles.GeneralLedgerAccounts)
+        return;
+    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
+    accounts.forEach((account) => {
+        let account_debit = parseFloat(account.ClosingDebitBalance - account.OpeningDebitBalance);
+        let account_credit = parseFloat(account.ClosingCreditBalance - account.OpeningCreditBalance);
+        let value = Math.abs(account_debit - account_credit);
+        profit_loss.forEach((element) => {
+            process_element(element, account, value, account_debit, account_credit);
+        });
     });
 }
 
-function process_transaction(transaction, balance_sheet, sales_over_time) {
-    if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
-        let credit_lines = transaction.Lines.CreditLine;
-        credit_lines.forEach(credit_line => {
-            let element = balance_sheet.filter(p => p.index == credit_line.AccountID.substring(0, 2));
-            if(element.length > 0) {
-                element[0].credit += parseInt(credit_line.CreditAmount);
-                if(element[0].index === 71) {
-                    let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                    sales_over_time[month] += parseInt(credit_line.CreditAmount);
-                }
-            }
-        });
-    } else if (transaction.Lines.CreditLine) {
-        let element = balance_sheet.filter(p => p.index == transaction.Lines.CreditLine.AccountID.substring(0, 2));
-        if(element.length > 0) {
-            element[0].credit += parseInt(transaction.Lines.CreditLine.CreditAmount);
-            if(element[0].index === 71) {
-                let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                sales_over_time[month] += parseInt(transaction.Lines.CreditLine.CreditAmount);
-            }
-        }
-    }
+function calculate_ebitda(ebitda, profit_loss_elements) {
+    ebitda.sum.forEach((element) => {
+        let e = profit_loss_elements.filter(p => p.index === element);
+        if(e.length > 0)
+            ebitda.value += e[0].value;
+    });
+    ebitda.sub.forEach((element) => {
+        let e = profit_loss_elements.filter(p => p.index === element);
+        if(e.length > 0)
+            ebitda.value -= e[0].value;
+    });
+}
 
-    if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
-        let debit_lines = transaction.Lines.DebitLine;
-        debit_lines.forEach(debit_line => {
-            let element = balance_sheet.filter(p => p.index == debit_line.AccountID.substring(0, 2));
-            if(element.length > 0){
-                element[0].debit += parseInt(debit_line.DebitAmount);
-                if(element[0].index === 71) {
-                    let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                    sales_over_time[month] -= parseInt(debit_line.DebitAmount);
-                }
-            }
-        });
-    } else if (transaction.Lines.DebitLine) {
-        let element = balance_sheet.filter(p => p.index == transaction.Lines.DebitLine.AccountID.substring(0, 2));
-        if(element.length > 0){
-            element[0].debit += parseInt(transaction.Lines.DebitLine.DebitAmount);
-            if(element[0].index === 71) {
-                let month = parseInt(transaction.TransactionDate.substring(5, 7));
-                sales_over_time[month] -= parseInt(transaction.Lines.DebitLine.DebitAmount);
-            }
-        }
+function process_element(element, account, value, account_debit, account_credit) {
+    if(element.accounts.sum.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
+        element.value += value;
+    } else if(element.accounts.sub.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
+        element.value -= value;
     }
-}*/
+}
 
 module.exports = router;
