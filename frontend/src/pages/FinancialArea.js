@@ -12,7 +12,7 @@ import Equity from '../components/financialArea/Equity';
 import SalesGraph from '../components/financialArea/SalesGraph';
 
 const FinancialArea = () => {
-  const [balanceSheet, setBalanceSheet] = useState([]);
+  const [balanceSheet, setBalanceSheet] = useState({});
   const [salesOverTime, setSalesOverTime] = useState([]);
   const [totalAssets, setTotalAssets] = useState({
     debit: 0,
