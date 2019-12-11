@@ -8,13 +8,15 @@ class Sales extends Component
     this.state = {
       customers: "",
       products: "",
-      balance_sheet: []
+      profit_loss: {},
+      balance_sheet: {}
     };
   }
 
   UNSAFE_componentWillMount() {
     this.fetchSalesInfo();
     this.fetchBalanceSheetInfo();
+    this.fetchProfitLossInfo();
   }
 
   fetchSalesInfo() {
@@ -27,11 +29,33 @@ class Sales extends Component
       .catch(err => err);
   }
 
+  fetchProfitLossInfo() {
+    fetch("http://localhost:9000/finances/profit-loss")
+      .then(res => res.json())
+      .then(res => { this.setState({ profit_loss: res }); console.log(res); })
+      .catch(err => err);
+  }
+
   fetchBalanceSheetInfo() {
     fetch("http://localhost:9000/finances/balance-sheet")
       .then(res => res.json())
-      .then(res => { this.setState({ balance_sheet: res.balance_sheet }); })
+      .then(res => { this.setState({ balance_sheet: res }); })
       .catch(err => err);
+  }
+
+  calculateAccountsReceivable() {
+    let accounts_receivable = 0;
+    if(this.state.balance_sheet.non_current_assets) {
+      let non_current = this.state.balance_sheet.non_current_assets.filter(p => p.index === 'A00108');
+      if(non_current.length > 0) {
+        accounts_receivable += non_current[0].value;
+      }
+      let current = this.state.balance_sheet.non_current_assets.filter(p => p.index === 'A00118');
+      if(current.length > 0) {
+        accounts_receivable += current[0].value;
+      }
+    }
+    return accounts_receivable;
   }
 
   fillCustomersTable() {
@@ -70,24 +94,6 @@ class Sales extends Component
     return productsTable;
   }
 
-  getSales() {
-    let sales = this.state.balance_sheet.filter(p => p.index === 71);
-    if(sales.length === 0) return 0;
-    return Math.abs(sales[0].debit - sales[0].credit);
-  }
-
-  getCOGS() {
-    let cogs = this.state.balance_sheet.filter(p => p.index === 61);
-    if(cogs.length === 0) return 0;
-    return Math.abs(cogs[0].credit - cogs[0].debit);
-  }
-
-  getAccountsReceivable() {
-    let ar = this.state.balance_sheet.filter(p => p.index === 21);
-    if(ar.length === 0) return 0;
-    return Math.abs(ar[0].debit - ar[0].credit);
-  }
-
   render(){
     return(
       <div>
@@ -105,7 +111,7 @@ class Sales extends Component
                 Sales
               </div>
               <div className="col-md-4 price">
-                { this.getSales() } {'\u20AC'}
+                { this.state.profit_loss.sales ? this.state.profit_loss.sales.value.toFixed(2) : 0 } {'\u20AC'}
               </div>
             </div>  
             <div className="row">
@@ -113,16 +119,7 @@ class Sales extends Component
                 Cost of Goods Sold
               </div>
               <div className="col-md-4 price">
-                { this.getCOGS() } {'\u20AC'}
-              </div>
-            </div>
-            <hr/>
-            <div className="row">
-              <div className="col-md-8 value">
-                Gross Profit
-              </div>
-              <div className="col-md-4 price">
-                { this.getSales() - this.getCOGS() } {'\u20AC'}
+                { this.state.profit_loss.cogs ? this.state.profit_loss.cogs.value.toFixed(2) : 0  } {'\u20AC'}
               </div>
             </div>
           </div>
@@ -134,7 +131,7 @@ class Sales extends Component
               </strong>
             </div>
             <div className="col-md-5 price">
-                { this.getAccountsReceivable() } {'\u20AC'}
+                { this.calculateAccountsReceivable().toFixed(2) } {'\u20AC'}
             </div>
           </div>
         </div>

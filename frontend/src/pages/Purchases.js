@@ -36,7 +36,7 @@ class Purchases extends Component
     fetch("http://localhost:9000/purchases/products")
     .then(res => res.json())
     .then(res => {
-      this.setState({products:res.products});
+      this.setState({products: res.products});
     })
   }
 
@@ -44,8 +44,30 @@ class Purchases extends Component
     fetch("http://localhost:9000/purchases/suppliers")
     .then(res => res.json())
     .then(res => {
-      this.setState({suppliers:res.suppliers});
+      this.setState({suppliers: res.suppliers});
     })
+  }
+
+  fetchBalanceSheetInfo() {
+    fetch("http://localhost:9000/finances/balance-sheet")
+      .then(res => res.json())
+      .then(res => { this.setState({ balance_sheet: res }); })
+      .catch(err => err);
+  }
+
+  calculateAccountsPayable() {
+    let accounts_payable = 0;
+    if(this.state.balance_sheet.non_current_assets) {
+      let non_current = this.state.balance_sheet.non_current_assets.filter(p => p.index === 'A00144');
+      if(non_current.length > 0) {
+        accounts_payable += non_current[0].value;
+      }
+      let current = this.state.balance_sheet.non_current_assets.filter(p => p.index === 'A00150');
+      if(current.length > 0) {
+        accounts_payable += current[0].value;
+      }
+    }
+    return accounts_payable;
   }
 
   fillSuppliersTable(){
@@ -89,13 +111,6 @@ class Purchases extends Component
     return productsTable;
   }
 
-  fetchBalanceSheetInfo() {
-    fetch("http://localhost:9000/finances/balance-sheet")
-      .then(res => res.json())
-      .then(res => { this.setState({ balance_sheet: res.balance_sheet }); })
-      .catch(err => err);
-  }
-
     render(){
         return(
         <div>
@@ -115,7 +130,7 @@ class Purchases extends Component
                   </strong>
                 </div>
                 <div className="col-md-5 price">
-                  {this.state.total_spent.total_spent} €
+                  {this.state.total_spent.total_spent.toFixed(2)} €
                 </div>
               </div>
              
@@ -127,7 +142,7 @@ class Purchases extends Component
                   </strong>
                 </div>
                 <div className="col-md-5 price">
-                { `${getAccountsPayable(this.state.balance_sheet)} €`}
+                { this.calculateAccountsPayable().toFixed(2)} €
                 </div>
               </div>
 

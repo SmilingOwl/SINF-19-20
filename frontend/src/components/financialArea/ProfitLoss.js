@@ -1,7 +1,6 @@
 import React from 'react';
 
 const ProfitLoss = ({profitLoss}) => {
-  console.log(profitLoss);
     return (
         <>
           <div className="row mtop-smaller">

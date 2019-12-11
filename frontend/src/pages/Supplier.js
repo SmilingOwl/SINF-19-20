@@ -11,8 +11,6 @@ class Supplier extends Component
       products_info:{},
     };
     this.id = this.props.match.params.id;
-    console.log(this.id);
-    console.log(this.props.match.params);
   }
 
   UNSAFE_componentWillMount() {
@@ -32,8 +30,7 @@ class Supplier extends Component
     fetch("http://localhost:9000/suppliers/"+ this.state.supplier.companyTaxID +"/products")
       .then(res => res.json())
       .then(res => {
-        this.setState({products_info: res}); 
-        console.log(this.state.products_info);       
+        this.setState({products_info: res});      
       })
       .catch(err => err);
   }
