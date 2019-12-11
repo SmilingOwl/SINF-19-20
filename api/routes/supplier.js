@@ -24,40 +24,47 @@ router.get('/:taxId/products', function (req, res, next) {
         headers: { 'Content-Type': 'application/json', Authorization: authorization },
         method: "GET",
     }, function (error, response, body) {
-        let total_units = 0;
-        let total_spent = 0;
-        let products = {};
-        let invoices = JSON.parse(body);
+        try {
+            let total_units = 0;
+            let total_spent = 0;
+            let products = {};
+            let invoices = JSON.parse(body);
 
-        invoices.forEach(invoice => {
-            if (req.params.taxId == invoice.sellerSupplierPartyTaxId) {
+            invoices.forEach(invoice => {
+                if (req.params.taxId == invoice.sellerSupplierPartyTaxId) {
 
-                invoice.documentLines.forEach(line => {
+                    invoice.documentLines.forEach(line => {
 
-                    if (products[line.purchasesItem] == null) {
+                        if (products[line.purchasesItem] == null) {
 
-                        products[line.purchasesItem] = {
-                            product: line.description,
-                            unitsBought: line.quantity,
-                            pricePerUnit: line.unitPrice.amount,
+                            products[line.purchasesItem] = {
+                                product: line.description,
+                                unitsBought: line.quantity,
+                                pricePerUnit: line.unitPrice.amount,
+                            }
+
+
+                        } else {
+                            products[line.purchasesItem].unitsBought += line.quantity;
                         }
+                        total_units += products[line.purchasesItem].unitsBought;
+                        total_spent += products[line.purchasesItem].unitsBought * products[line.purchasesItem].pricePerUnit;
+                    });
+                }
+            });
+            let products_info = {
+                products: products,
+                total_units: total_units,
+                total_spent: total_spent,
+            };
 
-
-                    } else {
-                        products[line.purchasesItem].unitsBought += line.quantity;
-                    }
-                    total_units += products[line.purchasesItem].unitsBought;
-                    total_spent += products[line.purchasesItem].unitsBought * products[line.purchasesItem].pricePerUnit;
-                });
-            }
-        });
-        let products_info = {
-            products: products,
-            total_units: total_units,
-            total_spent: total_spent,
-        };
-
-        return res.send(products_info);
+            return res.send(products_info);
+        } catch(err) {
+            console.log(body);
+            console.log('Error at suppliers/{id}/products');
+            res.status(400);
+            return res.send({});
+        }
     });
 });
 

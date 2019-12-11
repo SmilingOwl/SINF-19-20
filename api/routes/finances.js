@@ -475,11 +475,17 @@ router.get('/balance-sheet', function(req, res, next) {
         total_liabilities: [],
         total_equitity: null,
     };
-
-    process_accounts(balance_sheet, req);
-    calculate_results(balance_sheet);
-    
-    return res.send(balance_sheet);
+    try {
+        process_accounts(balance_sheet, req);
+        calculate_results(balance_sheet);
+        
+        return res.send(balance_sheet);
+    } catch(err) {
+        console.log(body);
+        console.log('Error at finances/balance-sheet');
+        res.status(400);
+        return res.send({});
+    }
 });
 
 function process_accounts(balance_sheet, req) {
@@ -786,43 +792,49 @@ router.get('/profit-loss', function(req, res, next) {
         sum: [1, 2, 3, 4, 5, 15, 16],
         sub: [6, 7, 8, 9, 10, 11, 12, 13, 14, 17],
     };
+    try {
+        process_accounts_profit_loss(profit_loss_elements, req)
+        calculate_ebitda(ebitda, profit_loss_elements);
+        
+        let ebit = ebitda.value - profit_loss_elements.filter(p => p.index === 19)[0].value
+            - profit_loss_elements.filter(p => p.index === 20)[0].value;
+        let ebt = ebit + profit_loss_elements.filter(p => p.index === 22)[0].value
+            - profit_loss_elements.filter(p => p.index === 23)[0].value;
+        let net_profit = ebt - profit_loss_elements.filter(p => p.index === 25)[0].value;
 
-    process_accounts_profit_loss(profit_loss_elements, req)
-    calculate_ebitda(ebitda, profit_loss_elements);
-    
-    let ebit = ebitda.value - profit_loss_elements.filter(p => p.index === 19)[0].value
-        - profit_loss_elements.filter(p => p.index === 20)[0].value;
-    let ebt = ebit + profit_loss_elements.filter(p => p.index === 22)[0].value
-        - profit_loss_elements.filter(p => p.index === 23)[0].value;
-    let net_profit = ebt - profit_loss_elements.filter(p => p.index === 25)[0].value;
-
-    let profit_loss = {
-        sales: {
-            description: 'Vendas e Serviços',
-            value: profit_loss_elements.filter(p => p.index === 1)[0].value,
-        },
-        cogs: {
-            description: 'Custo de Mercadorias',
-            value: profit_loss_elements.filter(p => p.index === 6)[0].value,
-        },
-        ebitda: {
-            description: 'EBITDA',
-            value: ebitda.value,
-        },
-        ebit: {
-            description: 'EBIT',
-            value: ebit,
-        },
-        ebt: {
-            description: 'EBT',
-            value: ebt,
-        },
-        net_profit: {
-            description: 'Resultado Líquido',
-            value: net_profit,
-        },
-    };
-    return res.send(profit_loss);
+        let profit_loss = {
+            sales: {
+                description: 'Vendas e Serviços',
+                value: profit_loss_elements.filter(p => p.index === 1)[0].value,
+            },
+            cogs: {
+                description: 'Custo de Mercadorias',
+                value: profit_loss_elements.filter(p => p.index === 6)[0].value,
+            },
+            ebitda: {
+                description: 'EBITDA',
+                value: ebitda.value,
+            },
+            ebit: {
+                description: 'EBIT',
+                value: ebit,
+            },
+            ebt: {
+                description: 'EBT',
+                value: ebt,
+            },
+            net_profit: {
+                description: 'Resultado Líquido',
+                value: net_profit,
+            },
+        };
+        return res.send(profit_loss);
+    } catch(err) {
+        console.log(body);
+        console.log('Error at finances/profit-loss');
+        res.status(400);
+        return res.send({});
+    }
 });
 
 function process_accounts_profit_loss(profit_loss, req) {

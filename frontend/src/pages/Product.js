@@ -44,11 +44,11 @@ const Product = ({ match }) => {
   }, [id]);
 
   useEffect(() => {
-    const fetchProductChart = async () => {
+    const fetchProductStock = async () => {
       const res = await axios.get(`http://localhost:9000/products/${id}/stock`);
       setStockInfo(res.data);
     };
-    fetchProductChart();
+    fetchProductStock();
   }, [id]);
 
   return (

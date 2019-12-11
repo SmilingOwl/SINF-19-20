@@ -12,10 +12,17 @@ router.get('/:productId', function(req, res, next) {
         headers: { 'Content-Type': 'application/json', Authorization: authorization },
         method: "GET",
     }, function(error, response, body) {
-        let product = {
-            api: JSON.parse(body),
+        try {
+            let product = {
+                api: JSON.parse(body),
+            }
+            return res.send(product);
+        } catch(err) {
+            console.log(body);
+            console.log('Error at product/{id}/sales');
+            res.status(400);
+            return res.send({});
         }
-        return res.send(product);
     });
 });
 
@@ -28,15 +35,22 @@ router.get('/:productId/stock', function(req, res, next) {
         headers: { 'Content-Type': 'application/json', Authorization: authorization },
         method: "GET",
     }, function(error, response, body) {
-        let stock = JSON.parse(body);
-        let quantity = 0;
-        stock.materialsItemWarehouses.forEach((warehouse) => {
-            quantity += warehouse.stockBalance;
-        });
-        let stockInfo = {
-            quantity: quantity,
+        try {
+            let stock = JSON.parse(body);
+            let quantity = 0;
+            stock.materialsItemWarehouses.forEach((warehouse) => {
+                quantity += warehouse.stockBalance;
+            });
+            let stockInfo = {
+                quantity: quantity,
+            }
+            return res.send(stockInfo);
+        } catch (err) {
+            console.log(body);
+            console.log('Error at product/{id}/sales');
+            res.status(400);
+            return res.send({});
         }
-        return res.send(stockInfo);
     });
 });
 
@@ -49,20 +63,27 @@ router.get('/:productId/sales', function(req, res, next) {
         headers: { 'Content-Type': 'application/json', Authorization: authorization },
         method: "GET",
     }, function(error, response, body) {
-        let invoices = JSON.parse(body);
-        let product_info = {
-            quantity_sold: 0,
-            total_price: 0,
-        };
-        invoices.forEach((invoice) => {
-            invoice.documentLines.forEach((line) => {
-                if(line.salesItem.trim() == req.params.productId) {
-                    product_info.quantity_sold += line.quantity;
-                    product_info.total_price += line.quantity * line.unitPrice.amount;
-                }
+        try {
+            let invoices = JSON.parse(body);
+            let product_info = {
+                quantity_sold: 0,
+                total_price: 0,
+            };
+            invoices.forEach((invoice) => {
+                invoice.documentLines.forEach((line) => {
+                    if(line.salesItem.trim() == req.params.productId) {
+                        product_info.quantity_sold += line.quantity;
+                        product_info.total_price += line.quantity * line.unitPrice.amount;
+                    }
+                });
             });
-        });
-        return res.send(product_info);
+            return res.send(product_info);
+        } catch (err) {
+            console.log(body);
+            console.log('Error at product/{id}/sales');
+            res.status(400);
+            return res.send({});
+        }
     });
 });
 
@@ -76,16 +97,23 @@ router.get('/:productId/chart', function(req, res, next) {
         method: "GET",
     }, function(error, response, body) {
         let quantityPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        let invoices = JSON.parse(body);
-        invoices.forEach((invoice) => {
-            invoice.documentLines.forEach((line) => {
-                if(line.salesItem.trim() == req.params.productId) {
-                    let month = parseInt(invoice.documentDate.substring(5, 7));
-                    quantityPerMonth[month] += line.quantity;
-                }
+        try {
+            let invoices = JSON.parse(body);
+            invoices.forEach((invoice) => {
+                invoice.documentLines.forEach((line) => {
+                    if(line.salesItem.trim() == req.params.productId) {
+                        let month = parseInt(invoice.documentDate.substring(5, 7));
+                        quantityPerMonth[month] += line.quantity;
+                    }
+                });
             });
-        });
-        return res.send(quantityPerMonth);
+            return res.send(quantityPerMonth);
+        } catch(err) {
+            console.log(body);
+            console.log('Error at product/{id}/sales');
+            res.status(400);
+            return res.send([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        }
     });
 });
 
