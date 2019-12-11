@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { Row, Col } from 'reactstrap';
 
 class Supplier extends Component
 {
@@ -48,7 +49,7 @@ class Supplier extends Component
           <th scope="row" className="centered">{i}</th>
           <td className="centered">{this.state.products_info.products[key].product}</td>
           <td className="centered">{this.state.products_info.products[key].unitsBought}</td>
-          <td className="centered">{this.state.products_info.products[key].pricePerUnit}</td>
+          <td className="centered">{this.state.products_info.products[key].pricePerUnit} {'\u20AC'}</td>
         </tr>
       );
       i++;
@@ -60,12 +61,16 @@ class Supplier extends Component
   render() {
     return (
       <div>
-        <div className="row">
-          <div className="col-md-2" />
-          <div className="col-md-10">
-            <h3 className="section-title">Supplier {this.id} </h3>
-          </div>
-        </div>
+       <Row>
+        <Col sm={{ size: '8', offset: 2 }} className="zero_padding">
+          <h3 className="section-title">
+            Supplier
+            {' '}
+            {this.id}
+          </h3>
+        </Col>
+      </Row>
+
         <div className="row">
           <div className="col-md-2" />
           <div className="col-md-8 smallBox">
@@ -103,6 +108,35 @@ class Supplier extends Component
         </div>
 
         <div className="row">
+          <div className="col-md-2" />
+
+          <div className="col-md-3 lineSmallBox align-items-center d-flex">
+            <div className="col-md-7">
+              <strong>
+                Total Units Bought
+              </strong>
+            </div>
+           
+            <div className="col-md-5 price">
+              {this.state.products_info?this.state.products_info.total_units:0 }
+            </div>
+          </div>
+
+          <div className="col-md-2" />
+          
+          <div className="col-md-3 lineSmallBox align-items-center d-flex">
+            <div className="col-md-7">
+              <strong>
+                Total Spent 
+              </strong>
+            </div>
+            <div className="col-md-5 price">
+              {this.state.products_info?this.state.products_info.total_spent:0} {'\u20AC'}
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
           <div className="col-md-1" />
           <div className="col-md-10">
             <h3 className="section-title">Product Supplied</h3>
@@ -111,7 +145,7 @@ class Supplier extends Component
         <div className="row">
           <div className="col-md-1" />
           <div className="col-md-10">
-            <table className="table">
+            <table className="table supplier">
               <thead>
                 <tr className="table-header">
                   <th scope="col" className="centered">ID</th>
@@ -126,35 +160,7 @@ class Supplier extends Component
             </table>
           </div>
         </div>
-
-        <div className="row mtop">
-          <div className="col-md-2" />
-
-          <div className="col-md-3 smallBox align-items-center d-flex">
-            <div className="col-md-7">
-              <strong>
-                Total Units Bought
-                  </strong>
-            </div>
-            <div className="col-md-5 price">
-              {this.state.products_info?this.state.products_info.total_units:0 }
-            </div>
-          </div>
-
-          <div className="col-md-2" />
-          <div className="col-md-3 smallBox align-items-center d-flex">
-            <div className="col-md-7">
-              <strong>
-                Total Spent
-                  </strong>
-            </div>
-            <div className="col-md-5 price">
-              {this.state.products_info?this.state.products_info.total_spent:0}
-            </div>
-          </div>
-
         </div>
-      </div>
     );
   }
 }
