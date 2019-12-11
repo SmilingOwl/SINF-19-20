@@ -28,12 +28,12 @@ const FinancialArea = () => {
   useEffect(() => {
     const fetchInfo = async () => {
       const res = await axios.get('http://localhost:9000/finances/balance-sheet');
-      setBalanceSheet(res.data.balance_sheet);
-      setSalesOverTime(res.data.sales_over_time);
+      setBalanceSheet(res.data);
+      console.log(res.data);
     };
     fetchInfo();
   }, []);
-
+/*
   useEffect(() => {
     const elementsAssets = [];
     const elementsLiabilities = [];
@@ -81,11 +81,17 @@ const FinancialArea = () => {
       credit: calTotalCredit,
       total: calTotalCredit - calTotalDebit,
     });
-  }, [liabilities]);
+  }, [liabilities]);*/
 
   return (
     <div>
-      <Row className="topic">
+      <div className="row">
+        <div className="col-sm-1"/>
+        <div className="col-sm-10">
+          <BalanceSheet balanceSheet={balanceSheet} />
+        </div>
+      </div>
+      {/*<Row className="topic">
         <Col sm={{ size: '10', offset: 1 }}>
           <h3 className="section-title">Profit / Loss</h3>
         </Col>
@@ -141,7 +147,7 @@ const FinancialArea = () => {
         <Equity balanceSheet={balanceSheet} />
 
         <div className="col-md-1" />
-      </Row>
+  </Row>*/}
     </div>
   );
 };
