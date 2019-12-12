@@ -916,21 +916,19 @@ function process_transaction(transaction, accounts, sales, sales_over_time) {
         let credit_lines = transaction.Lines.CreditLine;
         credit_lines.forEach(credit_line => {
             let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
+            let month = parseInt(transaction.TransactionDate.substring(5, 7));
             if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                let month = parseInt(transaction.TransactionDate.substring(5, 7));
                 sales_over_time[month] += parseFloat(credit_line.CreditAmount)
             } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                let month = parseInt(transaction.TransactionDate.substring(5, 7));
                 sales_over_time[month] -= parseFloat(credit_line.CreditAmount)
             }
         });
     } else if (transaction.Lines.CreditLine) {
         let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
+        let month = parseInt(transaction.TransactionDate.substring(5, 7));
         if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            let month = parseInt(transaction.TransactionDate.substring(5, 7));
             sales_over_time[month] += parseFloat(transaction.Lines.CreditLine.CreditAmount)
         } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            let month = parseInt(transaction.TransactionDate.substring(5, 7));
             sales_over_time[month] -= parseFloat(transaction.Lines.CreditLine.CreditAmount)
         }
     }
@@ -938,22 +936,20 @@ function process_transaction(transaction, accounts, sales, sales_over_time) {
         let debit_lines = transaction.Lines.DebitLine;
         debit_lines.forEach(debit_line => {
             let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
+            let month = parseInt(transaction.TransactionDate.substring(5, 7));
             if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                let month = parseInt(transaction.TransactionDate.substring(5, 7));
                 sales_over_time[month] -= parseFloat(debit_line.DebitAmount)
             } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                let month = parseInt(transaction.TransactionDate.substring(5, 7));
                 sales_over_time[month] += parseFloat(debit_line.DebitAmount)
             }
         });
     } else if (transaction.Lines.DebitLine) {
         let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
+        let month = parseInt(transaction.TransactionDate.substring(5, 7));
         if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            let month = parseInt(transaction.TransactionDate.substring(5, 7));
             sales_over_time[month] -= parseFloat(transaction.Lines.DebitLine.DebitAmount)
         } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            let month = parseInt(transaction.TransactionDate.substring(5, 7));
-            sales_over_time[month] += parseFloat(debit_line.DebitAmount)
+            sales_over_time[month] += parseFloat(transaction.Lines.DebitLine.DebitAmount)
         }
     }
 }
