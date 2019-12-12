@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+
 class Sales extends Component
 {
   constructor(props) {
@@ -192,5 +193,5 @@ class Sales extends Component
       );
     }
 }
-  
+
 export default Sales;

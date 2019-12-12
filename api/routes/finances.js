@@ -481,7 +481,6 @@ router.get('/balance-sheet', function(req, res, next) {
         
         return res.send(balance_sheet);
     } catch(err) {
-        console.log(body);
         console.log('Error at finances/balance-sheet');
         res.status(400);
         return res.send({});
@@ -830,7 +829,6 @@ router.get('/profit-loss', function(req, res, next) {
         };
         return res.send(profit_loss);
     } catch(err) {
-        console.log(body);
         console.log('Error at finances/profit-loss');
         res.status(400);
         return res.send({});
@@ -870,6 +868,93 @@ function process_element(element, account, value, account_debit, account_credit)
         element.value += value;
     } else if(element.accounts.sub.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
         element.value -= value;
+    }
+}
+
+/************************************ Sales Over Time ************************************/
+
+router.get('/sales-over-time', function(req, res, next) {
+    let json = JSON.parse(req.app.get('json'));
+    let sales = {
+        index: 1,
+        description: 'Vendas e serviços prestados',
+        accounts: {
+            sum: [506, 507, 508, 509, 513, 514, 515, 516],
+            sub: [511, 512, 518],
+            u: [510, 517]
+        },
+    };
+    let sales_over_time = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    
+    try {
+        process_sales_over_time_accounts(sales, sales_over_time, json);
+        console.log(sales_over_time);
+        return res.send(sales_over_time);
+    } catch(err) {
+        console.log('Error at finances/sales-over-time');
+        res.status(400);
+        return res.send([0,0,0,0,0,0,0,0,0,0,0,0,0]);
+    }
+});
+
+function process_sales_over_time_accounts(sales, sales_over_time, json) {
+    if(!json.AuditFile.MasterFiles.GeneralLedgerAccounts)
+        return;
+    let entries = json.AuditFile.GeneralLedgerEntries.Journal;
+    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
+    entries.forEach((journal) => {
+        if (Array.isArray(journal.Transaction)) {
+            journal.Transaction.forEach(transaction => process_transaction(transaction, accounts, sales, sales_over_time));
+        } else if (journal.Transaction) {
+            process_transaction(journal.Transaction, accounts, sales, sales_over_time);
+        }
+    });
+}
+
+function process_transaction(transaction, accounts, sales, sales_over_time) {
+    if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
+        let credit_lines = transaction.Lines.CreditLine;
+        credit_lines.forEach(credit_line => {
+            let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
+            if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+                let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                sales_over_time[month] += parseFloat(credit_line.CreditAmount)
+            } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+                let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                sales_over_time[month] -= parseFloat(credit_line.CreditAmount)
+            }
+        });
+    } else if (transaction.Lines.CreditLine) {
+        let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
+        if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            let month = parseInt(transaction.TransactionDate.substring(5, 7));
+            sales_over_time[month] += parseFloat(transaction.Lines.CreditLine.CreditAmount)
+        } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            let month = parseInt(transaction.TransactionDate.substring(5, 7));
+            sales_over_time[month] -= parseFloat(transaction.Lines.CreditLine.CreditAmount)
+        }
+    }
+    if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
+        let debit_lines = transaction.Lines.DebitLine;
+        debit_lines.forEach(debit_line => {
+            let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
+            if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+                let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                sales_over_time[month] -= parseFloat(debit_line.DebitAmount)
+            } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+                let month = parseInt(transaction.TransactionDate.substring(5, 7));
+                sales_over_time[month] += parseFloat(debit_line.DebitAmount)
+            }
+        });
+    } else if (transaction.Lines.DebitLine) {
+        let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
+        if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            let month = parseInt(transaction.TransactionDate.substring(5, 7));
+            sales_over_time[month] -= parseFloat(transaction.Lines.DebitLine.DebitAmount)
+        } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            let month = parseInt(transaction.TransactionDate.substring(5, 7));
+            sales_over_time[month] += parseFloat(debit_line.DebitAmount)
+        }
     }
 }
 

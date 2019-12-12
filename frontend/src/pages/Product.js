@@ -105,7 +105,7 @@ const Product = ({ match }) => {
         if (isError) {
           return (
             <div className="padding-bottom-1 alert alert-danger" role="alert">
-              Error trying to fetch company information
+              Error trying to fetch product information
             </div>
           );
         }
