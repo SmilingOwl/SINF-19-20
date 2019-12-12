@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import SalesGraph from '../components/financialArea/SalesGraph';
 
@@ -17,42 +17,100 @@ const Product = ({ match }) => {
   const [salesInfo, setSalesInfo] = useState(null);
   const [chartInfo, setChartInfo] = useState([]);
   const [stockInfo, setStockInfo] = useState(null);
+  const [isError, setIsError] = useState(false);
+  const [isLoadingProduct, setIsLoadingProduct] = useState(true);
+  const [isLoadingStock, setIsLoadingStock] = useState(true);
+  const [isLoadingSales, setIsLoadingSales] = useState(true);
+  const [isLoadingChart, setIsLoadingChart] = useState(true);
   const [id] = useState(match.params.id);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await axios.get(`http://localhost:9000/products/${id}`);
-      setProduct(res.data);
+      await axios.get(`http://localhost:9000/products/${id}`)
+        .then((result) => {
+          if (result.status === 200) {
+            setProduct(result.data);
+          } else {
+            setIsError(true);
+          }
+        })
+        .catch(() => {
+          setIsError(true);
+        });
+      setIsLoadingProduct(false);
     };
     fetchProduct();
   }, [id]);
 
   useEffect(() => {
     const fetchProductSalesInfo = async () => {
-      const res = await axios.get(`http://localhost:9000/products/${id}/sales`);
-      setSalesInfo(res.data);
+      await axios.get(`http://localhost:9000/products/${id}/sales`)
+        .then((result) => {
+          if (result.status === 200) {
+            setSalesInfo(result.data);
+          } else {
+            setIsError(true);
+          }
+        })
+        .catch(() => {
+          setIsError(true);
+        });
+      setIsLoadingSales(false);
     };
     fetchProductSalesInfo();
   }, [id]);
 
   useEffect(() => {
     const fetchProductChart = async () => {
-      const res = await axios.get(`http://localhost:9000/products/${id}/chart`);
-      setChartInfo(res.data);
+      await axios.get(`http://localhost:9000/products/${id}/chart`)
+        .then((result) => {
+          if (result.status === 200) {
+            setChartInfo(result.data);
+          } else {
+            setIsError(true);
+          }
+        })
+        .catch(() => {
+          setIsError(true);
+        });
+      setIsLoadingChart(false);
     };
     fetchProductChart();
   }, [id]);
 
   useEffect(() => {
     const fetchProductStock = async () => {
-      const res = await axios.get(`http://localhost:9000/products/${id}/stock`);
-      setStockInfo(res.data);
+      const res = await axios.get(`http://localhost:9000/products/${id}/stock`)
+        .then((result) => {
+          if (result.status === 200) {
+            setStockInfo(result.data);
+          } else {
+            setIsError(true);
+          }
+        })
+        .catch(() => {
+          setIsError(true);
+        });
+      setIsLoadingStock(false);
     };
     fetchProductStock();
   }, [id]);
 
   return (
     <div>
+      {(() => {
+        if (isLoadingProduct || isLoadingSales || isLoadingStock) {
+          return <Spinner className="center-spinner" />;
+        }
+        if (isError) {
+          return (
+            <div className="padding-bottom-1 alert alert-danger" role="alert">
+              Error trying to fetch company information
+            </div>
+          );
+        }
+      return (
+        <>
       <Row>
         <Col sm={{ size: '8', offset: 2 }} className="zero_padding">
           <h3 className="section-title">
@@ -142,7 +200,13 @@ const Product = ({ match }) => {
         </div>
         <div className="col-md-2" />
       </div>
-      <SalesGraph elements={chartInfo} />
+      { isLoadingChart ? 
+        <Spinner className="center-spinner" /> :
+        <SalesGraph elements={chartInfo} />
+      }
+      </>
+      );
+      })()}
     </div>
   );
 };

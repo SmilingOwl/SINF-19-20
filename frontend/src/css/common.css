@@ -194,7 +194,7 @@ nav.navbar {
 
 .center-spinner {
     color: #588DA3;
-    position: fixed;
+    position: absolute;
     top: 25%;
     left: 50%;
 }
