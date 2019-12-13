@@ -60,13 +60,13 @@ const TopConsumers = ({ customers }) => {
 TopConsumers.propTypes = {
   customers: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      quantityBought: PropTypes.number.isRequired,
-      totalSpent: PropTypes.number.isRequired,
+      name: PropTypes.string,
+      description: PropTypes.string,
+      quantityBought: PropTypes.number,
+      totalSpent: PropTypes.number,
       product: PropTypes.shape({
-        code: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
+        code: PropTypes.string,
+        description: PropTypes.string,
       }),
     }).isRequired,
   ).isRequired,
