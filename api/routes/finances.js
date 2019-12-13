@@ -287,10 +287,10 @@ router.get('/balance-sheet', function(req, res, next) {
                 index: 'A00134',
                 description: 'Excedentes de revalorização',
                 accounts: {
-                    sum: [345],
-                    sub: [343, 344, 346],
-                    dev: [338], //sub
-                    cred: [338], //sum
+                    sum: [343, 345],
+                    sub: [344, 346],
+                    dev: [], //sub
+                    cred: [], //sum
                 },
                 value: 0,
             }, {
@@ -298,7 +298,7 @@ router.get('/balance-sheet', function(req, res, next) {
                 description: 'Ajustamentos no capital próprio',
                 accounts: {
                     sum: [340, 349, 351],
-                    sub: [],
+                    sub: [350],
                     dev: [339, 341, 342, 347, 348, 352], //sub
                     cred: [339, 341, 342, 347, 348, 352], //sum
                 },
@@ -475,59 +475,241 @@ router.get('/balance-sheet', function(req, res, next) {
         total_liabilities: [],
         total_equitity: null,
     };
-    try {
-        process_accounts(balance_sheet, req);
+    //try {
+        let taxonomies = {};
+        process_taxonomies(taxonomies, req);
+        
+        process_accounts(balance_sheet, taxonomies);
         calculate_results(balance_sheet);
         
         return res.send(balance_sheet);
-    } catch(err) {
+    /*} catch(err) {
         console.log('Error at finances/balance-sheet');
         res.status(400);
         return res.send({});
-    }
+    }*/
 });
 
-function process_accounts(balance_sheet, req) {
-    let json = JSON.parse(req.app.get('json'));
-    if(!json.AuditFile.MasterFiles.GeneralLedgerAccounts)
-        return;
-    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
-    accounts.forEach((account) => {
-        let account_debit = parseFloat(account.ClosingDebitBalance - account.OpeningDebitBalance);
-        let account_credit = parseFloat(account.ClosingCreditBalance - account.OpeningCreditBalance);
-        let value = Math.abs(account_debit - account_credit);
-        balance_sheet.current_assets.forEach((element) => {
-            process_element_balance_sheet(element, account, value, account_debit, account_credit);
+function process_accounts(balance_sheet, taxonomies) {
+    balance_sheet.current_assets.forEach((element) => {
+        element.accounts.sum.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
         });
-        balance_sheet.non_current_assets.forEach((element) => {
-            process_element_balance_sheet(element, account, value, account_debit, account_credit);
+        element.accounts.sub.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
         });
-        balance_sheet.equitity.forEach((element) => {
-            process_element_balance_sheet(element, account, value, account_debit, account_credit);
+        element.accounts.dev.forEach((tax) => {
+            if(taxonomies[tax] != null && taxonomies[tax] > 0)
+                element.value += taxonomies[tax];
         });
-        balance_sheet.current_liabilities.forEach((element) => {
-            process_element_balance_sheet(element, account, value, account_debit, account_credit);
+    });
+    balance_sheet.non_current_assets.forEach((element) => {
+        element.accounts.sum.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
         });
-        balance_sheet.non_current_liabilities.forEach((element) => {
-            process_element_balance_sheet(element, account, value, account_debit, account_credit);
+        element.accounts.sub.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.dev.forEach((tax) => {
+            if(taxonomies[tax] != null && taxonomies[tax] > 0)
+                element.value += taxonomies[tax];
+        });
+    });
+    balance_sheet.equitity.forEach((element) => {
+        element.accounts.sum.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.sub.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.dev.forEach((tax) => {
+            if(taxonomies[tax] != null && taxonomies[tax] > 0)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.cred.forEach((tax) => {
+            if(taxonomies[tax] != null && taxonomies[tax] < 0)
+                element.value += taxonomies[tax];
+        });
+    });
+    balance_sheet.current_liabilities.forEach((element) => {
+        element.accounts.sum.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.sub.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.cred.forEach((tax) => {
+            if(taxonomies[tax] != null && taxonomies[tax] < 0)
+                element.value += taxonomies[tax];
+        });
+    });
+    balance_sheet.non_current_liabilities.forEach((element) => {
+        element.accounts.sum.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.sub.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.cred.forEach((tax) => {
+            if(taxonomies[tax] != null && taxonomies[tax] < 0)
+                element.value += taxonomies[tax];
         });
     });
 }
 
-function process_element_balance_sheet(element, account, value, account_debit, account_credit) {
-    if(element.accounts.sum.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
-        element.value += value;
-    } else if(element.accounts.sub.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
-        element.value -= value;
-    } else if (element.accounts.dev.indexOf(parseInt(account.TaxonomyCode)) !== -1 && account_debit > account_credit) {
-        if(element.type === 'equitity') {
-            element.value -= value;
-        } else {
-            element.value += value;
+function process_taxonomies(taxonomies, req) {
+    let json = JSON.parse(req.app.get('json'));
+    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
+    accounts.forEach((account) => {
+        if(account.TaxonomyCode != null) {
+            if (taxonomies[parseInt(account.TaxonomyCode)] == null) {
+                taxonomies[parseInt(account.TaxonomyCode)] = 
+                    parseFloat(account.ClosingDebitBalance) - 
+                    parseFloat(account.ClosingCreditBalance) -
+                    parseFloat(account.OpeningDebitBalance) + 
+                    parseFloat(account.OpeningCreditBalance);
+            } else {
+                taxonomies[parseInt(account.TaxonomyCode)] += 
+                    parseFloat(account.ClosingDebitBalance) - 
+                    parseFloat(account.ClosingCreditBalance) -
+                    parseFloat(account.OpeningDebitBalance) + 
+                    parseFloat(account.OpeningCreditBalance);
+            }
         }
-    } else if (element.accounts.cred.indexOf(parseInt(account.TaxonomyCode)) !== -1 && account_credit > account_debit) {
-        element.value += value;
+    });
+}
+
+function process_taxonomies2(taxonomies, req) {
+    let json = JSON.parse(req.app.get('json'));
+    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
+    let journals = json.AuditFile.GeneralLedgerEntries.Journal;
+    journals.forEach((journal) => {
+        if (Array.isArray(journal.Transaction)) {
+            journal.Transaction.forEach(transaction => {
+                if(transaction.TransactionType !== 'A') {
+                    process_transaction(transaction, accounts, taxonomies)
+                }
+            });
+        } else if (journal.Transaction) {
+            if(transaction.TransactionType !== 'A') {
+                process_transaction(journal.Transaction, accounts, taxonomies);
+            }
+        }
+    });
+}
+
+function process_transaction(transaction, accounts, taxonomies) {
+    if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
+        let credit_lines = transaction.Lines.CreditLine;
+        credit_lines.forEach(credit_line => {
+            let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
+            if(account.length > 0 && account[0].TaxonomyCode != null) {
+                if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(credit_line.CreditAmount);
+                } else {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(credit_line.CreditAmount);
+                }
+            }
+        });
+    } else if (transaction.Lines.CreditLine) {
+        let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
+        if(account.length > 0 && account[0].TaxonomyCode) {
+            if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(transaction.Lines.CreditLine.CreditAmount);
+            } else {
+                taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(transaction.Lines.CreditLine.CreditAmount);
+            }
+        }
     }
+    if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
+        let debit_lines = transaction.Lines.DebitLine;
+        debit_lines.forEach(debit_line => {
+            let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
+            if(account.length > 0 && account[0].TaxonomyCode) {
+                if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] = +parseFloat(debit_line.DebitAmount);
+                } else {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(debit_line.DebitAmount);
+                }
+            }
+        });
+    } else if (transaction.Lines.DebitLine) {
+        let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
+        if(account.length > 0 && account[0].TaxonomyCode) {
+            if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(transaction.Lines.DebitLine.DebitAmount);
+            } else {
+                taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(transaction.Lines.DebitLine.DebitAmount);
+            }
+        }
+    }
+}
+
+function process_element_balance_sheet(balance_sheet, account, line, isCredit) {
+    balance_sheet.current_assets.forEach((element) => {
+        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value -= parseFloat(line.CreditAmount);
+            else element.value += parseFloat(line.DebitAmount);
+        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value += parseFloat(line.CreditAmount);
+            else element.value -= parseFloat(line.DebitAmount);
+        }
+    });
+    balance_sheet.non_current_assets.forEach((element) => {
+        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value -= parseFloat(line.CreditAmount);
+            else element.value += parseFloat(line.DebitAmount);
+        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value += parseFloat(line.CreditAmount);
+            else element.value -= parseFloat(line.DebitAmount);
+        }
+    });
+    balance_sheet.equitity.forEach((element) => {
+        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value -= parseFloat(line.CreditAmount);
+            else element.value += parseFloat(line.DebitAmount);
+        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value += parseFloat(line.CreditAmount);
+            else element.value -= parseFloat(line.DebitAmount);
+        }
+    });
+    balance_sheet.current_liabilities.forEach((element) => {
+        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value -= parseFloat(line.CreditAmount);
+            else element.value += parseFloat(line.DebitAmount);
+        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value += parseFloat(line.CreditAmount);
+            else element.value -= parseFloat(line.DebitAmount);
+        }
+    });
+    balance_sheet.non_current_liabilities.forEach((element) => {
+        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value -= parseFloat(line.CreditAmount);
+            else element.value += parseFloat(line.DebitAmount);
+        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
+            if(isCredit) element.value += parseFloat(line.CreditAmount);
+            else element.value -= parseFloat(line.DebitAmount);
+        }
+    });
 }
 
 function calculate_results(balance_sheet) {
@@ -888,7 +1070,6 @@ router.get('/sales-over-time', function(req, res, next) {
     
     try {
         process_sales_over_time_accounts(sales, sales_over_time, json);
-        console.log(sales_over_time);
         return res.send(sales_over_time);
     } catch(err) {
         console.log('Error at finances/sales-over-time');
@@ -904,32 +1085,40 @@ function process_sales_over_time_accounts(sales, sales_over_time, json) {
     let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
     entries.forEach((journal) => {
         if (Array.isArray(journal.Transaction)) {
-            journal.Transaction.forEach(transaction => process_transaction(transaction, accounts, sales, sales_over_time));
+            journal.Transaction.forEach(transaction => {
+                if(transaction.TransactionType !== 'A')
+                process_transaction_time(transaction, accounts, sales, sales_over_time)
+            });
         } else if (journal.Transaction) {
-            process_transaction(journal.Transaction, accounts, sales, sales_over_time);
+            if(journal.Transaction.TransactionType !== 'A')
+            process_transaction_time(journal.Transaction, accounts, sales, sales_over_time);
         }
     });
 }
 
-function process_transaction(transaction, accounts, sales, sales_over_time) {
+function process_transaction_time(transaction, accounts, sales, sales_over_time) {
     if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
         let credit_lines = transaction.Lines.CreditLine;
         credit_lines.forEach(credit_line => {
             let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
             let month = parseInt(transaction.TransactionDate.substring(5, 7));
-            if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                sales_over_time[month] += parseFloat(credit_line.CreditAmount)
+            if(account.length > 0 && (sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+            || sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+            || sales.accounts.u.indexOf(parseInt(account[0].TaxonomyCode)) !== -1)) {
+                sales_over_time[month] += parseFloat(credit_line.CreditAmount);
             } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                sales_over_time[month] -= parseFloat(credit_line.CreditAmount)
+                sales_over_time[month] += parseFloat(credit_line.CreditAmount);
             }
         });
     } else if (transaction.Lines.CreditLine) {
         let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
         let month = parseInt(transaction.TransactionDate.substring(5, 7));
-        if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            sales_over_time[month] += parseFloat(transaction.Lines.CreditLine.CreditAmount)
+        if(account.length > 0 && (sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || sales.accounts.u.indexOf(parseInt(account[0].TaxonomyCode)) !== -1)) {
+            sales_over_time[month] += parseFloat(transaction.Lines.CreditLine.CreditAmount);
         } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            sales_over_time[month] -= parseFloat(transaction.Lines.CreditLine.CreditAmount)
+            sales_over_time[month] += parseFloat(transaction.Lines.CreditLine.CreditAmount);
         }
     }
     if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
@@ -937,19 +1126,23 @@ function process_transaction(transaction, accounts, sales, sales_over_time) {
         debit_lines.forEach(debit_line => {
             let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
             let month = parseInt(transaction.TransactionDate.substring(5, 7));
-            if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                sales_over_time[month] -= parseFloat(debit_line.DebitAmount)
+            if(account.length > 0 && (sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+            || sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+            || sales.accounts.u.indexOf(parseInt(account[0].TaxonomyCode)) !== -1)) {
+                sales_over_time[month] -= parseFloat(debit_line.DebitAmount);
             } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-                sales_over_time[month] += parseFloat(debit_line.DebitAmount)
+                sales_over_time[month] -= parseFloat(debit_line.DebitAmount);
             }
         });
     } else if (transaction.Lines.DebitLine) {
         let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
         let month = parseInt(transaction.TransactionDate.substring(5, 7));
-        if(account.length > 0 && sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            sales_over_time[month] -= parseFloat(transaction.Lines.DebitLine.DebitAmount)
+        if(account.length > 0 && (sales.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
+        || sales.accounts.u.indexOf(parseInt(account[0].TaxonomyCode)) !== -1)) {
+            sales_over_time[month] -= parseFloat(transaction.Lines.DebitLine.DebitAmount);
         } else if(account.length > 0 && sales.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            sales_over_time[month] += parseFloat(transaction.Lines.DebitLine.DebitAmount)
+            sales_over_time[month] -= parseFloat(transaction.Lines.DebitLine.DebitAmount);
         }
     }
 }
