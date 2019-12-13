@@ -107,16 +107,16 @@ const Purchases = () => {
     const updateAccountsPayable = async () => {
       let accounts_payable = 0;
       if (balanceSheet.non_current_assets) {
-        const non_current = balanceSheet.non_current_assets.filter((p) => p.index === 'A00144');
+        const non_current = balanceSheet.non_current_liabilities.filter((p) => p.index === 'A00144');
         if (non_current.length > 0) {
           accounts_payable += non_current[0].value;
         }
-        const current = balanceSheet.current_assets.filter((p) => p.index === 'A00150');
+        const current = balanceSheet.current_liabilities.filter((p) => p.index === 'A00150');
         if (current.length > 0) {
           accounts_payable += current[0].value;
         }
       }
-      setAccountsPayable(accounts_payable);
+      setAccountsPayable(Math.abs(accounts_payable));
     };
     updateAccountsPayable();
   }, [balanceSheet]);
