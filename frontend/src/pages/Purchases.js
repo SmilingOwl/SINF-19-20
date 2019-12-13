@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Row, Spinner, Alert } from 'reactstrap';
 import axios from 'axios';
-import { numberWithSpaces } from '../common/Math';
+import PurchasesInfo from '../components/purchases/PurchasesInfo';
+import TopPurchasesP from '../components/purchases/TopPurchasesP';
+import TopSuppliers from '../components/purchases/TopSuppliers';
 
 const Purchases = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -105,18 +106,18 @@ const Purchases = () => {
 
   useEffect(() => {
     const updateAccountsPayable = async () => {
-      let accounts_payable = 0;
+      let calcAccountsPayable = 0;
       if (balanceSheet.non_current_assets) {
-        const non_current = balanceSheet.non_current_liabilities.filter((p) => p.index === 'A00144');
-        if (non_current.length > 0) {
-          accounts_payable += non_current[0].value;
+        const nonCurrent = balanceSheet.non_current_assets.filter((p) => p.index === 'A00144');
+        if (nonCurrent.length > 0) {
+          calcAccountsPayable += nonCurrent[0].value;
         }
         const current = balanceSheet.current_liabilities.filter((p) => p.index === 'A00150');
         if (current.length > 0) {
-          accounts_payable += current[0].value;
+          calcAccountsPayable += current[0].value;
         }
       }
-      setAccountsPayable(Math.abs(accounts_payable));
+      setAccountsPayable(calcAccountsPayable);
     };
     updateAccountsPayable();
   }, [balanceSheet]);
@@ -138,34 +139,9 @@ const Purchases = () => {
           );
         }
         if (hasErrorBalance || hasErrorTotalSpent) {
-          return <Alert color="danger">Error trying to fetch Purchases Information</Alert>;
+          return <Alert color="danger">Error ocurred trying to fetch Purchases Information</Alert>;
         }
-        return (
-          <div className="row mtop-smaller">
-            <div className="col-md-2" />
-            <div className="col-md-3 smallBox align-items-center d-flex">
-              <div className="col-md-12 centered">
-                <strong>Total Spent</strong>
-                <p className="price" style={{ 'text-align': 'center' }}>
-                  {numberWithSpaces(totalSpent.toFixed(2))}
-                  {' '}
-€
-                </p>
-              </div>
-            </div>
-            <div className="col-md-2" />
-            <div className="col-md-3 smallBox align-items-center d-flex">
-              <div className="col-md-12 centered">
-                <strong>Accounts Payable</strong>
-                <p className="price" style={{ 'text-align': 'center' }}>
-                  {numberWithSpaces(accountsPayable.toFixed(2))}
-                  {' '}
-€
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+        return <PurchasesInfo totalSpent={totalSpent} accountsPayable={accountsPayable} />;
       })()}
 
       <div className="row">
@@ -183,40 +159,9 @@ const Purchases = () => {
           );
         }
         if (hasErrorProducts) {
-          return <Alert color="danger">Error trying to fetch Top Purchases Table</Alert>;
+          return <Alert color="danger">Error ocurred trying to fetch Top Purchases Table</Alert>;
         }
-        return (
-          <>
-            <div className="row mtop-smaller">
-              <div className="col-md-1" />
-              <div className="col-md-10">
-                <table className="table">
-                  <thead>
-                    <tr className="table-header">
-                      <th scope="col" className="centered">
-                        Top
-                      </th>
-                      <th scope="col">Product</th>
-                      <th scope="col" className="centered">
-                        Units Bought
-                      </th>
-                      <th scope="col" className="centered">
-                        Price per Unit
-                      </th>
-                      <th scope="col" className="centered">
-                        Total Spent
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <ProductsTable products={products} />
-                  </tbody>
-                </table>
-              </div>
-              <div className="col-md-1" />
-            </div>
-          </>
-        );
+        return <TopPurchasesP products={products} />;
       })()}
 
       <div className="row">
@@ -234,92 +179,12 @@ const Purchases = () => {
           );
         }
         if (hasErrorSuppliers) {
-          return <Alert color="danger">Error trying to fetch Top Suppliers Table</Alert>;
+          return <Alert color="danger">Error ocurred trying to fetch Top Suppliers Table</Alert>;
         }
-        return (
-          <>
-            <div className="row mtop-smaller">
-              <div className="col-md-1" />
-              <div className="col-md-10">
-                <table className="table">
-                  <thead>
-                    <tr className="table-header">
-                      <th scope="col" className="centered">
-                        Top
-                      </th>
-                      <th scope="col">Supplier</th>
-                      <th scope="col">Most Bought Product</th>
-                      <th scope="col" className="centered">
-                        Total Spent
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <SuppliersTable suppliers={suppliers} />
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        );
+        return <TopSuppliers suppliers={suppliers} />;
       })()}
     </>
   );
-};
-
-const SuppliersTable = ({ suppliers }) => {
-  const suppliersTable = [];
-  if (!suppliers) return [];
-  for (let i = 1; i <= suppliers.length && i <= 10; i++) {
-    suppliersTable.push(
-      <tr className="table-row" key={i}>
-        <th scope="row" className="centered">
-          {i}
-        </th>
-        <td>
-          <Link to={{ pathname: `/suppliers/${suppliers[i - 1].supplier_id}` }}>
-            {suppliers[i - 1].supplier}
-          </Link>
-        </td>
-        <td>{suppliers[i - 1].most_bought_product}</td>
-        <td className="centered">
-          {numberWithSpaces(suppliers[i - 1].total_spent.toFixed(2))}
-          {' '}
-€
-        </td>
-      </tr>,
-    );
-  }
-  return suppliersTable;
-};
-
-const ProductsTable = ({ products }) => {
-  const productsTable = [];
-  if (!products) return [];
-  for (let i = 1; i <= products.length && i <= 10; i++) {
-    productsTable.push(
-      <tr className="table-row" key={i}>
-        <th scope="row" className="centered">
-          {i}
-        </th>
-        <td>{products[i - 1].product}</td>
-        <td className="centered">{numberWithSpaces(products[i - 1].unitsSold)}</td>
-        <td className="centered">
-          {numberWithSpaces((products[i - 1].totalSpent / products[i - 1].unitsSold).toFixed(2))}
-          {' '}
-€
-          {' '}
-        </td>
-        <td className="centered">
-          {numberWithSpaces(products[i - 1].totalSpent.toFixed(2))}
-          {' '}
-€
-        </td>
-      </tr>,
-    );
-  }
-
-  return productsTable;
 };
 
 export default Purchases;
