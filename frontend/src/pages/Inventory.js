@@ -4,6 +4,40 @@ import { Link } from 'react-router-dom';
 class Inventory extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            stockProducts: {},
+        };
+    }
+    UNSAFE_componentWillMount() {
+        this.fetchStockInfoTable();
+    }
+
+    fetchStockInfoTable() {
+        fetch("http://localhost:9000/inventory")
+            .then(res => res.json())
+            .then(res => {
+                this.setState({ stockProducts: res });
+            })
+    }
+
+    fillStockTable() {
+        let stockTable = [];
+        if (!this.state.stockProducts)
+            return [];
+        for (let i = 1; i <= this.state.stockProducts.length && i <= 10; i++) {
+            stockTable.push(
+                <tr className="table-row" key={i}>
+                    <th scope="row" className="centered">{i}</th>
+                    <td>{this.state.products[i - 1].product}</td>
+                    <td className="centered">{}</td>
+                    <td className="centered">{} € </td>
+                    <td className="centered">{} €</td>
+                </tr>
+            );
+
+        }
+
+        return stockTable;
     }
 
     render() {
@@ -28,7 +62,7 @@ class Inventory extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                
+
                             </tbody>
                         </table>
                     </div>
