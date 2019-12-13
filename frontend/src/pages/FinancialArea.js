@@ -72,23 +72,26 @@ const FinancialArea = () => {
           <h1 className="section-title">Profit / Loss</h1>
         </div>
       </div>
-      {isLoadingProfitLoss ? (
-        <Row className="center-spinner">
-          <Spinner />
-        </Row>
-      ) : (
-        <div className="row">
-          <div className="col-sm-1" />
-          <div className="col-sm-10">
-            <ProfitLoss profitLoss={profitLoss} />
+      {(() => {
+        if (isLoadingProfitLoss) {
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorProfitLoss) {
+          return <Alert color="danger">Error trying to fetch Profit / Loss</Alert>;
+        }
+        return (
+          <div className="row">
+            <div className="col-sm-1" />
+            <div className="col-sm-10">
+              <ProfitLoss profitLoss={profitLoss} />
+            </div>
           </div>
-        </div>
-      )}
-      {hasErrorProfitLoss ? (
-        <Alert color="danger">Error trying to fetch Profit / Loss</Alert>
-      ) : (
-        <></>
-      )}
+        );
+      })()}
 
       <div className="row">
         <div className="col-sm-1" />
@@ -96,14 +99,19 @@ const FinancialArea = () => {
           <h1 className="section-title">Sales Over Time</h1>
         </div>
       </div>
-      {isLoadingSales ? (
-        <Row className="center-spinner">
-          <Spinner />
-        </Row>
-      ) : (
-        <SalesGraph elements={chartInfo} />
-      )}
-      {hasErrorSales ? <Alert color="danger">Error trying to fetch Sales Over Time</Alert> : <></>}
+      {(() => {
+        if (isLoadingSales) {
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorSales) {
+          return <Alert color="danger">Error trying to fetch Sales Over Time</Alert>;
+        }
+        return <SalesGraph elements={chartInfo} />;
+      })()}
 
       <div className="row">
         <div className="col-sm-1" />
@@ -111,20 +119,26 @@ const FinancialArea = () => {
           <h1 className="section-title">Balance Sheet</h1>
         </div>
       </div>
-
-      {isLoadingBalanceSheet ? (
-        <Row className="center-spinner">
-          <Spinner />
-        </Row>
-      ) : (
-        <div className="row">
-          <div className="col-sm-1" />
-          <div className="col-sm-10">
-            <BalanceSheet balanceSheet={balanceSheet} />
+      {(() => {
+        if (isLoadingBalanceSheet) {
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorBalanceSheet) {
+          return <Alert color="danger">Error trying to fetch BalanceSheet</Alert>;
+        }
+        return (
+          <div className="row">
+            <div className="col-sm-1" />
+            <div className="col-sm-10">
+              <BalanceSheet balanceSheet={balanceSheet} />
+            </div>
           </div>
-        </div>
-      )}
-      {hasErrorBalanceSheet ? <Alert color="danger">Error trying to fetch BalanceSheet</Alert> : <></>}
+        );
+      })()}
     </div>
   );
 };
