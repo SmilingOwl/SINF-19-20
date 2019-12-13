@@ -33,7 +33,7 @@ router.get('/', function (req, res, next) {
                 });
                 result.push(stockProduct);
             });
-            
+            result.sort((a, b) => (a.totalValue < b.totalValue) ? 1 : -1); 
            return res.send(result);
            
         } catch (err) {
