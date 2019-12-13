@@ -1,29 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Navbar, NavbarToggler, NavItem, NavLink, Nav, Collapse, NavbarBrand,
+} from 'reactstrap';
 import isLogged from '../../common/isLogged';
+import styles from './NavBar.module.css';
 
 const NavBar = () => {
   const type = isLogged();
   const FinancialArea = () => (
-    <li className="nav-item active">
-      <Link className="nav-link" to="/finances">
+    <NavItem>
+      <NavLink href="/finances">
         <strong className="link">Financial Area</strong>
-      </Link>
-    </li>
+      </NavLink>
+    </NavItem>
   );
   const Sales = () => (
-    <li className="nav-item active">
-      <Link className="nav-link" to="/sales">
+    <NavItem>
+      <NavLink href="/sales">
         <strong className="link">Sales</strong>
-      </Link>
-    </li>
+      </NavLink>
+    </NavItem>
   );
   const Purchases = () => (
-    <li className="nav-item active">
-      <Link className="nav-link" to="/purchases">
+    <NavItem>
+      <NavLink href="/purchases">
         <strong className="link">Purchases</strong>
-      </Link>
-    </li>
+      </NavLink>
+    </NavItem>
   );
   const Login = () => (
     <ul className="nav navbar-nav navbar-right">
@@ -43,64 +47,71 @@ const NavBar = () => {
       </li>
     </ul>
   );
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+
   return (
     <>
-      <nav className="navbar navbar-expand-md navbar-light bg-light">
-        <ul className="nav navbar-nav mr-auto">
-          <li className="nav-item active">
-            <Link className="nav-link" to="/">
-              <strong className="link">Home</strong>
-            </Link>
-          </li>
-          {(() => {
-            if (type === 'CEO') {
-              return (
-                <>
-                  <FinancialArea />
-                  <Sales />
-                  <Purchases />
-                </>
-              );
-            }
-            if (type === 'Shareholder') {
-              return (
-                <>
-                  <FinancialArea />
-                  <Sales />
-                </>
-              );
-            }
-            if (type === 'Head of Finances') {
-              return (
-                <>
-                  <FinancialArea />
-                </>
-              );
-            }
-            if (type === 'Head of Sales') {
-              return (
-                <>
-                  <Sales />
-                </>
-              );
-            }
-            if (type === 'Head of Purchases') {
-              return (
-                <>
-                  <Purchases />
-                </>
-              );
-            }
-            return <></>;
-          })()}
-        </ul>
+      <Navbar color="light" light expand="md">
+        <NavbarToggler className={styles.navCollapse} onClick={toggle} />
+        <Collapse  isOpen={isOpen} navbar>
+          <Nav className="mr-auto" navbar>
+            <NavItem>
+              <NavLink href="/">
+                <strong className="link">Home</strong>
+              </NavLink>
+            </NavItem>
+            {(() => {
+              if (type === 'CEO') {
+                return (
+                  <>
+                    <FinancialArea />
+                    <Sales />
+                    <Purchases />
+                  </>
+                );
+              }
+              if (type === 'Shareholder') {
+                return (
+                  <>
+                    <FinancialArea />
+                    <Sales />
+                  </>
+                );
+              }
+              if (type === 'Head of Finances') {
+                return (
+                  <>
+                    <FinancialArea />
+                  </>
+                );
+              }
+              if (type === 'Head of Sales') {
+                return (
+                  <>
+                    <Sales />
+                  </>
+                );
+              }
+              if (type === 'Head of Purchases') {
+                return (
+                  <>
+                    <Purchases />
+                  </>
+                );
+              }
+              return <></>;
+            })()}
+          </Nav>
+        </Collapse>
         {(() => {
           if (isLogged() === null) {
             return <Login />;
           }
           return <LogOut />;
         })()}
-      </nav>
+      </Navbar>
     </>
   );
 };
