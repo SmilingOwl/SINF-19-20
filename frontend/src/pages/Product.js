@@ -117,6 +117,7 @@ const Product = ({ match }) => {
         <Col sm={{ size: '8', offset: 2 }} className="zero_padding">
           <h3 className="section-title">
             Product
+            {' '}
             {id}
           </h3>
         </Col>
