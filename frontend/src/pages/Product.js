@@ -2,9 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
-import { Row, Col, Spinner } from 'reactstrap';
+import {
+  Row, Col, Spinner, Alert,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import SalesGraph from '../components/financialArea/SalesGraph';
+import Info from '../components/product/Info';
+import StockSales from '../components/product/StockSales';
 
 const Product = ({ match }) => {
   const [product, setProduct] = useState({
@@ -17,25 +21,30 @@ const Product = ({ match }) => {
   const [salesInfo, setSalesInfo] = useState(null);
   const [chartInfo, setChartInfo] = useState([]);
   const [stockInfo, setStockInfo] = useState(null);
-  const [isError, setIsError] = useState(false);
   const [isLoadingProduct, setIsLoadingProduct] = useState(true);
+  const [hasErrorProduct, setHasErrorProduct] = useState(false);
   const [isLoadingStock, setIsLoadingStock] = useState(true);
+  const [hasErrorStock, setHasErrorStock] = useState(false);
   const [isLoadingSales, setIsLoadingSales] = useState(true);
+  const [hasErrorSales, setHasErrorSales] = useState(false);
   const [isLoadingChart, setIsLoadingChart] = useState(true);
+  const [hasErrorChart, setHasErrorChart] = useState(false);
   const [id] = useState(match.params.id);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      await axios.get(`http://localhost:9000/products/${id}`)
+      setHasErrorProduct(false);
+      await axios
+        .get(`http://localhost:9000/products/${id}`)
         .then((result) => {
           if (result.status === 200) {
             setProduct(result.data);
           } else {
-            setIsError(true);
+            setHasErrorProduct(true);
           }
         })
         .catch(() => {
-          setIsError(true);
+          setHasErrorProduct(true);
         });
       setIsLoadingProduct(false);
     };
@@ -44,16 +53,18 @@ const Product = ({ match }) => {
 
   useEffect(() => {
     const fetchProductSalesInfo = async () => {
-      await axios.get(`http://localhost:9000/products/${id}/sales`)
+      setHasErrorSales(false);
+      await axios
+        .get(`http://localhost:9000/products/${id}/sales`)
         .then((result) => {
           if (result.status === 200) {
             setSalesInfo(result.data);
           } else {
-            setIsError(true);
+            setHasErrorSales(true);
           }
         })
         .catch(() => {
-          setIsError(true);
+          setHasErrorSales(true);
         });
       setIsLoadingSales(false);
     };
@@ -62,16 +73,18 @@ const Product = ({ match }) => {
 
   useEffect(() => {
     const fetchProductChart = async () => {
-      await axios.get(`http://localhost:9000/products/${id}/chart`)
+      setHasErrorChart(false);
+      await axios
+        .get(`http://localhost:9000/products/${id}/chart`)
         .then((result) => {
           if (result.status === 200) {
             setChartInfo(result.data);
           } else {
-            setIsError(true);
+            setHasErrorChart(true);
           }
         })
         .catch(() => {
-          setIsError(true);
+          setHasErrorChart(true);
         });
       setIsLoadingChart(false);
     };
@@ -80,16 +93,18 @@ const Product = ({ match }) => {
 
   useEffect(() => {
     const fetchProductStock = async () => {
-      const res = await axios.get(`http://localhost:9000/products/${id}/stock`)
+      setHasErrorStock(false);
+      await axios
+        .get(`http://localhost:9000/products/${id}/stock`)
         .then((result) => {
           if (result.status === 200) {
             setStockInfo(result.data);
           } else {
-            setIsError(true);
+            setHasErrorStock(true);
           }
         })
         .catch(() => {
-          setIsError(true);
+          setHasErrorStock(true);
         });
       setIsLoadingStock(false);
     };
@@ -98,58 +113,34 @@ const Product = ({ match }) => {
 
   return (
     <div>
-      {(() => {
-        if (isLoadingProduct || isLoadingSales || isLoadingStock) {
-          return <Spinner className="center-spinner" />;
-        }
-        if (isError) {
-          return (
-            <div className="padding-bottom-1 alert alert-danger" role="alert">
-              Error trying to fetch product information
-            </div>
-          );
-        }
-      return (
-        <>
       <Row>
         <Col sm={{ size: '8', offset: 2 }} className="zero_padding">
           <h3 className="section-title">
             Product
-            {' '}
             {id}
           </h3>
         </Col>
       </Row>
-      <Row>
-        <Col sm={{ size: '8', offset: 2 }} className="smallBox">
-          <Row>
-            <Col md="5">
-              <strong className="field-name">Name: </strong>
-              {' '}
-              {product.api.description}
-            </Col>
-            <Col md="3">
-              <strong className="field-name">Code: </strong>
-              {' '}
-              {id}
-            </Col>
-            <Col md="4" className="align-right">
-              <strong className="field-name">Barcode: </strong>
-              {' '}
-              {product.api.barcode}
-            </Col>
-          </Row>
-          <hr />
-          <Row>
-            <Col md="12">
-              <strong className="field-name">Description: </strong>
-              {' '}
-              {product.api.complementaryDescription}
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-
+      {(() => {
+        if (isLoadingProduct) {
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorProduct) {
+          return <Alert color="danger">Error trying to fetch Product Info</Alert>;
+        }
+        return (
+          <Info
+            id={id}
+            description={product.api.description}
+            barcode={product.api.barcode}
+            complementaryDescription={product.api.complementaryDescription}
+          />
+        );
+      })()}
       <Row>
         <div className="col-md-2" />
         <div className="col-md-3 zero_padding">
@@ -160,38 +151,19 @@ const Product = ({ match }) => {
           <h3 className="section-title">Sales</h3>
         </div>
       </Row>
-      <Row>
-        <div className="col-md-2" />
-        <div className="col-md-3 smallBox boxPadding">
-          <div className="row">
-            <div className="col-md-8">Quantity Sold</div>
-            <div className="col-md-4 price">{salesInfo ? salesInfo.quantity_sold : 0}</div>
-          </div>
-          <div className="row">
-            <div className="col-md-8">Quantity In Stock</div>
-            <div className="col-md-4 price">{stockInfo ? stockInfo.quantity : 0}</div>
-          </div>
-        </div>
-        <div className="col-md-2" />
-        <div className="col-md-3 smallBox boxPadding">
-          <div className="row">
-            <div className="col-md-8">Average Price Per Unit</div>
-            <div className="col-md-4 price">
-              {salesInfo ? (salesInfo.total_price / salesInfo.quantity_sold).toFixed(2) : 0.0}
-              {' '}
-              {'\u20AC'}
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-8">Total Earnings</div>
-            <div className="col-md-4 price">
-              {salesInfo ? salesInfo.total_price.toFixed(2) : 0.0}
-              {' '}
-              {'\u20AC'}
-            </div>
-          </div>
-        </div>
-      </Row>
+      {(() => {
+        if (isLoadingSales || isLoadingStock) {
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorSales || hasErrorStock) {
+          return <Alert color="danger">Error trying to fetch Sales and Stock</Alert>;
+        }
+        return <StockSales salesInfo={salesInfo} stockInfo={stockInfo} />;
+      })()}
 
       <div className="row">
         <div className="col-md-2" />
@@ -200,12 +172,18 @@ const Product = ({ match }) => {
         </div>
         <div className="col-md-2" />
       </div>
-      { isLoadingChart ? 
-        <Spinner className="center-spinner" /> :
-        <SalesGraph elements={chartInfo} />
-      }
-      </>
-      );
+      {(() => {
+        if (isLoadingChart) {
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorChart) {
+          return <Alert color="danger">Error trying to fetch Sales Over Time</Alert>;
+        }
+        return <SalesGraph elements={chartInfo} />;
       })()}
     </div>
   );
