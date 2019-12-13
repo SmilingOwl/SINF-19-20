@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class Inventory extends Component {
     constructor(props) {
@@ -28,7 +29,11 @@ class Inventory extends Component {
             stockTable.push(
                 <tr className="table-row" key={i}>
                     <th> </th>
-                    <td scope="row">{this.state.stock[i].name}</td>
+                    <td scope="row">
+                        <Link to={{pathname: `/products/${this.state.stock[i].code}` }}>
+                            {this.state.stock[i].name}
+                        </Link>
+                    </td>
                     <td>{this.state.stock[i].quantity}</td>
                     <td>{this.state.stock[i].unitPrice} € </td>
                     <td>{this.state.stock[i].totalValue} € </td>

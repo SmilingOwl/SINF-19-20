@@ -19,6 +19,7 @@ router.get('/', function (req, res, next) {
             stock.forEach((stockInfo) => {
                 stockProduct = {
                     name: stockInfo.description,
+                    code: stockInfo.itemKey,
                     unitPrice: 0,
                     quantity: 0,
                     totalValue: 0,
