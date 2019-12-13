@@ -1,7 +1,9 @@
 /* eslint-disable linebreak-style */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Spinner } from 'reactstrap';
+import {
+  Spinner, Row, Col, Container,
+} from 'reactstrap';
 import CompanyInfo from '../components/home/CompanyInfo';
 
 const Home = () => {
@@ -29,10 +31,14 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <Container className="home-div">
       {(() => {
         if (isLoading) {
-          return <Spinner className="center-spinner" />;
+          return (
+            <Row className="center-spinner">
+              <Spinner />
+            </Row>
+          );
         }
         if (isError) {
           return (
@@ -46,14 +52,14 @@ const Home = () => {
             <div className="col-md-2" />
             <div className="col-md-8 smallBox">
               <div className="row">
-                <div className="col-md-8">
+                <Col md="7" sm="5">
                   <strong className="field-name">Company: </strong>
                   {companyInfo.companyKey}
-                </div>
-                <div className="col-md-4">
+                </Col>
+                <Col md="5" sm="7">
                   <strong className="field-name">Company Tax ID: </strong>
                   {companyInfo.companyTaxID}
-                </div>
+                </Col>
               </div>
               <hr />
               <CompanyInfo companyInformation={companyInfo} />
@@ -61,7 +67,7 @@ const Home = () => {
           </div>
         );
       })()}
-    </div>
+    </Container>
   );
 };
 export default Home;
