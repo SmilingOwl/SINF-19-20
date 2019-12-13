@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
+import { numberWithSpaces } from '../../common/Math';
 
 const StockSales = ({ salesInfo, stockInfo }) => (
   <Row>
@@ -8,11 +9,11 @@ const StockSales = ({ salesInfo, stockInfo }) => (
     <div className="col-md-3 smallBox boxPadding">
       <div className="row">
         <div className="col-md-8">Quantity Sold</div>
-        <div className="col-md-4 price">{salesInfo ? salesInfo.quantity_sold : 0}</div>
+        <div className="col-md-4 price">{salesInfo ? numberWithSpaces(salesInfo.quantity_sold) : 0}</div>
       </div>
       <div className="row">
         <div className="col-md-8">Quantity In Stock</div>
-        <div className="col-md-4 price">{stockInfo ? stockInfo.quantity : 0}</div>
+        <div className="col-md-4 price">{stockInfo ? numberWithSpaces(stockInfo.quantity) : 0}</div>
       </div>
     </div>
     <div className="col-md-2" />
@@ -20,17 +21,17 @@ const StockSales = ({ salesInfo, stockInfo }) => (
       <div className="row">
         <div className="col-md-8">Average Price Per Unit</div>
         <div className="col-md-4 price">
-          {salesInfo ? (salesInfo.total_price / salesInfo.quantity_sold).toFixed(2) : 0.0}
+          {salesInfo ? numberWithSpaces((salesInfo.total_price / salesInfo.quantity_sold).toFixed(2)) : 0.00}
           {' '}
-          {'\u20AC'}
+          €
         </div>
       </div>
       <div className="row">
         <div className="col-md-8">Total Earnings</div>
         <div className="col-md-4 price">
-          {salesInfo ? salesInfo.total_price.toFixed(2) : 0.0}
+          {salesInfo ? numberWithSpaces(salesInfo.total_price.toFixed(2)) : 0.00}
           {' '}
-          {'\u20AC'}
+          €
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { numberWithSpaces } from '../common/Math';
 
 class Inventory extends Component {
     constructor(props) {
@@ -34,9 +35,9 @@ class Inventory extends Component {
                             {this.state.stock[i].name}
                         </Link>
                     </td>
-                    <td>{this.state.stock[i].quantity}</td>
-                    <td>{this.state.stock[i].unitPrice} € </td>
-                    <td>{this.state.stock[i].totalValue} € </td>
+                    <td>{numberWithSpaces(this.state.stock[i].quantity)}</td>
+                    <td>{numberWithSpaces(this.state.stock[i].unitPrice.toFixed(2))} € </td>
+                    <td>{numberWithSpaces(this.state.stock[i].totalValue.toFixed(2))} € </td>
                 </tr>
             );
         }
