@@ -6,6 +6,7 @@ import Supplier from './pages/Supplier';
 import Product from './pages/Product';
 import FinancialArea from './pages/FinancialArea';
 import Purchases from './pages/Purchases';
+import Inventory from './pages/Inventory';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import { AuthContext } from './context/auth';
@@ -34,6 +35,7 @@ function AppRouter() {
           <LoggedRoute path="/finances" component={FinancialArea} />
           <LoggedRoute path="/sales" component={Sales} />
           <LoggedRoute path="/purchases" component={Purchases} />
+          <LoggedRoute path="/inventory" component={Inventory} />
           <LoggedRoute path="/suppliers/:id" component={Supplier} />
           <LoggedRoute path="/products/:id" component={Product} />
           <LoggedRoute path="/logout" component={Logout} />
