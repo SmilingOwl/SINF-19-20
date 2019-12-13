@@ -31,7 +31,6 @@ router.get('/', function (req, res, next) {
             return res.send(stockProduct);
         } catch (err) {
             console.log(body);
-            console.log('Error at product/{id}/sales');
             res.status(400);
             return res.send({});
         }
