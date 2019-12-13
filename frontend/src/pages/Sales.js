@@ -13,7 +13,7 @@ const Sales = () => {
   const [accountsReceivable, setAccountsReceivable] = useState(0);
   const [chartInfo, setChartInfo] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   const [profitLoss, setProfitLoss] = useState({});
-  const [balanceSheet, setBalanceSheet] = useState([]);
+  const [balanceSheet, setBalanceSheet] = useState({});
   const [isLoadingTables, setIsLoadingTables] = useState(true);
   const [hasErrorTables, setHasErrorTables] = useState(false);
   const [isLoadingProfitLoss, setIsLoadingProfitLoss] = useState(true);
