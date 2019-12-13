@@ -475,7 +475,7 @@ router.get('/balance-sheet', function(req, res, next) {
         total_liabilities: [],
         total_equitity: null,
     };
-    //try {
+    try {
         let taxonomies = {};
         process_taxonomies(taxonomies, req);
         
@@ -483,11 +483,11 @@ router.get('/balance-sheet', function(req, res, next) {
         calculate_results(balance_sheet);
         
         return res.send(balance_sheet);
-    /*} catch(err) {
+    } catch(err) {
         console.log('Error at finances/balance-sheet');
         res.status(400);
         return res.send({});
-    }*/
+    }
 });
 
 function process_accounts(balance_sheet, taxonomies) {
@@ -589,129 +589,6 @@ function process_taxonomies(taxonomies, req) {
     });
 }
 
-function process_taxonomies2(taxonomies, req) {
-    let json = JSON.parse(req.app.get('json'));
-    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
-    let journals = json.AuditFile.GeneralLedgerEntries.Journal;
-    journals.forEach((journal) => {
-        if (Array.isArray(journal.Transaction)) {
-            journal.Transaction.forEach(transaction => {
-                if(transaction.TransactionType !== 'A') {
-                    process_transaction(transaction, accounts, taxonomies)
-                }
-            });
-        } else if (journal.Transaction) {
-            if(transaction.TransactionType !== 'A') {
-                process_transaction(journal.Transaction, accounts, taxonomies);
-            }
-        }
-    });
-}
-
-function process_transaction(transaction, accounts, taxonomies) {
-    if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
-        let credit_lines = transaction.Lines.CreditLine;
-        credit_lines.forEach(credit_line => {
-            let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
-            if(account.length > 0 && account[0].TaxonomyCode != null) {
-                if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(credit_line.CreditAmount);
-                } else {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(credit_line.CreditAmount);
-                }
-            }
-        });
-    } else if (transaction.Lines.CreditLine) {
-        let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
-        if(account.length > 0 && account[0].TaxonomyCode) {
-            if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(transaction.Lines.CreditLine.CreditAmount);
-            } else {
-                taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(transaction.Lines.CreditLine.CreditAmount);
-            }
-        }
-    }
-    if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
-        let debit_lines = transaction.Lines.DebitLine;
-        debit_lines.forEach(debit_line => {
-            let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
-            if(account.length > 0 && account[0].TaxonomyCode) {
-                if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] = +parseFloat(debit_line.DebitAmount);
-                } else {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(debit_line.DebitAmount);
-                }
-            }
-        });
-    } else if (transaction.Lines.DebitLine) {
-        let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
-        if(account.length > 0 && account[0].TaxonomyCode) {
-            if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(transaction.Lines.DebitLine.DebitAmount);
-            } else {
-                taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(transaction.Lines.DebitLine.DebitAmount);
-            }
-        }
-    }
-}
-
-function process_element_balance_sheet(balance_sheet, account, line, isCredit) {
-    balance_sheet.current_assets.forEach((element) => {
-        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value -= parseFloat(line.CreditAmount);
-            else element.value += parseFloat(line.DebitAmount);
-        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value += parseFloat(line.CreditAmount);
-            else element.value -= parseFloat(line.DebitAmount);
-        }
-    });
-    balance_sheet.non_current_assets.forEach((element) => {
-        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value -= parseFloat(line.CreditAmount);
-            else element.value += parseFloat(line.DebitAmount);
-        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value += parseFloat(line.CreditAmount);
-            else element.value -= parseFloat(line.DebitAmount);
-        }
-    });
-    balance_sheet.equitity.forEach((element) => {
-        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value -= parseFloat(line.CreditAmount);
-            else element.value += parseFloat(line.DebitAmount);
-        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value += parseFloat(line.CreditAmount);
-            else element.value -= parseFloat(line.DebitAmount);
-        }
-    });
-    balance_sheet.current_liabilities.forEach((element) => {
-        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value -= parseFloat(line.CreditAmount);
-            else element.value += parseFloat(line.DebitAmount);
-        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value += parseFloat(line.CreditAmount);
-            else element.value -= parseFloat(line.DebitAmount);
-        }
-    });
-    balance_sheet.non_current_liabilities.forEach((element) => {
-        if(element.accounts.sum.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.cred.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value -= parseFloat(line.CreditAmount);
-            else element.value += parseFloat(line.DebitAmount);
-        } else if(element.accounts.sub.indexOf(parseInt(account[0].TaxonomyCode)) !== -1
-        || element.accounts.dev.indexOf(parseInt(account[0].TaxonomyCode)) !== -1) {
-            if(isCredit) element.value += parseFloat(line.CreditAmount);
-            else element.value -= parseFloat(line.DebitAmount);
-        }
-    });
-}
-
 function calculate_results(balance_sheet) {
     balance_sheet.total_assets.push({
         index: 'A00112',
@@ -761,7 +638,6 @@ function sum(balance_sheet, type) {
 /************************************ Profit / Loss ************************************/
 
 router.get('/profit-loss', function(req, res, next) {
-    let json = JSON.parse(req.app.get('json'));
     let profit_loss_elements = [
         {
             index: 1,
@@ -974,7 +850,9 @@ router.get('/profit-loss', function(req, res, next) {
         sub: [6, 7, 8, 9, 10, 11, 12, 13, 14, 17],
     };
     try {
-        process_accounts_profit_loss(profit_loss_elements, req)
+        let taxonomies = {};
+        process_taxonomies(taxonomies, req);
+        process_accounts_profit_loss(profit_loss_elements, taxonomies);
         calculate_ebitda(ebitda, profit_loss_elements);
         
         let ebit = ebitda.value - profit_loss_elements.filter(p => p.index === 19)[0].value
@@ -1017,17 +895,19 @@ router.get('/profit-loss', function(req, res, next) {
     }
 });
 
-function process_accounts_profit_loss(profit_loss, req) {
-    let json = JSON.parse(req.app.get('json'));
-    if(!json.AuditFile.MasterFiles.GeneralLedgerAccounts)
-        return;
-    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
-    accounts.forEach((account) => {
-        let account_debit = parseFloat(account.ClosingDebitBalance - account.OpeningDebitBalance);
-        let account_credit = parseFloat(account.ClosingCreditBalance - account.OpeningCreditBalance);
-        let value = Math.abs(account_debit - account_credit);
-        profit_loss.forEach((element) => {
-            process_element(element, account, value, account_debit, account_credit);
+function process_accounts_profit_loss(profit_loss_elements, taxonomies) {
+    profit_loss_elements.forEach((element) => {
+        element.accounts.sum.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.sub.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
+        });
+        element.accounts.u.forEach((tax) => {
+            if(taxonomies[tax] != null)
+                element.value += taxonomies[tax];
         });
     });
 }
@@ -1043,14 +923,6 @@ function calculate_ebitda(ebitda, profit_loss_elements) {
         if(e.length > 0)
             ebitda.value -= e[0].value;
     });
-}
-
-function process_element(element, account, value, account_debit, account_credit) {
-    if(element.accounts.sum.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
-        element.value += value;
-    } else if(element.accounts.sub.indexOf(parseInt(account.TaxonomyCode)) !== -1) {
-        element.value -= value;
-    }
 }
 
 /************************************ Sales Over Time ************************************/
