@@ -31,7 +31,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Container className="home-div">
+    <div className="home-div">
       {(() => {
         if (isLoading) {
           return (
@@ -67,7 +67,7 @@ const Home = () => {
           </div>
         );
       })()}
-    </Container>
+    </div>
   );
 };
 export default Home;

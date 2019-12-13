@@ -109,6 +109,13 @@ const NavBar = () => {
                   </>
                 );
               }
+              if (type === 'Head of Logistics') {
+                return (
+                  <>
+                    <Inventory />
+                  </>
+                );
+              }
               return <></>;
             })()}
           </Nav>

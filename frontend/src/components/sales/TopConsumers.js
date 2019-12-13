@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { numberWithSpaces } from '../../common/Math';
 
 const TopConsumers = ({ customers }) => {
   const fillCustomersTable = () => {
@@ -17,9 +18,9 @@ const TopConsumers = ({ customers }) => {
               {customers[i].product.description}
             </Link>
           </td>
-          <td className="centered">{customers[i].quantityBought}</td>
+          <td className="centered">{numberWithSpaces(customers[i].quantityBought)}</td>
           <td className="centered">
-            {customers[i].totalSpent.toFixed(2)}
+            {numberWithSpaces(customers[i].totalSpent.toFixed(2))}
             {' '}
             {'\u20AC'}
           </td>
@@ -60,13 +61,13 @@ const TopConsumers = ({ customers }) => {
 TopConsumers.propTypes = {
   customers: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      quantityBought: PropTypes.number.isRequired,
-      totalSpent: PropTypes.number.isRequired,
+      name: PropTypes.string,
+      description: PropTypes.string,
+      quantityBought: PropTypes.number,
+      totalSpent: PropTypes.number,
       product: PropTypes.shape({
-        code: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
+        code: PropTypes.string,
+        description: PropTypes.string,
       }),
     }).isRequired,
   ).isRequired,

@@ -110,6 +110,11 @@ app.set('users', [
       type: 'Head of Finances',
       email: 'finances@snif.pt',
       password: 'finances'
+  }, 
+  {
+      type: 'Head of Logistics',
+      email: 'logistics@snif.pt',
+      password: 'logistics'
   }
 ]);
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { numberWithSpaces } from '../../common/Math';
 
 const TopProducts = ({ products }) => {
   const fillProductsTable = () => {
@@ -16,14 +17,14 @@ const TopProducts = ({ products }) => {
               {products[i].description}
             </Link>
           </td>
-          <td className="centered">{products[i].quantity}</td>
+          <td className="centered">{numberWithSpaces(products[i].quantity)}</td>
           <td className="centered">
-            {(products[i].totalEarned / products[i].quantity).toFixed(2)}
+            {numberWithSpaces((products[i].totalEarned / products[i].quantity).toFixed(2))}
             {' '}
             {'\u20AC'}
           </td>
           <td className="centered">
-            {products[i].totalEarned.toFixed(2)}
+            {numberWithSpaces(products[i].totalEarned.toFixed(2))}
             {' '}
             {'\u20AC'}
           </td>

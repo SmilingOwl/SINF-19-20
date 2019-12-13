@@ -24,6 +24,15 @@ router.get('/company_info', function (req, res, next) {
     });
 });
 
-
+router.get('/fiscal-year', function (req, res, next) {
+    try {
+    let json = JSON.parse(req.app.get('json'));
+    let year = json.AuditFile.Header.FiscalYear;
+    return res.send(year);
+    } catch(err) {
+        console.log("Error getting fiscal year");
+        return res.send('2019');
+    }
+});
 
 module.exports = router;
