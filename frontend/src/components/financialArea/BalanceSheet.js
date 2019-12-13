@@ -1,4 +1,5 @@
 import React from 'react';
+import { numberWithSpaces } from '../../common/Math';
 
 const BalanceSheet = ({ balanceSheet }) => {
   const balanceSheetComponents = {
@@ -29,7 +30,7 @@ const BalanceSheet = ({ balanceSheet }) => {
               <strong>{element.index}</strong>
             </div>
             <div className="col-sm-7">{element.description}</div>
-            <div className="col-sm-3 price">{`${element.value.toFixed(2)}€`}</div>
+            <div className="col-sm-3 price">{ `${numberWithSpaces(Math.abs(element.value.toFixed(2)))}€`}</div>
           </div>
         );
       });
@@ -52,7 +53,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             total_non_current_assets ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><strong>{total_non_current_assets.description}</strong></div>
-              <div className="col-sm-3 price">{`${total_non_current_assets.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(total_non_current_assets.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }
@@ -66,7 +67,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             total_current_assets ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><strong>{total_current_assets.description}</strong></div>
-              <div className="col-sm-3 price">{`${total_current_assets.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(total_current_assets.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }
@@ -75,7 +76,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             total_assets ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><h5 className="value">{total_assets.description}</h5></div>
-              <div className="col-sm-3 price">{`${total_assets.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(total_assets.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }
@@ -92,7 +93,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             balanceSheet.total_equitity ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><strong>{balanceSheet.total_equitity.description}</strong></div>
-              <div className="col-sm-3 price">{`${balanceSheet.total_equitity.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(balanceSheet.total_equitity.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }
@@ -109,7 +110,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             total_non_current_liabilities ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><strong>{total_non_current_liabilities.description}</strong></div>
-              <div className="col-sm-3 price">{`${total_non_current_liabilities.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(total_non_current_liabilities.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }
@@ -123,7 +124,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             total_current_liabilities ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><strong>{total_current_liabilities.description}</strong></div>
-              <div className="col-sm-3 price">{`${total_current_liabilities.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(total_current_liabilities.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }
@@ -132,7 +133,7 @@ const BalanceSheet = ({ balanceSheet }) => {
             total_liabilities ?
             <div className="row mtop-smaller">
               <div className="col-sm-9"><h5 className="value">{total_liabilities.description}</h5></div>
-              <div className="col-sm-3 price">{`${total_liabilities.value.toFixed(2)}€`}</div>
+              <div className="col-sm-3 price">{`${numberWithSpaces(Math.abs(total_liabilities.value.toFixed(2)))}€`}</div>
             </div> :
             <div />
           }

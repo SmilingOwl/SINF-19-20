@@ -46,14 +46,19 @@ const getAccountsReceivable = (balanceSheet) => {
   let ar = balanceSheet.filter(p => p.index === 21);
   if(ar.length === 0) return 0;
   return Math.abs(ar[0].debit - ar[0].credit);
-}
+};
 
 const getAccountsPayable = (balanceSheet) => {
   let ap = balanceSheet.filter(p => p.index === 22);
   if(ap.length === 0) return 0;
   return Math.abs(ap[0].credit - ap[0].debit);
-}
+};
+
+const numberWithSpaces = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+};
 
 export {
   getSales, getCOGS, getExpenses, getDepreciationAmortization, getInterestTaxes, getEquity, getAccountsReceivable, getAccountsPayable,
+  numberWithSpaces,
 };

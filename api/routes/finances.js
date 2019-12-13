@@ -855,11 +855,11 @@ router.get('/profit-loss', function(req, res, next) {
         process_accounts_profit_loss(profit_loss_elements, taxonomies);
         calculate_ebitda(ebitda, profit_loss_elements);
         
-        let ebit = ebitda.value - profit_loss_elements.filter(p => p.index === 19)[0].value
-            - profit_loss_elements.filter(p => p.index === 20)[0].value;
+        let ebit = ebitda.value + profit_loss_elements.filter(p => p.index === 19)[0].value
+            + profit_loss_elements.filter(p => p.index === 20)[0].value;
         let ebt = ebit + profit_loss_elements.filter(p => p.index === 22)[0].value
-            - profit_loss_elements.filter(p => p.index === 23)[0].value;
-        let net_profit = ebt - profit_loss_elements.filter(p => p.index === 25)[0].value;
+            + profit_loss_elements.filter(p => p.index === 23)[0].value;
+        let net_profit = ebt + profit_loss_elements.filter(p => p.index === 25)[0].value;
 
         let profit_loss = {
             sales: {
@@ -921,7 +921,7 @@ function calculate_ebitda(ebitda, profit_loss_elements) {
     ebitda.sub.forEach((element) => {
         let e = profit_loss_elements.filter(p => p.index === element);
         if(e.length > 0)
-            ebitda.value -= e[0].value;
+            ebitda.value += e[0].value;
     });
 }
 
@@ -949,9 +949,9 @@ function process_transaction_profit_loss(transaction, accounts, taxonomies) {
             let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
             if(account.length > 0 && account[0].TaxonomyCode != null) {
                 if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(credit_line.CreditAmount);
+                    taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(credit_line.CreditAmount);
                 } else {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(credit_line.CreditAmount);
+                    taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(credit_line.CreditAmount);
                 }
             }
         });
@@ -959,9 +959,9 @@ function process_transaction_profit_loss(transaction, accounts, taxonomies) {
         let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
         if(account.length > 0 && account[0].TaxonomyCode != null) {
             if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(transaction.Lines.CreditLine.CreditAmount);
+                taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(transaction.Lines.CreditLine.CreditAmount);
             } else {
-                taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(transaction.Lines.CreditLine.CreditAmount);
+                taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(transaction.Lines.CreditLine.CreditAmount);
             }
         }
     }
@@ -971,9 +971,9 @@ function process_transaction_profit_loss(transaction, accounts, taxonomies) {
             let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
             if(account.length > 0 && account[0].TaxonomyCode != null) {
                 if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(debit_line.DebitAmount);
+                    taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(debit_line.DebitAmount);
                 } else {
-                    taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(debit_line.DebitAmount);
+                    taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(debit_line.DebitAmount);
                 }
             }
         });
@@ -981,9 +981,9 @@ function process_transaction_profit_loss(transaction, accounts, taxonomies) {
         let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
         if(account.length > 0 && account[0].TaxonomyCode != null) {
             if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
-                taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(transaction.Lines.DebitLine.DebitAmount);
+                taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(transaction.Lines.DebitLine.DebitAmount);
             } else {
-                taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(transaction.Lines.DebitLine.DebitAmount);
+                taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(transaction.Lines.DebitLine.DebitAmount);
             }
         }
     }
