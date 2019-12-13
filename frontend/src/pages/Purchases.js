@@ -108,7 +108,7 @@ const Purchases = () => {
     const updateAccountsPayable = async () => {
       let calcAccountsPayable = 0;
       if (balanceSheet.non_current_assets) {
-        const nonCurrent = balanceSheet.non_current_assets.filter((p) => p.index === 'A00144');
+        const nonCurrent = balanceSheet.non_current_liabilities.filter((p) => p.index === 'A00144');
         if (nonCurrent.length > 0) {
           calcAccountsPayable += nonCurrent[0].value;
         }
@@ -117,7 +117,7 @@ const Purchases = () => {
           calcAccountsPayable += current[0].value;
         }
       }
-      setAccountsPayable(calcAccountsPayable);
+      setAccountsPayable(Math.abs(calcAccountsPayable));
     };
     updateAccountsPayable();
   }, [balanceSheet]);
