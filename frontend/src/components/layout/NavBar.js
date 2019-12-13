@@ -29,6 +29,13 @@ const NavBar = () => {
       </NavLink>
     </NavItem>
   );
+  const Inventory = () => (
+    <NavItem>
+      <NavLink href="/inventory">
+        <strong className="link">Inventory</strong>
+      </NavLink>
+    </NavItem>
+  );
   const Login = () => (
     <ul className="nav navbar-nav navbar-right">
       <li className="nav-item active logout">
@@ -69,6 +76,7 @@ const NavBar = () => {
                     <FinancialArea />
                     <Sales />
                     <Purchases />
+                    <Inventory />
                   </>
                 );
               }
