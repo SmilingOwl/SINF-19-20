@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import { numberWithSpaces } from '../common/Math';
 
 class Sales extends Component
 {
@@ -9,7 +9,7 @@ class Sales extends Component
     this.state = {
       customers: "",
       products: "",
-      profit_loss: {},
+      profitLoss: {},
       balance_sheet: {}
     };
   }
@@ -33,7 +33,7 @@ class Sales extends Component
   fetchProfitLossInfo() {
     fetch("http://localhost:9000/finances/profit-loss")
       .then(res => res.json())
-      .then(res => { this.setState({ profit_loss: res }); console.log(res); })
+      .then(res => { this.setState({ profitLoss: res }); })
       .catch(err => err);
   }
 
@@ -104,35 +104,26 @@ class Sales extends Component
             <h3 className="section-title">Sales Information</h3>
           </div>
         </div>
-        <div className="row mtop-smaller">
-          <div className="col-md-2"/> 
-          <div className="col-md-3 smallBox">
-            <div className="row">
-              <div className="col-md-8">
-                Sales
+        
+        <div className="row">
+          <div className="col-sm-1" />
+          <div className="col-sm-10">
+            <div className="row mtop-smaller">
+              <div className="col-sm-1" />
+              <div className="col-sm-2 smallBox no-padding centered">
+                <h6>{this.state.profitLoss.sales ? this.state.profitLoss.sales.description : ''}</h6>
+                <p>{this.state.profitLoss.sales ? numberWithSpaces(Math.abs(this.state.profitLoss.sales.value.toFixed(2))) : ''} €</p>
               </div>
-              <div className="col-md-4 price">
-                { this.state.profit_loss.sales ? this.state.profit_loss.sales.value.toFixed(2) : 0 } {'\u20AC'}
+              <div className="col-sm-2" />
+              <div className="col-sm-2 smallBox no-padding centered">
+                <h6>{this.state.profitLoss.cogs ? this.state.profitLoss.cogs.description : ''}</h6>
+                <p>{this.state.profitLoss.cogs ? numberWithSpaces(Math.abs(this.state.profitLoss.cogs.value.toFixed(2))) : ''} €</p>
               </div>
-            </div>  
-            <div className="row">
-              <div className="col-md-8">
-                Cost of Goods Sold
+              <div className="col-sm-2" />
+              <div className="col-sm-2 smallBox no-padding centered">
+                <h6>{'Contas a Receber'}</h6>
+                <p>{numberWithSpaces(Math.abs(this.calculateAccountsReceivable()).toFixed(2))} €</p>
               </div>
-              <div className="col-md-4 price">
-                { this.state.profit_loss.cogs ? this.state.profit_loss.cogs.value.toFixed(2) : 0  } {'\u20AC'}
-              </div>
-            </div>
-          </div>
-          <div className="col-md-2"/>
-          <div className="col-md-3 smallBox align-items-center d-flex">              
-            <div className="col-md-7">
-              <strong>
-                Accounts Receivable
-              </strong>
-            </div>
-            <div className="col-md-5 price">
-                { this.calculateAccountsReceivable().toFixed(2) } {'\u20AC'}
             </div>
           </div>
         </div>
