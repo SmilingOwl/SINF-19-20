@@ -851,7 +851,7 @@ router.get('/profit-loss', function(req, res, next) {
     };
     try {
         let taxonomies = {};
-        process_taxonomies(taxonomies, req);
+        process_taxonomies_entries(taxonomies, req);
         process_accounts_profit_loss(profit_loss_elements, taxonomies);
         calculate_ebitda(ebitda, profit_loss_elements);
         
@@ -923,6 +923,70 @@ function calculate_ebitda(ebitda, profit_loss_elements) {
         if(e.length > 0)
             ebitda.value -= e[0].value;
     });
+}
+
+function process_taxonomies_entries(taxonomies, req) {
+    let json = JSON.parse(req.app.get('json'));
+    let accounts = json.AuditFile.MasterFiles.GeneralLedgerAccounts.Account;
+    let journals = json.AuditFile.GeneralLedgerEntries.Journal;
+    journals.forEach((journal) => {
+        if (Array.isArray(journal.Transaction)) {
+            journal.Transaction.forEach(transaction => {
+                if(transaction.TransactionType !== 'A')
+                process_transaction_profit_loss(transaction, accounts, taxonomies)
+            });
+        } else if (journal.Transaction) {
+            if(journal.Transaction.TransactionType !== 'A')
+            process_transaction_profit_loss(journal.Transaction, accounts, taxonomies);
+        }
+    });
+}
+
+function process_transaction_profit_loss(transaction, accounts, taxonomies) {
+    if (transaction.Lines.CreditLine && Array.isArray(transaction.Lines.CreditLine)) {
+        let credit_lines = transaction.Lines.CreditLine;
+        credit_lines.forEach(credit_line => {
+            let account = accounts.filter(p => p.AccountID === credit_line.AccountID);
+            if(account.length > 0 && account[0].TaxonomyCode != null) {
+                if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(credit_line.CreditAmount);
+                } else {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(credit_line.CreditAmount);
+                }
+            }
+        });
+    } else if (transaction.Lines.CreditLine) {
+        let account = accounts.filter(p => p.AccountID === transaction.Lines.CreditLine.AccountID);
+        if(account.length > 0 && account[0].TaxonomyCode != null) {
+            if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                taxonomies[parseInt(account[0].TaxonomyCode)] = parseFloat(transaction.Lines.CreditLine.CreditAmount);
+            } else {
+                taxonomies[parseInt(account[0].TaxonomyCode)] += parseFloat(transaction.Lines.CreditLine.CreditAmount);
+            }
+        }
+    }
+    if (transaction.Lines.DebitLine && Array.isArray(transaction.Lines.DebitLine)) {
+        let debit_lines = transaction.Lines.DebitLine;
+        debit_lines.forEach(debit_line => {
+            let account = accounts.filter(p => p.AccountID === debit_line.AccountID);
+            if(account.length > 0 && account[0].TaxonomyCode != null) {
+                if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(debit_line.DebitAmount);
+                } else {
+                    taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(debit_line.DebitAmount);
+                }
+            }
+        });
+    } else if (transaction.Lines.DebitLine) {
+        let account = accounts.filter(p => p.AccountID === transaction.Lines.DebitLine.AccountID);
+        if(account.length > 0 && account[0].TaxonomyCode != null) {
+            if(taxonomies[parseInt(account[0].TaxonomyCode)] == null) {
+                taxonomies[parseInt(account[0].TaxonomyCode)] = -parseFloat(transaction.Lines.DebitLine.DebitAmount);
+            } else {
+                taxonomies[parseInt(account[0].TaxonomyCode)] -= parseFloat(transaction.Lines.DebitLine.DebitAmount);
+            }
+        }
+    }
 }
 
 /************************************ Sales Over Time ************************************/
