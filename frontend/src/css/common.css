@@ -7,6 +7,7 @@ div.container .smallBox, .smallBox{
     padding-top: 0.9em;
     padding-bottom: 0.5em;
     margin-bottom: 3em;
+    
 
 }
 div.container .lineSmallBox, .lineSmallBox{
@@ -194,9 +195,11 @@ nav.navbar {
 
 .center-spinner {
     color: #588DA3;
-    position: absolute;
-    top: 25%;
-    left: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2em;
 }
 
 form label, form label input {
@@ -225,4 +228,8 @@ form label, form label input {
 .no-padding {
     padding-left: 0px !important;
     padding-right: 0px !important;
+}
+.home-div
+{
+    height: 40%;
 }

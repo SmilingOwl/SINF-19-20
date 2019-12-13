@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 const CompanyInfo = ({ companyInformation }) => (
   <div>
     <div className="row">
-      <div className="col-md-8">
+      <div className="col-md-7 col-sm-5">
         <p>
           <strong className="field-name">Street: </strong>
           {' '}
           {companyInformation.streetName}
         </p>
       </div>
-      <div className="col-md-4">
+      <div className="col-md-5 col-sm-7">
         <p>
           <strong className="field-name">Postal Code: </strong>
           {' '}
@@ -20,14 +20,14 @@ const CompanyInfo = ({ companyInformation }) => (
       </div>
     </div>
     <div className="row">
-      <div className="col-md-8">
+      <div className="col-md-7 col-sm-5">
         <p>
           <strong className="field-name">City: </strong>
           {' '}
           {companyInformation.cityName}
         </p>
       </div>
-      <div className="col-md-4">
+      <div className="col-md-5 col-sm-7">
         <p>
           <strong className="field-name">Country: </strong>
           {' '}
