@@ -76,7 +76,11 @@ request({
       scope: 'application'
     }
   }, function(error, response, body) {
-    app.set('api_token', JSON.parse(body));
+    try{
+      app.set('api_token', JSON.parse(body));
+    } catch(err) {
+      console.log('Error getting token');
+    }
 });
 
 app.set('users', [

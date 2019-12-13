@@ -4,8 +4,10 @@ var router = express.Router();
 var request = require('request');
 
 router.get('/info', function(req, res, next) {
-    if(req.app.get('api_token') == null)
+    if(req.app.get('api_token') == null) {
+        res.status(400);
         return res.send('Error');
+    }
     let authorization = req.app.get('api_token').token_type.concat(" ").concat(req.app.get('api_token').access_token);
     request({
         uri: 'https://my.jasminsoftware.com/api/224974/224974-0001/billing/invoices',
