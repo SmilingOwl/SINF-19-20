@@ -12,27 +12,34 @@ router.get('/', function (req, res, next) {
         method: "GET",
     }, function (error, response, body) {
         try {
+            let stockProduct = [];
+            let result = [];
             let stock = JSON.parse(body);
  
             stock.forEach((stockInfo) => {
                 stockProduct = {
                     name: stockInfo.description,
-                    unitPrice: stockInfo.calculatedUnitCost.amount,
+                    unitPrice: 0,
+                    quantity: 0,
+                    totalValue: 0,
                 }
 
                 stockInfo.materialsItemWarehouses.forEach((warehouse) => {
+                    stockProduct.unitPrice = warehouse.calculatedUnitCost.amount;
                     stockProduct.quantity += warehouse.stockBalance;
                     stockProduct.totalValue += warehouse.calculatedUnitCost.amount * warehouse.stockBalance;
 
                 });
+                result.push(stockProduct);
             });
-
+            
+           return res.send(result);
            
-            return res.send(stockProduct);
         } catch (err) {
-            console.log(body);
+            console.log(result);
             res.status(400);
             return res.send({});
         }
     });
 });
+module.exports = router;

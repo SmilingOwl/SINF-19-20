@@ -11,6 +11,7 @@ var productRouter = require('./routes/product');
 var purchasesRouter = require('./routes/purchases');
 var supplierRouter = require('./routes/supplier');
 var authRouter = require('./routes/auth');
+var inventoryRouter = require('./routes/inventory');
 var fs = require('fs');
 var parser = require('xml2json');
 var request = require('request');
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/finances', financesRouter);
+app.use('/inventory', inventoryRouter);
 app.use('/sales', salesRouter);
 app.use('/products', productRouter);
 app.use('/auth', authRouter);

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 class Inventory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            stockProducts: {},
+            stock: {},
         };
     }
     UNSAFE_componentWillMount() {
@@ -16,27 +15,26 @@ class Inventory extends Component {
         fetch("http://localhost:9000/inventory")
             .then(res => res.json())
             .then(res => {
-                this.setState({ stockProducts: res });
+                this.setState({ stock: res })
             })
     }
 
     fillStockTable() {
         let stockTable = [];
-        if (!this.state.stockProducts)
+        if (!this.state.stock)
             return [];
-        for (let i = 1; i <= this.state.stockProducts.length && i <= 10; i++) {
+        console.log(this.state.stock);
+        for (let i = 1; i <= this.state.stock.length && i <= 10; i++) {
             stockTable.push(
                 <tr className="table-row" key={i}>
-                    <th scope="row" className="centered">{i}</th>
-                    <td>{this.state.products[i - 1].product}</td>
-                    <td className="centered">{}</td>
-                    <td className="centered">{} € </td>
-                    <td className="centered">{} €</td>
+                    <th> </th>
+                    <td scope="row">{this.state.stock[i].name}</td>
+                    <td>{this.state.stock[i].quantity}</td>
+                    <td>{this.state.stock[i].unitPrice} € </td>
+                    <td>{this.state.stock[i].totalValue} € </td>
                 </tr>
             );
-
         }
-
         return stockTable;
     }
 
@@ -55,14 +53,15 @@ class Inventory extends Component {
                         <table className="table">
                             <thead>
                                 <tr className="table-header">
-                                    <th scope="col" className="centered">Product Name</th>
-                                    <th scope="col" className="centered">Quantity</th>
-                                    <th scope="col" className="centered">Price per unit</th>
-                                    <th scope="col" className="centered">Total value</th>
+                                    <th scope="col"/>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Price per unit</th>
+                                    <th scope="col">Total value</th>
                                 </tr>
                             </thead>
                             <tbody>
-
+                                {this.fillStockTable()}
                             </tbody>
                         </table>
                     </div>
