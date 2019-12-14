@@ -66,7 +66,6 @@ router.get('/:taxId/products', function (req, res, next) {
 
             return res.send(products_info);
         } catch(err) {
-            console.log(body);
             console.log('Error at suppliers/{id}/products');
             res.status(400);
             return res.send({});

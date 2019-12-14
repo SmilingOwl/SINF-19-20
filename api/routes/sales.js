@@ -92,7 +92,6 @@ router.get('/info', function(req, res, next) {
 
             return res.send(sales);
         } catch(err) {
-            console.log(body);
             console.log('Error at sales/info');
             res.status(400);
             return res.send({});

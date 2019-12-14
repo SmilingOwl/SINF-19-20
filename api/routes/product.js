@@ -18,7 +18,6 @@ router.get('/:productId', function(req, res, next) {
             }
             return res.send(product);
         } catch(err) {
-            console.log(body);
             console.log('Error at product/{id}/sales');
             res.status(400);
             return res.send({});
@@ -46,7 +45,6 @@ router.get('/:productId/stock', function(req, res, next) {
             }
             return res.send(stockInfo);
         } catch (err) {
-            console.log(body);
             console.log('Error at product/{id}/sales');
             res.status(400);
             return res.send({});
@@ -83,7 +81,6 @@ router.get('/:productId/sales', function(req, res, next) {
             });
             return res.send(product_info);
         } catch (err) {
-            console.log(body);
             console.log('Error at product/{id}/sales');
             res.status(400);
             return res.send({});
@@ -119,7 +116,6 @@ router.get('/:productId/chart', function(req, res, next) {
             });
             return res.send(quantityPerMonth);
         } catch(err) {
-            console.log(body);
             console.log('Error at product/{id}/sales');
             res.status(400);
             return res.send([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);

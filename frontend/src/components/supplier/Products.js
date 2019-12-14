@@ -21,7 +21,6 @@ const Products = ({ products_info }) => {
         }
         return suppliersTable;
     };
-    console.log(products_info);
 
   if(products_info.products && Object.entries(products_info.products).length > 0){
     return (

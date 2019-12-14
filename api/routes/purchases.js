@@ -27,7 +27,6 @@ router.get('/', function (req, res, next) {
             })
             return res.send({ total_spent: total_spent });
         } catch(err) {
-            console.log(body);
             console.log('Error at purchases');
             res.status(400);
             return res.send({});
@@ -78,7 +77,6 @@ router.get('/products', function (req, res, next) {
             };
             return res.send(data);
         } catch(err) {
-            console.log(body);
             console.log('Error at purchases/products');
             res.status(400);
             return res.send({});
@@ -166,7 +164,6 @@ router.get('/suppliers', function (req, res, next) {
             };
             return res.send(data);
         } catch(err) {
-            console.log(body);
             console.log('Error at purchases/suppliers');
             res.status(400);
             return res.send({});
