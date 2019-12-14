@@ -8,9 +8,7 @@ const SupplierPurchasesInfo = ({totalUnits, totalSpent }) => (
       <div className="col-md-12 centered">
         <strong>Total Units Bought</strong>
         <p className="price" style={{ textAlign: 'center' }}>
-          {numberWithSpaces(totalUnits.toFixed(2))}
-          {' '}
-          €
+          {numberWithSpaces(totalUnits)}
         </p>
       </div>
     </div>
