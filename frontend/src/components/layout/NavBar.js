@@ -84,7 +84,6 @@ const NavBar = () => {
                 return (
                   <>
                     <FinancialArea />
-                    <Sales />
                   </>
                 );
               }
