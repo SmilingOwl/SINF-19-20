@@ -4,6 +4,7 @@ import axios from 'axios';
 import PurchasesInfo from '../components/purchases/PurchasesInfo';
 import TopPurchasesP from '../components/purchases/TopPurchasesP';
 import TopSuppliers from '../components/purchases/TopSuppliers';
+import FiscalYear from '../components/common/FiscalYear';
 
 const Purchases = () => {
   const [fiscalYear, setFiscalYear] = useState(2019);
@@ -138,21 +139,11 @@ const Purchases = () => {
 
   return (
     <>
-      <div className="row mtop-smaller">
-        <div className="col-sm-1" />
-        <div className="col-sm-10">
-        <div className="row">
-          <div className="col-sm-9"/>
-          <div className="col-sm-2">
-            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
-          </div>
-          </div>
-        </div>
-      </div>
+      <FiscalYear fiscalYear={fiscalYear} />
       <div className="row">
         <div className="col-md-1" />
         <div className="col-md-10">
-          <h3 className="section-title" style={{'margin-top':'0px'}}>Purchases Information</h3>
+          <h3 className="section-title" style={{marginTop:'0px'}}>Purchases Information</h3>
         </div>
       </div>
       {(() => {

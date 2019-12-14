@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ProductsTable from './ProductsTable';
 
 const TopPurchasesP = ({ products }) => {
-  if(products.length == 0){
+  if(products.length === 0){
     return (
       <div className="row mtop-smaller">
         <div className="col-md-1" />

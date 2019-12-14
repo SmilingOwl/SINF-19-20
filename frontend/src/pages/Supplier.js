@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 import Products from '../components/supplier/Products';
 import SupplierPurchasesInfo from '../components/supplier/SupplierPurchasesInfo';
+import FiscalYear from '../components/common/FiscalYear';
 
 const Supplier = ({ match }) => {
   const [fiscalYear, setFiscalYear] = useState(2019);
@@ -42,7 +43,7 @@ const Supplier = ({ match }) => {
       }
     };
     fetchSuppliersInfo();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchProductsInfo = async () => {
@@ -61,21 +62,11 @@ const Supplier = ({ match }) => {
 
   return (
     <>
-      <div className="row mtop-smaller">
-        <div className="col-sm-1" />
-        <div className="col-sm-10">
-        <div className="row">
-          <div className="col-sm-9"/>
-          <div className="col-sm-2">
-            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
-          </div>
-          </div>
-        </div>
-      </div>
+      <FiscalYear fiscalYear={fiscalYear} />
       <div className="row">
         <div className="col-md-2" />
         <div className="col-md-8 zero_padding">
-          <h3 className="section-title" style={{'margin-top': '0px'}}>
+          <h3 className="section-title" style={{marginTop: '0px'}}>
             Supplier
             {' '}
             {id}

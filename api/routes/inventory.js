@@ -37,7 +37,7 @@ router.get('/', function (req, res, next) {
            return res.send(result);
            
         } catch (err) {
-            console.log(result);
+            console.log("Error on inventory");
             res.status(400);
             return res.send({});
         }

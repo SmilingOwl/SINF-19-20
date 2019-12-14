@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Navbar, NavbarToggler, NavItem, NavLink, Nav, Collapse, NavbarBrand,
+  Navbar, NavbarToggler, NavItem, NavLink, Nav, Collapse,
 } from 'reactstrap';
 import isLogged from '../../common/isLogged';
 import styles from './NavBar.module.css';
