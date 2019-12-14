@@ -11,7 +11,7 @@ const PurchasesInfo = ({ totalSpent, accountsPayable }) => (
         <p className="price" style={{ textAlign: 'center' }}>
           {numberWithSpaces(totalSpent.toFixed(2))}
           {' '}
-€
+          €
         </p>
       </div>
     </div>
@@ -22,7 +22,7 @@ const PurchasesInfo = ({ totalSpent, accountsPayable }) => (
         <p className="price" style={{ textAlign: 'center' }}>
           {numberWithSpaces(accountsPayable.toFixed(2))}
           {' '}
-€
+          €
         </p>
       </div>
     </div>

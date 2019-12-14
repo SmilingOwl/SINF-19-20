@@ -11,6 +11,7 @@ import Info from '../components/product/Info';
 import StockSales from '../components/product/StockSales';
 
 const Product = ({ match }) => {
+  const [fiscalYear, setFiscalYear] = useState(2019);
   const [product, setProduct] = useState({
     api: {
       description: '',
@@ -30,6 +31,18 @@ const Product = ({ match }) => {
   const [isLoadingChart, setIsLoadingChart] = useState(true);
   const [hasErrorChart, setHasErrorChart] = useState(false);
   const [id] = useState(match.params.id);
+
+  useEffect(() => {
+    const fetchFiscalYear = async () => {
+      try {
+        const res = await axios.get('http://localhost:9000/fiscal-year');
+        setFiscalYear(parseInt(res.data.year));
+      } catch (error) {
+        setFiscalYear(2019);
+      }
+    };
+    fetchFiscalYear();
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -113,9 +126,20 @@ const Product = ({ match }) => {
 
   return (
     <div>
+      <div className="row mtop-smaller">
+        <div className="col-sm-1" />
+        <div className="col-sm-10">
+        <div className="row">
+          <div className="col-sm-9"/>
+          <div className="col-sm-2">
+            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
+          </div>
+          </div>
+        </div>
+      </div>
       <Row>
         <Col sm={{ size: '8', offset: 2 }} className="zero_padding">
-          <h3 className="section-title">
+          <h3 className="section-title" style={{'margin-top':'0px'}}>
             Product
             {' '}
             {id}

@@ -19,40 +19,44 @@ router.get('/info', function(req, res, next) {
             let customers = [];
             let products = [];
             invoices.forEach(invoice => {
-                if(customers[invoice.buyerCustomerPartyName] == null) {
-                    customers[invoice.buyerCustomerPartyName] = {
-                        totalSpent: invoice.grossValue.amount,
-                        name: invoice.buyerCustomerPartyName,
-                        taxId: invoice.buyerCustomerPartyTaxId,
-                        product: null,
-                        quantityBought: 0,
-                    };
-                } else {
-                    customers[invoice.buyerCustomerPartyName].totalSpent += parseFloat(invoice.grossValue.amount);
-                }
-                invoice.documentLines.forEach(line => {
-                    if(products[line.salesItem] == null) {
-                        products[line.salesItem] = {
-                            code: line.salesItem,
-                            description: line.description,
-                            quantity: line.quantity,
-                            totalEarned: line.quantity * line.unitPrice.amount,
+                let json = JSON.parse(req.app.get('json'));
+                let year = json.AuditFile.Header.FiscalYear;
+                if(invoice.documentDate.substring(0, 4) == year) {
+                    if(customers[invoice.buyerCustomerPartyName] == null) {
+                        customers[invoice.buyerCustomerPartyName] = {
+                            totalSpent: invoice.grossValue.amount,
+                            name: invoice.buyerCustomerPartyName,
+                            taxId: invoice.buyerCustomerPartyTaxId,
+                            product: null,
+                            quantityBought: 0,
                         };
                     } else {
-                        products[line.salesItem].quantity += line.quantity;
-                        products[line.salesItem].totalEarned += line.quantity * line.unitPrice.amount;
+                        customers[invoice.buyerCustomerPartyName].totalSpent += parseFloat(invoice.grossValue.amount);
                     }
+                    invoice.documentLines.forEach(line => {
+                        if(products[line.salesItem] == null) {
+                            products[line.salesItem] = {
+                                code: line.salesItem,
+                                description: line.description,
+                                quantity: line.quantity,
+                                totalEarned: line.quantity * line.unitPrice.amount,
+                            };
+                        } else {
+                            products[line.salesItem].quantity += line.quantity;
+                            products[line.salesItem].totalEarned += line.quantity * line.unitPrice.amount;
+                        }
 
-                    if(customers[invoice.buyerCustomerPartyName][line.salesItem] == null) {
-                        customers[invoice.buyerCustomerPartyName][line.salesItem] = {
-                            code: line.salesItem,
-                            description: line.description,
-                            quantity: line.quantity,
-                        };
-                    } else {
-                        customers[invoice.buyerCustomerPartyName][line.salesItem].quantity += line.quantity;
-                    }
-                });
+                        if(customers[invoice.buyerCustomerPartyName][line.salesItem] == null) {
+                            customers[invoice.buyerCustomerPartyName][line.salesItem] = {
+                                code: line.salesItem,
+                                description: line.description,
+                                quantity: line.quantity,
+                            };
+                        } else {
+                            customers[invoice.buyerCustomerPartyName][line.salesItem].quantity += line.quantity;
+                        }
+                    });
+                }
             });
 
             let customers_to_return = [];

@@ -33,25 +33,29 @@ router.get('/:taxId/products', function (req, res, next) {
             let invoices = JSON.parse(body);
 
             invoices.forEach(invoice => {
-                if (req.params.taxId == invoice.sellerSupplierPartyTaxId) {
+                let json = JSON.parse(req.app.get('json'));
+                let year = json.AuditFile.Header.FiscalYear;
+                if(invoice.documentDate.substring(0, 4) == year) {
+                    if (req.params.taxId == invoice.sellerSupplierPartyTaxId) {
 
-                    invoice.documentLines.forEach(line => {
+                        invoice.documentLines.forEach(line => {
 
-                        if (products[line.purchasesItem] == null) {
+                            if (products[line.purchasesItem] == null) {
 
-                            products[line.purchasesItem] = {
-                                product: line.description,
-                                unitsBought: line.quantity,
-                                pricePerUnit: line.unitPrice.amount,
+                                products[line.purchasesItem] = {
+                                    product: line.description,
+                                    unitsBought: line.quantity,
+                                    pricePerUnit: line.unitPrice.amount,
+                                }
+
+
+                            } else {
+                                products[line.purchasesItem].unitsBought += line.quantity;
                             }
-
-
-                        } else {
-                            products[line.purchasesItem].unitsBought += line.quantity;
-                        }
-                        total_units += products[line.purchasesItem].unitsBought;
-                        total_spent += products[line.purchasesItem].unitsBought * products[line.purchasesItem].pricePerUnit;
-                    });
+                            total_units += products[line.purchasesItem].unitsBought;
+                            total_spent += products[line.purchasesItem].unitsBought * products[line.purchasesItem].pricePerUnit;
+                        });
+                    }
                 }
             });
             let products_info = {

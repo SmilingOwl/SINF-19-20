@@ -6,6 +6,7 @@ import ProfitLoss from '../components/financialArea/ProfitLoss';
 import SalesGraph from '../components/financialArea/SalesGraph';
 
 const FinancialArea = () => {
+  const [fiscalYear, setFiscalYear] = useState(2019);
   const [balanceSheet, setBalanceSheet] = useState({});
   const [profitLoss, setProfitLoss] = useState([]);
   const [chartInfo, setChartInfo] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
@@ -15,6 +16,19 @@ const FinancialArea = () => {
   const [hasErrorProfitLoss, setHasErrorProfitLoss] = useState(false);
   const [isLoadingSales, setIsLoadingSales] = useState(true);
   const [hasErrorSales, setHasErrorSales] = useState(false);
+
+  useEffect(() => {
+    const fetchFiscalYear = async () => {
+      try {
+        const res = await axios.get('http://localhost:9000/fiscal-year');
+        setFiscalYear(parseInt(res.data.year));
+        console.log(res.data.year);
+      } catch (error) {
+        setFiscalYear(2019);
+      }
+    };
+    fetchFiscalYear();
+  }, []);
 
   useEffect(() => {
     const fetchBalanceSheetInfo = async () => {
@@ -66,10 +80,21 @@ const FinancialArea = () => {
 
   return (
     <div>
-      <div className="row">
+      <div className="row mtop-smaller">
         <div className="col-sm-1" />
         <div className="col-sm-10">
-          <h1 className="section-title">Profit / Loss</h1>
+        <div className="row">
+          <div className="col-sm-9"/>
+          <div className="col-sm-2">
+            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-sm-1" />
+        <div className="col-sm-8">
+          <h1 className="section-title" style={{'margin-top':'0px'}}>Profit / Loss</h1>
         </div>
       </div>
       {(() => {

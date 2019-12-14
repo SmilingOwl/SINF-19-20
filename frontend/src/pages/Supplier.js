@@ -1,165 +1,171 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Row, Col } from 'reactstrap';
+import axios from 'axios';
+import {
+  Row, Spinner, Alert,
+} from 'reactstrap';
+import Products from '../components/supplier/Products';
+import SupplierPurchasesInfo from '../components/supplier/SupplierPurchasesInfo';
 
-class Supplier extends Component
-{
-  constructor(props) {
-    super(props);
-    this.state = {
-      supplier: "",
-      products_info:{},
+const Supplier = ({ match }) => {
+  const [fiscalYear, setFiscalYear] = useState(2019);
+  const [supplier, setSupplier] = useState("");
+  const [isLoadingSupplier, setLoadingSupplier] = useState(true);
+  const [hasErrorSupplier, setErrorSupplier] = useState(false);
+  const [productsInfo, setProductsInfo] = useState({});
+  const [isLoadingProducts, setLoadingProducts] = useState(true);
+  const [hasErrorProducts, setErrorProducts] = useState(false);
+  const [id] = useState(match.params.id);
+
+  useEffect(() => {
+    const fetchFiscalYear = async () => {
+      try {
+        const res = await axios.get('http://localhost:9000/fiscal-year');
+        setFiscalYear(parseInt(res.data.year));
+      } catch (error) {
+        setFiscalYear(2019);
+      }
     };
-    this.id = this.props.match.params.id;
-  }
+    fetchFiscalYear();
+  }, []);
 
-  UNSAFE_componentWillMount() {
-    this.fetchSuppliersInfo();
-  }
+  useEffect(() => {
+    const fetchSuppliersInfo = async () => {
+      setErrorSupplier(false);
+      try {
+        const res = await axios.get(`http://localhost:9000/suppliers/${id}`);
+        setSupplier(res.data);
+        setLoadingSupplier(false);
+      } catch (error) {
+        setLoadingSupplier(false);
+        setErrorSupplier(true);
+      }
+    };
+    fetchSuppliersInfo();
+  }, []);
 
-  fetchSuppliersInfo() {
-    fetch("http://localhost:9000/suppliers/" + this.id)
-      .then(res => res.json())
-      .then(res => {
-        this.setState({supplier: res});
-        this.fetchProductsInfo();
-      })
-  }
+  useEffect(() => {
+    const fetchProductsInfo = async () => {
+      setErrorProducts(false);
+      try {
+        const res = await axios.get(`http://localhost:9000/suppliers/${supplier.companyTaxID}/products`);
+        setProductsInfo(res.data);
+        setLoadingProducts(false);
+      } catch (error) {
+        setLoadingProducts(false);
+        setErrorProducts(true);
+      }
+    };
+    fetchProductsInfo();
+  }, [supplier]);
 
-  fetchProductsInfo(){
-    fetch("http://localhost:9000/suppliers/"+ this.state.supplier.companyTaxID +"/products")
-      .then(res => res.json())
-      .then(res => {
-        this.setState({products_info: res});      
-      })
-      .catch(err => err);
-  }
-
-  fillSuppliersTable() {
-    let suppliersTable = [];
-    let i = 1;
-    if (!this.state.products_info)
-      return [];
-    for (var key in this.state.products_info.products) {
-      suppliersTable.push(
-        <tr className="table-row" key={key}>
-          <th scope="row" className="centered">{i}</th>
-          <td className="centered">{this.state.products_info.products[key].product}</td>
-          <td className="centered">{this.state.products_info.products[key].unitsBought}</td>
-          <td className="centered">{this.state.products_info.products[key].pricePerUnit} {'\u20AC'}</td>
-        </tr>
-      );
-      i++;
-    }
-    return suppliersTable;
-  }
-
-
-  render() {
-    return (
-      <div>
-       <Row>
-        <Col sm={{ size: '8', offset: 2 }} className="zero_padding">
-          <h3 className="section-title">
+  return (
+    <>
+      <div className="row mtop-smaller">
+        <div className="col-sm-1" />
+        <div className="col-sm-10">
+        <div className="row">
+          <div className="col-sm-9"/>
+          <div className="col-sm-2">
+            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-2" />
+        <div className="col-md-8 zero_padding">
+          <h3 className="section-title" style={{'margin-top': '0px'}}>
             Supplier
             {' '}
-            {this.id}
+            {id}
           </h3>
-        </Col>
-      </Row>
+        </div>
+      </div>
+      {(() => {
+        if (isLoadingSupplier) {
+          return (
+            <Row className="center-spinner" style={{ height: 'auto' }}>
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorSupplier) {
+          return <Alert color="danger">Error trying to fetch Supplier Information</Alert>;
+        }
+        return (
+          <div className="row">
+            <div className="col-md-2" />
+            <div className="col-md-8 smallBox">
+              <div className="row">
+                <div className="col-md-8">
+                  <p><strong className="field-name">Name: </strong> {supplier.name}</p>
+                </div>
+                <div className="col-md-4">
+                  <p><strong className="field-name">Company TaxID: </strong> {supplier.companyTaxID}</p>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-8">
+                  <p><strong className="field-name">Email: </strong>{supplier.electronicMail}</p>
+                </div>
+                <div className="col-md-4">
+                  <p><strong className="field-name">Phone: </strong> {supplier.telephone}</p>
+                </div>
+              </div>
+              <hr/>
+              <div className="row">
+                <div className="col-md-8">
+                  <p><strong className="field-name">Street name:  </strong> {supplier.streetName}</p>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-8">
+                  <p><strong className="field-name">Building Number:  </strong> {supplier.buildingNumber}</p>
+                </div>
+                <div className="col-md-4">
+                  <p><strong className="field-name">Postal Zone:  </strong> {supplier.postalZone} {supplier.cityName}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
-        <div className="row">
-          <div className="col-md-2" />
-          <div className="col-md-8 smallBox">
+      <div className="row">
+        <div className="col-md-2" />
+        <div className="col-md-8 zero_padding">
+          <h3 className="section-title">
+            Products Supplied Information
+          </h3>
+        </div>
+      </div>
+      {(() => {
+        if (isLoadingProducts) {
+          return (
+            <Row className="center-spinner" style={{ height: 'auto' }}>
+              <Spinner />
+            </Row>
+          );
+        }
+        if (hasErrorProducts) {
+          return <Alert color="danger">Error trying to fetch Products Information</Alert>;
+        }
+        return (
+          <>
+            <SupplierPurchasesInfo totalUnits={productsInfo.total_units} totalSpent={productsInfo.total_spent} />
             <div className="row">
-              <div className="col-md-8">
-                <p><strong className="field-name">Name: </strong> {this.state.supplier.name}</p>
-              </div>
-              <div className="col-md-4">
-                <p><strong className="field-name">Company TaxID: </strong> {this.state.supplier.companyTaxID}</p>
+              <div className="col-md-2" />
+              <div className="col-md-8 zero_padding">
+                <h3 className="section-title">Products Supplied</h3>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-8">
-                <p><strong className="field-name">Email: </strong>{this.state.supplier.electronicMail}</p>
-              </div>
-              <div className="col-md-4">
-                <p><strong className="field-name">Phone: </strong> {this.state.supplier.telephone}</p>
-              </div>
-            </div>
-            <hr/>
-            <div className="row">
-              <div className="col-md-8">
-                <p><strong className="field-name">Street name:  </strong> {this.state.supplier.streetName}</p>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-8">
-                <p><strong className="field-name">Building Number:  </strong> {this.state.supplier.buildingNumber}</p>
-              </div>
-              <div className="col-md-4">
-                <p><strong className="field-name">Postal Zone:  </strong> {this.state.supplier.postalZone} {this.state.supplier.cityName}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-2" />
-
-          <div className="col-md-3 lineSmallBox align-items-center d-flex">
-            <div className="col-md-7">
-              <strong>
-                Total Units Bought
-              </strong>
-            </div>
-           
-            <div className="col-md-5 price">
-              {this.state.products_info?this.state.products_info.total_units:0 }
-            </div>
-          </div>
-
-          <div className="col-md-2" />
-          
-          <div className="col-md-3 lineSmallBox align-items-center d-flex">
-            <div className="col-md-7">
-              <strong>
-                Total Spent 
-              </strong>
-            </div>
-            <div className="col-md-5 price">
-              {this.state.products_info?this.state.products_info.total_spent:0} {'\u20AC'}
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-1" />
-          <div className="col-md-10">
-            <h3 className="section-title">Product Supplied</h3>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-1" />
-          <div className="col-md-10">
-            <table className="table supplier">
-              <thead>
-                <tr className="table-header">
-                  <th scope="col" className="centered">ID</th>
-                  <th scope="col" className="centered">Product</th>
-                  <th scope="col" className="centered">Units Bought</th>
-                  <th scope="col" className="centered">Price per unit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.fillSuppliersTable()}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        </div>
-    );
-  }
+            <Products products_info={productsInfo} />
+          </>
+        );
+      })()}
+    </>
+  );
 }
 
 export default withRouter(Supplier);

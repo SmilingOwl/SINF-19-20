@@ -28,10 +28,10 @@ router.get('/fiscal-year', function (req, res, next) {
     try {
     let json = JSON.parse(req.app.get('json'));
     let year = json.AuditFile.Header.FiscalYear;
-    return res.send(year);
+    return res.send({year: year});
     } catch(err) {
-        console.log("Error getting fiscal year");
-        return res.send('2019');
+        console.log("Error fetching fiscal year");
+        return res.send({year: '2019'});
     }
 });
 

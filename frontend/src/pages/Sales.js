@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Row, Spinner, Alert,
 } from 'reactstrap';
@@ -10,6 +9,7 @@ import TopConsumers from '../components/sales/TopConsumers';
 import TopProducts from '../components/sales/TopProducts';
 
 const Sales = () => {
+  const [fiscalYear, setFiscalYear] = useState(2019);
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [accountsReceivable, setAccountsReceivable] = useState(0);
@@ -24,6 +24,19 @@ const Sales = () => {
   const [hasErrorBalance, setHasErrorBalance] = useState(false);
   const [isLoadingChartInfo, setIsLoadingChartInfo] = useState(true);
   const [hasErrorChartInfo, setHasErrorChartInfo] = useState(false);
+
+  useEffect(() => {
+    const fetchFiscalYear = async () => {
+      try {
+        const res = await axios.get('http://localhost:9000/fiscal-year');
+        setFiscalYear(parseInt(res.data.year));
+        console.log(res.data.year);
+      } catch (error) {
+        setFiscalYear(2019);
+      }
+    };
+    fetchFiscalYear();
+  }, []);
 
   useEffect(() => {
     const fetchSalesInfo = async () => {
@@ -122,10 +135,21 @@ const Sales = () => {
 
   return(
     <div>
+      <div className="row mtop-smaller">
+        <div className="col-sm-1" />
+        <div className="col-sm-10">
+        <div className="row">
+          <div className="col-sm-9"/>
+          <div className="col-sm-2">
+            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
+          </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-md-1"/>
         <div className="col-md-10">
-          <h3 className="section-title">Sales Information</h3>
+          <h3 className="section-title" style={{'margin-top':'0px'}}>Sales Information</h3>
         </div>
         </div>
       {(() => {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Spinner, Row, Col, Container,
+  Spinner, Row, Col,
 } from 'reactstrap';
 import CompanyInfo from '../components/home/CompanyInfo';
 

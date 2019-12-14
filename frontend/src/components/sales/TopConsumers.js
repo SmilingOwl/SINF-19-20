@@ -29,33 +29,45 @@ const TopConsumers = ({ customers }) => {
     }
     return customersTable;
   };
-  return (
-    <>
+  if(customers.length > 0)
+  {
+    return (
+      <>
+        <div className="row mtop-smaller">
+          <div className="col-md-1" />
+          <div className="col-md-10">
+            <table className="table">
+              <thead>
+                <tr className="table-header">
+                  <th scope="col" className="centered">
+                    Top
+                  </th>
+                  <th scope="col">Consumer</th>
+                  <th scope="col">Most Bought Product</th>
+                  <th scope="col" className="centered">
+                    Units Bought
+                  </th>
+                  <th scope="col" className="centered">
+                    Total Spent
+                  </th>
+                </tr>
+              </thead>
+              <tbody>{fillCustomersTable()}</tbody>
+            </table>
+          </div>
+        </div>
+      </>
+    );
+  } else {
+    return (
       <div className="row mtop-smaller">
         <div className="col-md-1" />
         <div className="col-md-10">
-          <table className="table">
-            <thead>
-              <tr className="table-header">
-                <th scope="col" className="centered">
-                  Top
-                </th>
-                <th scope="col">Consumer</th>
-                <th scope="col">Most Bought Product</th>
-                <th scope="col" className="centered">
-                  Units Bought
-                </th>
-                <th scope="col" className="centered">
-                  Total Spent
-                </th>
-              </tr>
-            </thead>
-            <tbody>{fillCustomersTable()}</tbody>
-          </table>
+          <span>No Costumers Available</span>
         </div>
       </div>
-    </>
-  );
+    );
+  }
 };
 
 TopConsumers.propTypes = {

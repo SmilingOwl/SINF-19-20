@@ -6,6 +6,8 @@ import TopPurchasesP from '../components/purchases/TopPurchasesP';
 import TopSuppliers from '../components/purchases/TopSuppliers';
 
 const Purchases = () => {
+  const [fiscalYear, setFiscalYear] = useState(2019);
+
   const [suppliers, setSuppliers] = useState([]);
   const [isLoadingSuppliers, setIsLoadingSuppliers] = useState(true);
   const [hasErrorSuppliers, setHasErrorSuppliers] = useState(false);
@@ -23,6 +25,18 @@ const Purchases = () => {
   const [hasErrorBalance, setHasErrorBalance] = useState(false);
 
   const [accountsPayable, setAccountsPayable] = useState(0);
+
+  useEffect(() => {
+    const fetchFiscalYear = async () => {
+      try {
+        const res = await axios.get('http://localhost:9000/fiscal-year');
+        setFiscalYear(parseInt(res.data.year));
+      } catch (error) {
+        setFiscalYear(2019);
+      }
+    };
+    fetchFiscalYear();
+  }, []);
 
   useEffect(() => {
     const fetchSuppliersTable = async () => {
@@ -124,10 +138,21 @@ const Purchases = () => {
 
   return (
     <>
+      <div className="row mtop-smaller">
+        <div className="col-sm-1" />
+        <div className="col-sm-10">
+        <div className="row">
+          <div className="col-sm-9"/>
+          <div className="col-sm-2">
+            <h5 className="topic" style={{'font-size': '20px', 'text-align':'right'}}> Fiscal Year: {fiscalYear}</h5>
+          </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-md-1" />
         <div className="col-md-10">
-          <h3 className="section-title">Purchases Information</h3>
+          <h3 className="section-title" style={{'margin-top':'0px'}}>Purchases Information</h3>
         </div>
       </div>
       {(() => {

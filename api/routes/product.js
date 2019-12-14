@@ -64,18 +64,22 @@ router.get('/:productId/sales', function(req, res, next) {
         method: "GET",
     }, function(error, response, body) {
         try {
+            let json = JSON.parse(req.app.get('json'));
+            let year = json.AuditFile.Header.FiscalYear;
             let invoices = JSON.parse(body);
             let product_info = {
                 quantity_sold: 0,
                 total_price: 0,
             };
             invoices.forEach((invoice) => {
-                invoice.documentLines.forEach((line) => {
-                    if(line.salesItem.trim() == req.params.productId) {
-                        product_info.quantity_sold += line.quantity;
-                        product_info.total_price += line.quantity * line.unitPrice.amount;
-                    }
-                });
+                if(invoice.documentDate.substring(0, 4) == year) {
+                    invoice.documentLines.forEach((line) => {
+                        if(line.salesItem.trim() == req.params.productId) {
+                            product_info.quantity_sold += line.quantity;
+                            product_info.total_price += line.quantity * line.unitPrice.amount;
+                        }
+                    });
+                }
             });
             return res.send(product_info);
         } catch (err) {
@@ -100,14 +104,18 @@ router.get('/:productId/chart', function(req, res, next) {
     }, function(error, response, body) {
         let quantityPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         try {
+            let json = JSON.parse(req.app.get('json'));
+            let year = json.AuditFile.Header.FiscalYear;
             let invoices = JSON.parse(body);
             invoices.forEach((invoice) => {
-                invoice.documentLines.forEach((line) => {
-                    if(line.salesItem.trim() == req.params.productId) {
-                        let month = parseInt(invoice.documentDate.substring(5, 7));
-                        quantityPerMonth[month] += line.quantity;
-                    }
-                });
+                if(invoice.documentDate.substring(0, 4) == year) {
+                    invoice.documentLines.forEach((line) => {
+                        if(line.salesItem.trim() == req.params.productId) {
+                            let month = parseInt(invoice.documentDate.substring(5, 7));
+                            quantityPerMonth[month] += line.quantity;
+                        }
+                    });
+                }
             });
             return res.send(quantityPerMonth);
         } catch(err) {
