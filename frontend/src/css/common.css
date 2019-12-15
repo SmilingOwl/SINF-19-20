@@ -7,9 +7,10 @@ div.container .smallBox, .smallBox{
     padding-top: 0.9em;
     padding-bottom: 0.5em;
     margin-bottom: 3em;
+    font-size: small;
     
-
 }
+
 div.container .lineSmallBox, .lineSmallBox{
     background-color: #F7FAFC;
     border-style: solid;
