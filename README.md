@@ -18,9 +18,5 @@ The use of comprehensive visualizations in the web app aims to simplify the anal
 * **Express (NodeJS)** – back-end development which includes parsing a SAF-T and making calls to Jasmin’s API.
 <br>
 
-## Some screenshots
-
-<br>
-
 **Find more information** [here](https://github.com/SmilingOwl/SINF-19_20/blob/master/docs/SINF-relatorio-final.pdf).
 <br>
